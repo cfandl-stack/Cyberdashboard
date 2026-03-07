@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⬡ DASHBOARD // SYS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:        #07070f;
+      --panel:     #0c0c1c;
+      --cyan:      #00f5ff;
+      --magenta:   #ff00a0;
+      --green:     #39ff14;
+      --orange:    #ff6b00;
+      --text:      #a8cce0;
+      --dim:       #3a5060;
+      --border:    rgba(0,245,255,0.18);
+      --glow-c:    0 0 8px rgba(0,245,255,0.55), 0 0 22px rgba(0,245,255,0.18);
+      --glow-m:    0 0 8px rgba(255,0,160,0.55), 0 0 22px rgba(255,0,160,0.18);
+      --glow-g:    0 0 8px rgba(57,255,20,0.55);
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Share Tech Mono', monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Scanlines */
+    body::before {
+      content:'';
+      position:fixed; inset:0;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 3px,
+        rgba(0,0,0,0.06) 3px, rgba(0,0,0,0.06) 4px
+      );
+      pointer-events:none; z-index:9999;
+    }
+
+    /* Grid bg */
+    body::after {
+      content:'';
+      position:fixed; inset:0;
+      background-image:
+        linear-gradient(rgba(0,245,255,0.028) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,245,255,0.028) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events:none; z-index:0;
+    }
+
+    .app { position:relative; z-index:1; padding:14px; display:flex; flex-direction:column; gap:14px; }
+
+    /* ── HEADER ─────────────────────────────────────── */
+    .header {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 24px;
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-bottom:2px solid var(--cyan);
+      position:relative; overflow:hidden;
+    }
+    .header::after {
+      content:'';
+      position:absolute; top:0; left:-100%; width:60%; height:2px;
+      background:linear-gradient(90deg,transparent,var(--cyan),var(--magenta),transparent);
+      animation: scanline 4s linear infinite;
+    }
+    @keyframes scanline { to { left:150%; } }
+
+    .logo {
+      font-family:'Orbitron',sans-serif;
+      font-size:1.35rem; font-weight:900;
+      color:var(--cyan); text-shadow:var(--glow-c); letter-spacing:5px;
+    }
+    .logo span { color:var(--magenta); }
+
+    .clock-block { text-align:center; }
+    .clock-time {
+      font-family:'Orbitron',sans-serif;
+      font-size:2.1rem; font-weight:700;
+      color:var(--cyan); text-shadow:var(--glow-c); letter-spacing:4px;
+    }
+    .clock-date { font-size:0.68rem; color:var(--dim); letter-spacing:2px; text-transform:uppercase; margin-top:2px; }
+
+    .status-block { text-align:right; font-size:0.68rem; line-height:1.9; }
+    .dot {
+      display:inline-block; width:7px; height:7px; border-radius:50%;
+      background:var(--green); box-shadow:var(--glow-g);
+      animation:blink 2s ease-in-out infinite; margin-right:5px;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
+    #weather-header { color:var(--cyan); font-size:0.68rem; }
+
+    /* ── MAIN GRID ──────────────────────────────────── */
+    .grid {
+      display:grid;
+      grid-template-columns: 1fr 370px;
+      grid-template-rows: auto 1fr auto;
+      gap:14px;
+    }
+
+    .col-left  { grid-column:1; grid-row:1/4; display:flex; flex-direction:column; gap:14px; }
+    .col-right { grid-column:2; grid-row:1/4; display:flex; flex-direction:column; gap:14px; }
+
+    /* ── PANEL ──────────────────────────────────────── */
+    .panel {
+      background:var(--panel);
+      border:1px solid var(--border);
+      position:relative;
+      flex-shrink:0;
+    }
+    .panel::before {
+      content:'';
+      position:absolute; top:0; left:0;
+      width:3px; height:100%;
+      background:linear-gradient(180deg,var(--cyan),transparent 80%);
+    }
+
+    /* corner brackets */
+    .panel::after {
+      content:'';
+      position:absolute; bottom:-1px; right:-1px;
+      width:12px; height:12px;
+      border-bottom:2px solid var(--cyan);
+      border-right:2px solid var(--cyan);
+    }
+
+    .ph {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:9px 16px;
+      border-bottom:1px solid var(--border);
+      background:rgba(0,245,255,0.025);
+    }
+    .ph-title {
+      font-family:'Orbitron',sans-serif;
+      font-size:0.65rem; font-weight:700;
+      color:var(--cyan); letter-spacing:3px; text-transform:uppercase;
+    }
+    .ph-badge { font-size:0.62rem; color:var(--dim); letter-spacing:1px; }
+    .ph-badge.ok { color:var(--green); }
+
+    .pb { padding:14px; }
+
+    /* ── KALENDER ───────────────────────────────────── */
+    .cal-placeholder {
+      min-height:580px; display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      text-align:center; gap:14px; padding:24px;
+    }
+    .cal-placeholder .cal-icon { font-size:3rem; }
+    .cal-placeholder h3 {
+      font-family:'Orbitron',sans-serif; font-size:0.8rem; font-weight:700;
+      color:var(--cyan); letter-spacing:2px;
+    }
+    .cal-placeholder p { font-size:0.74rem; color:var(--dim); line-height:1.7; max-width:440px; }
+    .cal-placeholder p strong { color:var(--text); }
+    .cal-placeholder code { color:var(--magenta); }
+
+    #cal-url-input {
+      width:100%; max-width:500px;
+      background:rgba(0,245,255,0.05); border:1px solid var(--border);
+      color:var(--text); font-family:'Share Tech Mono',monospace; font-size:0.73rem;
+      padding:9px 12px; outline:none;
+    }
+    #cal-url-input:focus { border-color:var(--cyan); box-shadow:var(--glow-c); }
+
+    #cal-iframe {
+      width:100%; height:610px; border:none; display:none;
+      filter: invert(1) hue-rotate(175deg) saturate(1.4) brightness(0.88);
+    }
+
+    /* ── WETTER ─────────────────────────────────────── */
+    .weather-row { display:flex; align-items:center; gap:16px; }
+    .w-icon { font-size:2.6rem; }
+    .w-temp {
+      font-family:'Orbitron',sans-serif; font-size:2rem; font-weight:700;
+      color:var(--cyan); text-shadow:var(--glow-c);
+    }
+    .w-desc { font-size:0.7rem; color:var(--dim); letter-spacing:1px; margin-top:2px; }
+    .w-extra { margin-left:auto; text-align:right; font-size:0.68rem; color:var(--dim); line-height:1.9; }
+
+    /* ── NOTIZEN ────────────────────────────────────── */
+    .notes-list {
+      display:flex; flex-direction:column; gap:9px;
+      max-height:340px; overflow-y:auto;
+      padding-right:4px;
+    }
+    .notes-list::-webkit-scrollbar { width:3px; }
+    .notes-list::-webkit-scrollbar-thumb { background:var(--cyan); }
+
+    .note {
+      background:rgba(0,245,255,0.03);
+      border:1px solid var(--border);
+      border-left:3px solid var(--cyan);
+      padding:9px 12px;
+      transition:border-color .2s;
+    }
+    .note:hover { border-color:rgba(0,245,255,.5); }
+    .note.m { border-left-color:var(--magenta); }
+    .note.g { border-left-color:var(--green); }
+    .note.o { border-left-color:var(--orange); }
+
+    .note-title {
+      font-family:'Orbitron',sans-serif; font-size:0.62rem; font-weight:700;
+      color:var(--cyan); letter-spacing:1px; margin-bottom:4px;
+    }
+    .note.m .note-title { color:var(--magenta); }
+    .note.g .note-title { color:var(--green); }
+    .note.o .note-title { color:var(--orange); }
+
+    .note-body { font-size:0.73rem; line-height:1.55; white-space:pre-wrap; }
+    .note-foot { display:flex; justify-content:space-between; align-items:center; margin-top:7px; }
+    .note-ts { font-size:0.58rem; color:var(--dim); }
+    .note-del {
+      background:none; border:none; cursor:pointer;
+      font-family:'Share Tech Mono',monospace; font-size:0.6rem; color:var(--dim);
+      padding:2px 6px; transition:color .2s;
+    }
+    .note-del:hover { color:var(--magenta); }
+
+    .note-empty { font-size:0.72rem; color:var(--dim); text-align:center; padding:18px 0; }
+
+    /* add note form */
+    .note-form {
+      display:none; flex-direction:column; gap:8px;
+      margin-bottom:12px; padding:12px;
+      border:1px dashed var(--border);
+      background:rgba(0,245,255,0.02);
+    }
+    .note-form.open { display:flex; }
+
+    .ni, .nta {
+      background:transparent; border:1px solid var(--border);
+      color:var(--text); font-family:'Share Tech Mono',monospace;
+      font-size:0.73rem; padding:7px 10px; outline:none; width:100%;
+    }
+    .ni:focus, .nta:focus { border-color:var(--cyan); }
+    .nta { resize:vertical; min-height:76px; }
+
+    .color-row { display:flex; gap:8px; align-items:center; }
+    .cdot {
+      width:15px; height:15px; border-radius:50%; cursor:pointer;
+      border:2px solid transparent; transition:border-color .15s;
+    }
+    .cdot.sel { border-color:#fff; }
+    .cdot.c  { background:var(--cyan); }
+    .cdot.m  { background:var(--magenta); }
+    .cdot.g  { background:var(--green); }
+    .cdot.o  { background:var(--orange); }
+
+    .brow { display:flex; gap:8px; }
+
+    /* ── BUTTONS ────────────────────────────────────── */
+    .btn {
+      font-family:'Orbitron',sans-serif; font-size:0.58rem; font-weight:700;
+      letter-spacing:2px; padding:7px 14px; cursor:pointer; border:1px solid;
+      text-transform:uppercase; transition:all .2s; white-space:nowrap;
+    }
+    .btn-c { background:rgba(0,245,255,.08); border-color:var(--cyan); color:var(--cyan); }
+    .btn-c:hover { background:rgba(0,245,255,.18); box-shadow:var(--glow-c); }
+    .btn-d { background:transparent; border-color:var(--dim); color:var(--dim); }
+    .btn-d:hover { border-color:var(--magenta); color:var(--magenta); }
+
+    /* ── SCHNELLLINKS ───────────────────────────────── */
+    .links { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .lnk {
+      display:flex; align-items:center; gap:8px;
+      padding:8px 10px;
+      background:rgba(0,245,255,0.03); border:1px solid var(--border);
+      text-decoration:none; color:var(--text); font-size:0.71rem;
+      transition:all .2s;
+    }
+    .lnk:hover { border-color:var(--cyan); color:var(--cyan); background:rgba(0,245,255,0.07); }
+    .lnk-icon { font-size:.95rem; }
+
+    /* ── POMODORO ───────────────────────────────────── */
+    .pomo-display {
+      text-align:center; padding:10px 0;
+    }
+    .pomo-time {
+      font-family:'Orbitron',sans-serif; font-size:2.4rem; font-weight:700;
+      color:var(--cyan); text-shadow:var(--glow-c); letter-spacing:4px;
+    }
+    .pomo-label { font-size:0.65rem; color:var(--dim); letter-spacing:2px; margin-top:4px; }
+    .pomo-bar-bg {
+      height:4px; background:rgba(0,245,255,0.1);
+      margin:12px 0; position:relative;
+    }
+    .pomo-bar {
+      height:100%; background:var(--cyan);
+      box-shadow:var(--glow-c); transition:width .5s linear;
+    }
+    .pomo-btns { display:flex; gap:8px; justify-content:center; }
+
+    @media (max-width:1050px) {
+      .grid { grid-template-columns:1fr; }
+      .col-left, .col-right { grid-column:1; grid-row:auto; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="logo">⬡ DASH<span>//</span>BOARD</div>
+    <div class="clock-block">
+      <div class="clock-time" id="clock">00:00:00</div>
+      <div class="clock-date" id="cdate">–</div>
+    </div>
+    <div class="status-block">
+      <div><span class="dot"></span>SYSTEM ONLINE</div>
+      <div id="weather-header">WETTER LÄDT …</div>
+    </div>
+  </header>
+
+  <!-- GRID -->
+  <div class="grid">
+
+    <!-- ═══ LINKE SPALTE ═══ -->
+    <div class="col-left">
+
+      <!-- KALENDER -->
+      <div class="panel">
+        <div class="ph">
+          <span class="ph-title">⬡ Google Kalender</span>
+          <span class="ph-badge" id="cal-badge">// NICHT VERBUNDEN</span>
+        </div>
+        <div id="cal-placeholder" class="cal-placeholder">
+          <div class="cal-icon">📅</div>
+          <h3>KALENDER VERBINDEN</h3>
+          <p>
+            Öffne <strong>calendar.google.com</strong> →
+            Einstellungen (⚙) → deinen Kalender auswählen →
+            „<strong>Kalender einbetten</strong>" →
+            Einbettungscode kopieren → nur den Wert von
+            <code>src="…"</code> hier einfügen:
+          </p>
+          <input id="cal-url-input" type="text"
+            placeholder="https://calendar.google.com/calendar/embed?src=…">
+          <button class="btn btn-c" onclick="loadCalendar()">▶ KALENDER LADEN</button>
+        </div>
+        <iframe id="cal-iframe"></iframe>
+      </div>
+
+    </div><!-- /col-left -->
+
+    <!-- ═══ RECHTE SPALTE ═══ -->
+    <div class="col-right">
+
+      <!-- WETTER -->
+      <div class="panel">
+        <div class="ph">
+          <span class="ph-title">⬡ Wetter</span>
+          <span class="ph-badge" id="w-city">// WIEN, AT</span>
+        </div>
+        <div class="pb">
+          <div class="weather-row">
+            <div class="w-icon" id="w-icon">⏳</div>
+            <div>
+              <div class="w-temp" id="w-temp">–°C</div>
+              <div class="w-desc" id="w-desc">LADE DATEN …</div>
+            </div>
+            <div class="w-extra" id="w-extra">–</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOTIZEN -->
+      <div class="panel">
+        <div class="ph">
+          <span class="ph-title">⬡ Notizen</span>
+          <button class="btn btn-c" style="padding:4px 10px;font-size:.55rem;"
+            onclick="toggleForm()">+ NEU</button>
+        </div>
+        <div class="pb">
+          <div class="note-form" id="note-form">
+            <input class="ni" id="ni-title" type="text" placeholder="TITEL …">
+            <textarea class="nta" id="ni-body" placeholder="Notiz eingeben …"></textarea>
+            <div class="color-row">
+              <span style="font-size:.62rem;color:var(--dim);letter-spacing:1px;">FARBE:</span>
+              <div class="cdot c sel" data-c="c" onclick="pickColor(this)"></div>
+              <div class="cdot m"    data-c="m" onclick="pickColor(this)"></div>
+              <div class="cdot g"    data-c="g" onclick="pickColor(this)"></div>
+              <div class="cdot o"    data-c="o" onclick="pickColor(this)"></div>
+            </div>
+            <div class="brow">
+              <button class="btn btn-c" onclick="saveNote()">✓ SPEICHERN</button>
+              <button class="btn btn-d" onclick="toggleForm()">✕ ABBRECHEN</button>
+            </div>
+          </div>
+          <div class="notes-list" id="notes-list"></div>
+        </div>
+      </div>
+
+      <!-- POMODORO -->
+      <div class="panel">
+        <div class="ph">
+          <span class="ph-title">⬡ Pomodoro</span>
+          <span class="ph-badge" id="pomo-badge">// BEREIT</span>
+        </div>
+        <div class="pb">
+          <div class="pomo-display">
+            <div class="pomo-time" id="pomo-time">25:00</div>
+            <div class="pomo-label" id="pomo-label">FOKUS-SESSION</div>
+          </div>
+          <div class="pomo-bar-bg"><div class="pomo-bar" id="pomo-bar" style="width:100%"></div></div>
+          <div class="pomo-btns">
+            <button class="btn btn-c" onclick="pomoToggle()">▶ START</button>
+            <button class="btn btn-d" onclick="pomoReset()">↺ RESET</button>
+            <button class="btn btn-d" onclick="pomoSwitch()">⇄ PAUSE</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCHNELLLINKS -->
+      <div class="panel">
+        <div class="ph">
+          <span class="ph-title">⬡ Schnellzugriff</span>
+        </div>
+        <div class="pb">
+          <div class="links">
+            <a class="lnk" href="https://calendar.google.com"  target="_blank"><span class="lnk-icon">📅</span>Kalender</a>
+            <a class="lnk" href="https://keep.google.com"      target="_blank"><span class="lnk-icon">📝</span>Keep</a>
+            <a class="lnk" href="https://mail.google.com"      target="_blank"><span class="lnk-icon">📧</span>Gmail</a>
+            <a class="lnk" href="https://drive.google.com"     target="_blank"><span class="lnk-icon">💾</span>Drive</a>
+            <a class="lnk" href="https://scholar.google.com"   target="_blank"><span class="lnk-icon">🔬</span>Scholar</a>
+            <a class="lnk" href="https://www.researchgate.net" target="_blank"><span class="lnk-icon">📚</span>ResearchGate</a>
+            <a class="lnk" href="https://www.overleaf.com"     target="_blank"><span class="lnk-icon">📄</span>Overleaf</a>
+            <a class="lnk" href="https://chatgpt.com"          target="_blank"><span class="lnk-icon">🤖</span>ChatGPT</a>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /col-right -->
+  </div><!-- /grid -->
+</div><!-- /app -->
+
+<script>
+// ─────────────────────────────────────────────
+// UHR
+// ─────────────────────────────────────────────
+const DAYS   = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+const MONTHS = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+
+function tick() {
+  const n = new Date();
+  const p = v => String(v).padStart(2,'0');
+  document.getElementById('clock').textContent = `${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;
+  document.getElementById('cdate').textContent =
+    `${DAYS[n.getDay()]}, ${n.getDate()}. ${MONTHS[n.getMonth()]} ${n.getFullYear()}`;
+}
+setInterval(tick, 1000); tick();
+
+// ─────────────────────────────────────────────
+// KALENDER
+// ─────────────────────────────────────────────
+const CAL_LS = 'db_cal_url';
+
+function loadCalendar() {
+  const raw = document.getElementById('cal-url-input').value.trim();
+  if (!raw.includes('calendar.google.com')) {
+    alert('Bitte eine gültige Google Kalender Embed-URL eingeben.'); return;
+  }
+  applyCalendar(raw);
+  localStorage.setItem(CAL_LS, raw);
+}
+
+function applyCalendar(url) {
+  const src = url + (url.includes('?') ? '&' : '?') +
+    'showTitle=0&showNav=1&showPrint=0&showCalendars=0&bgcolor=%230c0c1c';
+  const iframe = document.getElementById('cal-iframe');
+  iframe.src = src;
+  iframe.style.display = 'block';
+  document.getElementById('cal-placeholder').style.display = 'none';
+  const badge = document.getElementById('cal-badge');
+  badge.textContent = '// VERBUNDEN';
+  badge.classList.add('ok');
+}
+
+(function(){ const s = localStorage.getItem(CAL_LS); if(s) applyCalendar(s); })();
+
+// ─────────────────────────────────────────────
+// WETTER  (Open-Meteo, kein API-Key nötig)
+// ─────────────────────────────────────────────
+// ► Koordinaten hier anpassen:
+const W_LAT  = 48.2082;
+const W_LON  = 16.3738;
+const W_CITY = 'WIEN, AT';
+
+const WC = {
+  0:['☀️','Klarer Himmel'],      1:['🌤️','Überwiegend klar'],  2:['⛅','Teilweise bewölkt'],
+  3:['☁️','Bedeckt'],            45:['🌫️','Nebel'],            48:['🌫️','Reifnebel'],
+  51:['🌦️','Nieselregen leicht'],53:['🌦️','Nieselregen'],      55:['🌧️','Nieselregen stark'],
+  61:['🌧️','Regen leicht'],      63:['🌧️','Regen'],            65:['🌧️','Regen stark'],
+  71:['🌨️','Schnee leicht'],     73:['🌨️','Schnee'],           75:['❄️','Schnee stark'],
+  80:['🌦️','Regenschauer'],      81:['🌧️','Schauer'],          82:['⛈️','Starke Schauer'],
+  95:['⛈️','Gewitter'],          96:['⛈️','Gewitter+Hagel'],   99:['⛈️','Heftiges Gewitter']
+};
+
+async function fetchWeather() {
+  try {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${W_LAT}&longitude=${W_LON}` +
+      `&current=temperature_2m,weather_code,wind_speed_10m,relative_humidity_2m&timezone=auto&wind_speed_unit=kmh`;
+    const d = await (await fetch(url)).json();
+    const c = d.current;
+    const [icon, desc] = WC[c.weather_code] || ['🌡️','Unbekannt'];
+    const temp = Math.round(c.temperature_2m);
+    document.getElementById('w-icon').textContent  = icon;
+    document.getElementById('w-temp').textContent  = `${temp}°C`;
+    document.getElementById('w-desc').textContent  = desc.toUpperCase();
+    document.getElementById('w-extra').innerHTML   =
+      `Wind: ${Math.round(c.wind_speed_10m)} km/h<br>Feuchte: ${c.relative_humidity_2m} %`;
+    document.getElementById('weather-header').textContent = `${icon} ${temp}°C // ${W_CITY}`;
+    document.getElementById('w-city').textContent = `// ${W_CITY}`;
+  } catch(_) {
+    document.getElementById('w-desc').textContent = 'KEINE VERBINDUNG';
+  }
+}
+fetchWeather();
+setInterval(fetchWeather, 10 * 60 * 1000);
+
+// ─────────────────────────────────────────────
+// NOTIZEN
+// ─────────────────────────────────────────────
+const N_LS = 'db_notes';
+let noteColor = 'c';
+
+function getNotes()       { return JSON.parse(localStorage.getItem(N_LS) || '[]'); }
+function putNotes(arr)    { localStorage.setItem(N_LS, JSON.stringify(arr)); }
+function esc(s)           { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function renderNotes() {
+  const el = document.getElementById('notes-list');
+  const notes = getNotes();
+  if (!notes.length) {
+    el.innerHTML = '<div class="note-empty">// KEINE NOTIZEN //</div>'; return;
+  }
+  el.innerHTML = notes.map((n,i) => `
+    <div class="note ${n.color}">
+      ${n.title ? `<div class="note-title">${esc(n.title)}</div>` : ''}
+      <div class="note-body">${esc(n.body)}</div>
+      <div class="note-foot">
+        <span class="note-ts">${n.ts}</span>
+        <button class="note-del" onclick="delNote(${i})">✕ LÖSCHEN</button>
+      </div>
+    </div>`).join('');
+}
+
+function toggleForm() {
+  const f = document.getElementById('note-form');
+  f.classList.toggle('open');
+  if (!f.classList.contains('open')) {
+    document.getElementById('ni-title').value = '';
+    document.getElementById('ni-body').value  = '';
+  }
+}
+
+function pickColor(el) {
+  document.querySelectorAll('.cdot').forEach(d => d.classList.remove('sel'));
+  el.classList.add('sel');
+  noteColor = el.dataset.c;
+}
+
+function saveNote() {
+  const body = document.getElementById('ni-body').value.trim();
+  if (!body) return;
+  const n = new Date();
+  const p = v => String(v).padStart(2,'0');
+  const notes = getNotes();
+  notes.unshift({
+    title: document.getElementById('ni-title').value.trim(),
+    body,
+    color: noteColor,
+    ts: `${p(n.getDate())}.${p(n.getMonth()+1)}.${n.getFullYear()} ${p(n.getHours())}:${p(n.getMinutes())}`
+  });
+  putNotes(notes);
+  renderNotes();
+  toggleForm();
+}
+
+function delNote(i) {
+  const notes = getNotes();
+  notes.splice(i,1);
+  putNotes(notes);
+  renderNotes();
+}
+
+renderNotes();
+
+// ─────────────────────────────────────────────
+// POMODORO
+// ─────────────────────────────────────────────
+const POMO_MODES = {
+  fokus: { label:'FOKUS-SESSION', secs: 25*60 },
+  pause: { label:'KURZE PAUSE',   secs:  5*60 },
+};
+
+let pomoMode    = 'fokus';
+let pomoTotal   = POMO_MODES.fokus.secs;
+let pomoLeft    = pomoTotal;
+let pomoRunning = false;
+let pomoTimer   = null;
+
+function pomoRender() {
+  const m = String(Math.floor(pomoLeft/60)).padStart(2,'0');
+  const s = String(pomoLeft%60).padStart(2,'0');
+  document.getElementById('pomo-time').textContent  = `${m}:${s}`;
+  document.getElementById('pomo-label').textContent = POMO_MODES[pomoMode].label;
+  document.getElementById('pomo-bar').style.width   = (pomoLeft/pomoTotal*100) + '%';
+  document.getElementById('pomo-badge').textContent =
+    pomoRunning ? '// LÄUFT' : (pomoLeft === pomoTotal ? '// BEREIT' : '// PAUSIERT');
+}
+
+function pomoToggle() {
+  if (pomoRunning) {
+    clearInterval(pomoTimer); pomoRunning = false;
+    document.querySelector('.pomo-btns .btn-c').textContent = '▶ START';
+  } else {
+    pomoRunning = true;
+    document.querySelector('.pomo-btns .btn-c').textContent = '⏸ PAUSE';
+    pomoTimer = setInterval(() => {
+      if (pomoLeft <= 0) { clearInterval(pomoTimer); pomoRunning = false; pomoRender(); return; }
+      pomoLeft--;
+      pomoRender();
+    }, 1000);
+  }
+  pomoRender();
+}
+
+function pomoReset() {
+  clearInterval(pomoTimer); pomoRunning = false;
+  pomoLeft = pomoTotal;
+  document.querySelector('.pomo-btns .btn-c').textContent = '▶ START';
+  pomoRender();
+}
+
+function pomoSwitch() {
+  clearInterval(pomoTimer); pomoRunning = false;
+  pomoMode  = pomoMode === 'fokus' ? 'pause' : 'fokus';
+  pomoTotal = POMO_MODES[pomoMode].secs;
+  pomoLeft  = pomoTotal;
+  document.querySelector('.pomo-btns .btn-c').textContent = '▶ START';
+  pomoRender();
+}
+
+pomoRender();
+</script>
+</body>
+</html>
