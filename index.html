@@ -3,284 +3,230 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>⬡ CYBERDASHBOARD v2</title>
+  <title>⬡ CYBERDASHBOARD v3</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg:      #07070f;
-      --panel:   #0b0b1a;
-      --cyan:    #00f5ff;
-      --mag:     #ff00a0;
-      --green:   #39ff14;
-      --orange:  #ff6b00;
-      --purple:  #bf5fff;
-      --yellow:  #ffe600;
-      --text:    #a8cce0;
-      --dim:     #374a58;
-      --border:  rgba(0,245,255,0.15);
-      --glow-c:  0 0 8px rgba(0,245,255,0.5), 0 0 20px rgba(0,245,255,0.15);
-      --glow-m:  0 0 8px rgba(255,0,160,0.5), 0 0 20px rgba(255,0,160,0.15);
-      --glow-g:  0 0 8px rgba(57,255,20,0.5);
+      --bg:     #07070f;
+      --panel:  #0b0b1a;
+      --cyan:   #00f5ff;
+      --mag:    #ff00a0;
+      --green:  #39ff14;
+      --orange: #ff6b00;
+      --purple: #bf5fff;
+      --yellow: #ffe600;
+      --text:   #a8cce0;
+      --dim:    #374a58;
+      --border: rgba(0,245,255,0.14);
+      --glow-c: 0 0 8px rgba(0,245,255,0.5),0 0 20px rgba(0,245,255,0.12);
+      --glow-m: 0 0 8px rgba(255,0,160,0.5),0 0 20px rgba(255,0,160,0.12);
+      --glow-g: 0 0 8px rgba(57,255,20,0.5);
+      --glow-y: 0 0 8px rgba(255,230,0,0.5);
     }
-    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    html,body{height:100%;}
+    body{
+      background:var(--bg);color:var(--text);
+      font-family:'Share Tech Mono',monospace;
+      overflow:hidden;
+    }
+    body::before{
+      content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+      background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.05) 3px,rgba(0,0,0,0.05) 4px);
+    }
+    body::after{
+      content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+      background-image:linear-gradient(rgba(0,245,255,0.022) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(0,245,255,0.022) 1px,transparent 1px);
+      background-size:48px 48px;
+    }
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Share Tech Mono', monospace;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-    body::before {
-      content:''; position:fixed; inset:0; pointer-events:none; z-index:9999;
-      background: repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.055) 3px,rgba(0,0,0,0.055) 4px);
-    }
-    body::after {
-      content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
-      background-image: linear-gradient(rgba(0,245,255,0.025) 1px,transparent 1px), linear-gradient(90deg,rgba(0,245,255,0.025) 1px,transparent 1px);
-      background-size: 48px 48px;
-    }
-
-    .app { position:relative; z-index:1; padding:12px; display:flex; flex-direction:column; gap:12px; height:100vh; }
+    .app{position:relative;z-index:1;height:100vh;display:flex;flex-direction:column;padding:10px;gap:10px;}
 
     /* ── HEADER ── */
-    .header {
-      flex-shrink:0;
-      display:flex; align-items:center; justify-content:space-between;
-      padding:12px 22px;
-      background:var(--panel); border:1px solid var(--border); border-bottom:2px solid var(--cyan);
-      position:relative; overflow:hidden;
+    .header{
+      flex-shrink:0;display:flex;align-items:center;justify-content:space-between;
+      padding:11px 22px;background:var(--panel);
+      border:1px solid var(--border);border-bottom:2px solid var(--cyan);
+      position:relative;overflow:hidden;
     }
-    .header::after {
-      content:''; position:absolute; top:0; left:-100%; width:55%; height:2px;
+    .header::after{
+      content:'';position:absolute;top:0;left:-100%;width:50%;height:2px;
       background:linear-gradient(90deg,transparent,var(--cyan),var(--mag),transparent);
       animation:scanline 4s linear infinite;
     }
-    @keyframes scanline { to { left:150%; } }
+    @keyframes scanline{to{left:150%;}}
+    .logo{font-family:'Orbitron',sans-serif;font-size:1.2rem;font-weight:900;color:var(--cyan);text-shadow:var(--glow-c);letter-spacing:5px;}
+    .logo span{color:var(--mag);}
+    .clock-time{font-family:'Orbitron',sans-serif;font-size:1.9rem;font-weight:700;color:var(--cyan);text-shadow:var(--glow-c);letter-spacing:4px;text-align:center;}
+    .clock-date{font-size:.62rem;color:var(--dim);letter-spacing:2px;text-align:center;margin-top:2px;text-transform:uppercase;}
+    .hdr-right{text-align:right;font-size:.62rem;line-height:2;}
+    .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:var(--glow-g);animation:blink 2s ease-in-out infinite;margin-right:5px;}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 
-    .logo {
-      font-family:'Orbitron',sans-serif; font-size:1.25rem; font-weight:900;
-      color:var(--cyan); text-shadow:var(--glow-c); letter-spacing:5px;
-    }
-    .logo span { color:var(--mag); }
-
-    .clock-block { text-align:center; }
-    .clock-time {
-      font-family:'Orbitron',sans-serif; font-size:2rem; font-weight:700;
-      color:var(--cyan); text-shadow:var(--glow-c); letter-spacing:4px;
-    }
-    .clock-date { font-size:0.65rem; color:var(--dim); letter-spacing:2px; margin-top:2px; text-transform:uppercase; }
-
-    .header-right { text-align:right; font-size:0.65rem; line-height:2; }
-    .dot { display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--green); box-shadow:var(--glow-g); animation:blink 2s ease-in-out infinite; margin-right:5px; }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
-
-    /* ── MAIN LAYOUT ── */
-    .main {
-      flex:1; display:grid;
-      grid-template-columns: 1fr 340px;
-      gap:12px; min-height:0;
-    }
+    /* ── LAYOUT ── */
+    .main{flex:1;display:grid;grid-template-columns:1fr 340px;gap:10px;min-height:0;}
 
     /* ── PANEL ── */
-    .panel {
-      background:var(--panel); border:1px solid var(--border);
-      position:relative; display:flex; flex-direction:column;
-    }
-    .panel::before {
-      content:''; position:absolute; top:0; left:0;
-      width:3px; height:100%;
-      background:linear-gradient(180deg,var(--cyan),transparent 80%);
-    }
-    .panel::after {
-      content:''; position:absolute; bottom:-1px; right:-1px;
-      width:12px; height:12px;
-      border-bottom:2px solid var(--cyan); border-right:2px solid var(--cyan);
-    }
+    .panel{background:var(--panel);border:1px solid var(--border);position:relative;display:flex;flex-direction:column;}
+    .panel::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(180deg,var(--cyan),transparent 80%);}
+    .panel::after{content:'';position:absolute;bottom:-1px;right:-1px;width:11px;height:11px;border-bottom:2px solid var(--cyan);border-right:2px solid var(--cyan);}
 
-    .ph {
-      flex-shrink:0;
-      display:flex; align-items:center; justify-content:space-between;
-      padding:8px 14px; border-bottom:1px solid var(--border);
-      background:rgba(0,245,255,0.02);
-    }
-    .ph-title {
-      font-family:'Orbitron',sans-serif; font-size:0.62rem; font-weight:700;
-      color:var(--cyan); letter-spacing:3px;
-    }
+    .ph{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:7px 14px;border-bottom:1px solid var(--border);background:rgba(0,245,255,0.02);}
+    .ph-title{font-family:'Orbitron',sans-serif;font-size:.6rem;font-weight:700;color:var(--cyan);letter-spacing:3px;}
+    .pb{padding:10px;}
 
-    /* ── MAIN IFRAME PANEL ── */
-    .main-panel { grid-column:1; }
-
-    .main-bar {
-      flex-shrink:0;
-      display:flex; align-items:center; gap:10px;
-      padding:8px 14px; border-bottom:1px solid var(--border);
-      background:rgba(0,245,255,0.02);
+    /* ── TRADINGVIEW PANEL ── */
+    .tv-panel{grid-column:1;overflow:hidden;}
+    .tv-toolbar{flex-shrink:0;display:flex;align-items:center;gap:8px;padding:7px 14px;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+    .tv-label{font-size:.6rem;color:var(--dim);letter-spacing:1px;white-space:nowrap;}
+    .tv-sym-btn{
+      font-family:'Orbitron',sans-serif;font-size:.55rem;font-weight:700;letter-spacing:1px;
+      padding:4px 10px;cursor:pointer;border:1px solid var(--border);
+      background:rgba(255,230,0,.06);color:var(--dim);transition:all .18s;
     }
-    .main-site-name {
-      font-family:'Orbitron',sans-serif; font-size:0.65rem; font-weight:700;
-      color:var(--cyan); letter-spacing:2px; flex:1;
+    .tv-sym-btn:hover,.tv-sym-btn.active{border-color:var(--yellow);color:var(--yellow);box-shadow:var(--glow-y);}
+    .tv-sym-input{
+      background:rgba(255,230,0,.05);border:1px solid var(--border);color:var(--text);
+      font-family:'Share Tech Mono',monospace;font-size:.68rem;padding:4px 9px;outline:none;width:110px;
     }
-
-    #main-iframe {
-      flex:1; border:none; width:100%;
-      background:#fff;
-    }
-
-    /* HOME SCREEN */
-    .home-screen {
-      flex:1; display:flex; flex-direction:column;
-      align-items:center; justify-content:center;
-      gap:18px; text-align:center; padding:40px;
-    }
-    .home-screen .big-logo {
-      font-family:'Orbitron',sans-serif; font-size:3rem; font-weight:900;
-      color:var(--cyan); text-shadow:var(--glow-c); letter-spacing:8px;
-      animation:flicker 5s ease-in-out infinite;
-    }
-    @keyframes flicker {
-      0%,95%,100%{opacity:1} 96%{opacity:.6} 97%{opacity:1} 98%{opacity:.4} 99%{opacity:1}
-    }
-    .home-screen .big-logo span { color:var(--mag); }
-    .home-screen p { font-size:0.75rem; color:var(--dim); letter-spacing:1px; line-height:2; }
-    .home-hint { font-size:0.68rem; color:var(--dim); letter-spacing:2px; }
-    .home-hint span { color:var(--cyan); }
-
-    /* BLOCKED SCREEN */
-    .blocked-screen {
-      flex:1; display:flex; flex-direction:column;
-      align-items:center; justify-content:center;
-      gap:14px; text-align:center; padding:40px;
-    }
-    .blocked-screen .blocked-icon { font-size:3rem; }
-    .blocked-screen h3 {
-      font-family:'Orbitron',sans-serif; font-size:0.85rem;
-      color:var(--mag); letter-spacing:2px;
-    }
-    .blocked-screen p { font-size:0.73rem; color:var(--dim); line-height:1.8; max-width:340px; }
+    .tv-sym-input:focus{border-color:var(--yellow);}
+    #tv-container{flex:1;min-height:0;position:relative;}
+    #tv-container .tradingview-widget-container{height:100%!important;width:100%!important;}
+    #tv-container .tradingview-widget-container__widget{height:100%!important;}
 
     /* ── RIGHT COLUMN ── */
-    .col-right {
-      grid-column:2; display:flex; flex-direction:column; gap:10px;
-      overflow-y:auto; padding-right:2px;
-    }
-    .col-right::-webkit-scrollbar { width:3px; }
-    .col-right::-webkit-scrollbar-thumb { background:var(--cyan); }
+    .col-right{grid-column:2;display:flex;flex-direction:column;gap:8px;overflow-y:auto;min-height:0;}
+    .col-right::-webkit-scrollbar{width:3px;}
+    .col-right::-webkit-scrollbar-thumb{background:var(--cyan);}
 
     /* ── SECTION BLOCKS ── */
-    .section-block { background:var(--panel); border:1px solid var(--border); flex-shrink:0; position:relative; }
-    .section-block::before {
-      content:''; position:absolute; top:0; left:0;
-      width:3px; height:100%;
+    .sec{background:var(--panel);border:1px solid var(--border);flex-shrink:0;position:relative;}
+    .sec::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;}
+    .sec.ki::before    {background:linear-gradient(180deg,var(--mag),transparent 80%);}
+    .sec.trading::before{background:linear-gradient(180deg,var(--yellow),transparent 80%);}
+    .sec.research::before{background:linear-gradient(180deg,var(--green),transparent 80%);}
+    .sec.org::before   {background:linear-gradient(180deg,var(--cyan),transparent 80%);}
+    .sec.dev::before   {background:linear-gradient(180deg,var(--orange),transparent 80%);}
+
+    .sec-head{display:flex;align-items:center;justify-content:space-between;padding:7px 14px;cursor:pointer;border-bottom:1px solid transparent;transition:background .15s;user-select:none;}
+    .sec-head:hover{background:rgba(255,255,255,.02);}
+    .sec-head.open{border-bottom-color:var(--border);}
+    .sec-title{font-family:'Orbitron',sans-serif;font-size:.58rem;font-weight:700;letter-spacing:2px;}
+    .ki     .sec-title{color:var(--mag);}
+    .trading .sec-title{color:var(--yellow);}
+    .research .sec-title{color:var(--green);}
+    .org    .sec-title{color:var(--cyan);}
+    .dev    .sec-title{color:var(--orange);}
+    .sec-arrow{font-size:.58rem;color:var(--dim);transition:transform .2s;}
+    .sec-head.open .sec-arrow{transform:rotate(180deg);}
+    .sec-links{display:none;padding:7px 9px;flex-wrap:wrap;gap:5px;}
+    .sec-links.open{display:flex;}
+
+    .slink{
+      display:flex;align-items:center;gap:5px;padding:5px 9px;
+      background:rgba(255,255,255,.02);border:1px solid var(--border);
+      cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:var(--text);
+      transition:all .16s;white-space:nowrap;text-decoration:none;
     }
-    .section-block.ki::before    { background:linear-gradient(180deg,var(--mag),transparent 80%); }
-    .section-block.research::before { background:linear-gradient(180deg,var(--green),transparent 80%); }
-    .section-block.org::before   { background:linear-gradient(180deg,var(--cyan),transparent 80%); }
-    .section-block.dev::before   { background:linear-gradient(180deg,var(--orange),transparent 80%); }
-    .section-block.fokus::before { background:linear-gradient(180deg,var(--purple),transparent 80%); }
+    .ki      .slink:hover{border-color:var(--mag);   color:var(--mag);   background:rgba(255,0,160,.05);}
+    .trading .slink:hover{border-color:var(--yellow);color:var(--yellow);background:rgba(255,230,0,.05);}
+    .research .slink:hover{border-color:var(--green); color:var(--green); background:rgba(57,255,20,.05);}
+    .org     .slink:hover{border-color:var(--cyan);  color:var(--cyan);  background:rgba(0,245,255,.05);}
+    .dev     .slink:hover{border-color:var(--orange);color:var(--orange);background:rgba(255,107,0,.05);}
+    .slink-i{font-size:.82rem;}
 
-    .section-head {
-      display:flex; align-items:center; justify-content:space-between;
-      padding:8px 14px; cursor:pointer; border-bottom:1px solid transparent;
-      transition:background .15s; user-select:none;
+    /* ── RADIO PLAYER ── */
+    .radio-widget{background:var(--panel);border:1px solid var(--border);flex-shrink:0;position:relative;}
+    .radio-widget::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(180deg,var(--purple),transparent 80%);}
+    .radio-widget::after{content:'';position:absolute;bottom:-1px;right:-1px;width:11px;height:11px;border-bottom:2px solid var(--purple);border-right:2px solid var(--purple);}
+
+    .radio-ph{display:flex;align-items:center;justify-content:space-between;padding:7px 14px;border-bottom:1px solid var(--border);background:rgba(191,95,255,.02);}
+    .radio-ph .ph-title{color:var(--purple);}
+
+    .radio-tabs{display:flex;border-bottom:1px solid var(--border);}
+    .rtab{
+      flex:1;padding:6px;text-align:center;cursor:pointer;font-family:'Orbitron',sans-serif;
+      font-size:.55rem;font-weight:700;letter-spacing:1px;color:var(--dim);
+      border-right:1px solid var(--border);transition:all .18s;
     }
-    .section-head:hover { background:rgba(255,255,255,0.02); }
-    .section-head.open { border-bottom-color:var(--border); }
+    .rtab:last-child{border-right:none;}
+    .rtab:hover{color:var(--purple);background:rgba(191,95,255,.05);}
+    .rtab.active{color:var(--purple);background:rgba(191,95,255,.08);box-shadow:inset 0 -2px 0 var(--purple);}
 
-    .section-title {
-      font-family:'Orbitron',sans-serif; font-size:0.6rem; font-weight:700; letter-spacing:2px;
+    .radio-body{padding:10px;}
+
+    /* Station Buttons */
+    .station-grid{display:flex;flex-direction:column;gap:5px;margin-bottom:10px;}
+    .station-btn{
+      display:flex;align-items:center;gap:8px;padding:7px 10px;
+      background:rgba(191,95,255,.04);border:1px solid var(--border);
+      cursor:pointer;transition:all .18s;font-family:'Share Tech Mono',monospace;
+      font-size:.7rem;color:var(--text);
     }
-    .ki    .section-title { color:var(--mag); }
-    .research .section-title { color:var(--green); }
-    .org   .section-title { color:var(--cyan); }
-    .dev   .section-title { color:var(--orange); }
-    .fokus .section-title { color:var(--purple); }
+    .station-btn:hover,.station-btn.active{border-color:var(--purple);color:var(--purple);background:rgba(191,95,255,.1);}
+    .station-btn.active{box-shadow:0 0 8px rgba(191,95,255,.3);}
+    .station-icon{font-size:.9rem;width:18px;text-align:center;}
+    .station-name{flex:1;}
+    .station-tag{font-size:.58rem;color:var(--dim);padding:2px 5px;border:1px solid var(--dim);}
+    .station-btn.active .station-tag{border-color:var(--purple);color:var(--purple);}
 
-    .section-arrow { font-size:0.6rem; color:var(--dim); transition:transform .2s; }
-    .section-head.open .section-arrow { transform:rotate(180deg); }
-
-    .section-links { display:none; padding:8px 10px; display:none; flex-wrap:wrap; gap:6px; }
-    .section-links.open { display:flex; }
-
-    .slink {
-      display:flex; align-items:center; gap:6px;
-      padding:6px 10px; background:rgba(255,255,255,0.02);
-      border:1px solid var(--border); cursor:pointer;
-      font-family:'Share Tech Mono',monospace; font-size:0.7rem; color:var(--text);
-      transition:all .18s; white-space:nowrap;
+    /* Now Playing */
+    .now-playing{
+      display:flex;align-items:center;gap:10px;padding:8px 10px;margin-top:8px;
+      background:rgba(191,95,255,.05);border:1px solid rgba(191,95,255,.25);
     }
-    .ki    .slink:hover { border-color:var(--mag);    color:var(--mag);    background:rgba(255,0,160,0.06); }
-    .research .slink:hover { border-color:var(--green); color:var(--green); background:rgba(57,255,20,0.06); }
-    .org   .slink:hover { border-color:var(--cyan);   color:var(--cyan);   background:rgba(0,245,255,0.06); }
-    .dev   .slink:hover { border-color:var(--orange); color:var(--orange); background:rgba(255,107,0,0.06); }
-    .fokus .slink:hover { border-color:var(--purple); color:var(--purple); background:rgba(191,95,255,0.06); }
-    .slink.active { border-color:var(--cyan)!important; color:var(--cyan)!important; box-shadow:var(--glow-c); }
-    .slink-icon { font-size:0.85rem; }
+    .np-dot{width:8px;height:8px;border-radius:50%;background:var(--purple);box-shadow:0 0 8px var(--purple);animation:blink 1s ease-in-out infinite;flex-shrink:0;}
+    .np-text{font-size:.68rem;color:var(--purple);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .np-stop{background:none;border:1px solid rgba(191,95,255,.4);cursor:pointer;font-size:.6rem;color:var(--dim);padding:3px 7px;font-family:'Share Tech Mono',monospace;transition:all .18s;}
+    .np-stop:hover{border-color:var(--mag);color:var(--mag);}
+
+    /* YouTube embed (hidden, audio only use) */
+    #yt-frame{width:100%;height:180px;border:none;display:none;border:1px solid var(--border);}
+    #audio-player{display:none;}
 
     /* ── NOTES ── */
-    .notes-list {
-      max-height:240px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;
-    }
-    .notes-list::-webkit-scrollbar { width:3px; }
-    .notes-list::-webkit-scrollbar-thumb { background:var(--cyan); }
-
-    .note {
-      background:rgba(0,245,255,0.03); border:1px solid var(--border);
-      border-left:3px solid var(--cyan); padding:8px 10px; transition:border-color .2s;
-    }
-    .note:hover { border-color:rgba(0,245,255,.45); }
-    .note.m { border-left-color:var(--mag); }
-    .note.g { border-left-color:var(--green); }
-    .note.o { border-left-color:var(--orange); }
-    .note-title {
-      font-family:'Orbitron',sans-serif; font-size:0.6rem; font-weight:700;
-      color:var(--cyan); letter-spacing:1px; margin-bottom:3px;
-    }
-    .note.m .note-title{color:var(--mag);} .note.g .note-title{color:var(--green);} .note.o .note-title{color:var(--orange);}
-    .note-body { font-size:0.7rem; line-height:1.5; white-space:pre-wrap; }
-    .note-foot { display:flex; justify-content:space-between; align-items:center; margin-top:6px; }
-    .note-ts { font-size:0.58rem; color:var(--dim); }
-    .note-del { background:none; border:none; cursor:pointer; font-family:'Share Tech Mono',monospace; font-size:0.58rem; color:var(--dim); padding:2px 5px; transition:color .2s; }
-    .note-del:hover { color:var(--mag); }
-    .note-empty { font-size:0.7rem; color:var(--dim); text-align:center; padding:14px 0; }
-
-    .note-form { display:none; flex-direction:column; gap:7px; margin-bottom:10px; padding:10px; border:1px dashed var(--border); background:rgba(0,245,255,0.02); }
-    .note-form.open { display:flex; }
-    .ni, .nta { background:transparent; border:1px solid var(--border); color:var(--text); font-family:'Share Tech Mono',monospace; font-size:0.7rem; padding:6px 9px; outline:none; width:100%; }
+    .notes-list{max-height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:7px;}
+    .notes-list::-webkit-scrollbar{width:3px;}
+    .notes-list::-webkit-scrollbar-thumb{background:var(--cyan);}
+    .note{background:rgba(0,245,255,.03);border:1px solid var(--border);border-left:3px solid var(--cyan);padding:8px 10px;transition:border-color .2s;}
+    .note:hover{border-color:rgba(0,245,255,.4);}
+    .note.m{border-left-color:var(--mag);}
+    .note.g{border-left-color:var(--green);}
+    .note.o{border-left-color:var(--orange);}
+    .note-title{font-family:'Orbitron',sans-serif;font-size:.58rem;font-weight:700;color:var(--cyan);letter-spacing:1px;margin-bottom:3px;}
+    .note.m .note-title{color:var(--mag);}.note.g .note-title{color:var(--green);}.note.o .note-title{color:var(--orange);}
+    .note-body{font-size:.68rem;line-height:1.5;white-space:pre-wrap;}
+    .note-foot{display:flex;justify-content:space-between;align-items:center;margin-top:6px;}
+    .note-ts{font-size:.56rem;color:var(--dim);}
+    .note-del{background:none;border:none;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.56rem;color:var(--dim);padding:2px 5px;transition:color .2s;}
+    .note-del:hover{color:var(--mag);}
+    .note-empty{font-size:.68rem;color:var(--dim);text-align:center;padding:12px 0;}
+    .note-form{display:none;flex-direction:column;gap:6px;margin-bottom:9px;padding:9px;border:1px dashed var(--border);background:rgba(0,245,255,.02);}
+    .note-form.open{display:flex;}
+    .ni,.nta{background:transparent;border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:.68rem;padding:5px 8px;outline:none;width:100%;}
     .ni:focus,.nta:focus{border-color:var(--cyan);}
-    .nta { resize:vertical; min-height:64px; }
-    .color-row { display:flex; gap:7px; align-items:center; }
-    .cdot { width:13px; height:13px; border-radius:50%; cursor:pointer; border:2px solid transparent; transition:border-color .15s; }
-    .cdot.sel{border-color:#fff;} .cdot.c{background:var(--cyan);} .cdot.m{background:var(--mag);} .cdot.g{background:var(--green);} .cdot.o{background:var(--orange);}
+    .nta{resize:vertical;min-height:60px;}
+    .color-row{display:flex;gap:6px;align-items:center;}
+    .cdot{width:12px;height:12px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:border-color .15s;}
+    .cdot.sel{border-color:#fff;}.cdot.c{background:var(--cyan);}.cdot.m{background:var(--mag);}.cdot.g{background:var(--green);}.cdot.o{background:var(--orange);}
 
     /* ── POMODORO ── */
-    .pomo-time { font-family:'Orbitron',sans-serif; font-size:2rem; font-weight:700; color:var(--cyan); text-shadow:var(--glow-c); letter-spacing:3px; text-align:center; padding:8px 0 4px; }
-    .pomo-label { font-size:0.6rem; color:var(--dim); letter-spacing:2px; text-align:center; margin-bottom:10px; }
-    .pomo-bar-bg { height:3px; background:rgba(0,245,255,0.1); margin-bottom:10px; }
-    .pomo-bar { height:100%; background:var(--cyan); box-shadow:var(--glow-c); transition:width .5s linear; }
-    .pomo-btns { display:flex; gap:7px; justify-content:center; }
+    .pomo-time{font-family:'Orbitron',sans-serif;font-size:1.9rem;font-weight:700;color:var(--cyan);text-shadow:var(--glow-c);letter-spacing:3px;text-align:center;padding:6px 0 3px;}
+    .pomo-label{font-size:.58rem;color:var(--dim);letter-spacing:2px;text-align:center;margin-bottom:8px;}
+    .pomo-bar-bg{height:3px;background:rgba(0,245,255,.1);margin-bottom:8px;}
+    .pomo-bar{height:100%;background:var(--cyan);box-shadow:var(--glow-c);transition:width .5s linear;}
+    .pomo-btns{display:flex;gap:6px;justify-content:center;}
 
     /* ── BUTTONS ── */
-    .btn {
-      font-family:'Orbitron',sans-serif; font-size:0.55rem; font-weight:700;
-      letter-spacing:2px; padding:6px 12px; cursor:pointer; border:1px solid;
-      text-transform:uppercase; transition:all .2s; text-decoration:none; display:inline-block;
-    }
-    .btn-c { background:rgba(0,245,255,.07); border-color:var(--cyan); color:var(--cyan); }
-    .btn-c:hover { background:rgba(0,245,255,.18); box-shadow:var(--glow-c); }
-    .btn-m { background:rgba(255,0,160,.07); border-color:var(--mag); color:var(--mag); }
-    .btn-m:hover { background:rgba(255,0,160,.18); box-shadow:var(--glow-m); }
-    .btn-d { background:transparent; border-color:var(--dim); color:var(--dim); }
-    .btn-d:hover { border-color:var(--mag); color:var(--mag); }
-    .brow { display:flex; gap:7px; }
+    .btn{font-family:'Orbitron',sans-serif;font-size:.53rem;font-weight:700;letter-spacing:2px;padding:6px 12px;cursor:pointer;border:1px solid;text-transform:uppercase;transition:all .2s;text-decoration:none;display:inline-block;}
+    .btn-c{background:rgba(0,245,255,.07);border-color:var(--cyan);color:var(--cyan);}
+    .btn-c:hover{background:rgba(0,245,255,.17);box-shadow:var(--glow-c);}
+    .btn-d{background:transparent;border-color:var(--dim);color:var(--dim);}
+    .btn-d:hover{border-color:var(--mag);color:var(--mag);}
+    .brow{display:flex;gap:6px;}
 
-    .pb { padding:12px; }
-
-    @media (max-width:1000px) {
-      .main { grid-template-columns:1fr; }
-      .col-right { max-height:60vh; }
-    }
+    ::-webkit-scrollbar{width:3px;}..::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--cyan);}
   </style>
 </head>
 <body>
@@ -289,135 +235,193 @@
   <!-- HEADER -->
   <header class="header">
     <div class="logo">⬡ CYBER<span>//</span>DASH</div>
-    <div class="clock-block">
+    <div>
       <div class="clock-time" id="clock">00:00:00</div>
       <div class="clock-date" id="cdate">–</div>
     </div>
-    <div class="header-right">
+    <div class="hdr-right">
       <div><span class="dot"></span>SYSTEM ONLINE</div>
-      <div style="color:var(--dim);font-size:.6rem;letter-spacing:1px;" id="active-site">// KEIN FENSTER AKTIV</div>
+      <div style="color:var(--yellow);font-size:.6rem;" id="tv-active">// BTCUSDT</div>
     </div>
   </header>
 
-  <!-- MAIN -->
   <div class="main">
 
-    <!-- ═══ LINKES HAUPTFENSTER ═══ -->
-    <div class="panel main-panel">
-      <div class="main-bar">
-        <div class="main-site-name" id="main-site-name">// HOME</div>
-        <a id="main-ext-btn" class="btn btn-c" href="#" target="_blank" style="display:none;">↗ EXTERN ÖFFNEN</a>
+    <!-- ═══ TRADINGVIEW CHART ═══ -->
+    <div class="panel tv-panel">
+      <div class="tv-toolbar">
+        <span class="tv-label">SYMBOL:</span>
+        <button class="tv-sym-btn active" onclick="setSymbol('BINANCE:BTCUSDT',this)">BTC</button>
+        <button class="tv-sym-btn" onclick="setSymbol('BINANCE:ETHUSDT',this)">ETH</button>
+        <button class="tv-sym-btn" onclick="setSymbol('BINANCE:SOLUSDT',this)">SOL</button>
+        <button class="tv-sym-btn" onclick="setSymbol('FX:EURUSD',this)">EUR/USD</button>
+        <button class="tv-sym-btn" onclick="setSymbol('SP:SPX',this)">SPX</button>
+        <button class="tv-sym-btn" onclick="setSymbol('BINANCE:HYPERUSDT',this)">HYPE</button>
+        <input class="tv-sym-input" id="tv-custom" type="text" placeholder="Eigenes Symbol …" onkeydown="if(event.key==='Enter')setSymbol(this.value,null)">
+        <button class="tv-sym-btn" onclick="setSymbol(document.getElementById('tv-custom').value,null)">▶</button>
       </div>
-
-      <!-- Home Screen (Standard) -->
-      <div class="home-screen" id="home-screen">
-        <div class="big-logo">CYBER<span>//</span>DASH</div>
-        <p>Wähle eine Seite aus den Sektionen rechts<br>um sie hier zu laden.</p>
-        <div class="home-hint">← <span>SEKTION AUSWÄHLEN</span> UM ZU BEGINNEN</div>
-      </div>
-
-      <!-- Blocked Screen -->
-      <div class="blocked-screen" id="blocked-screen" style="display:none;">
-        <div class="blocked-icon">🔒</div>
-        <h3>EINBETTUNG BLOCKIERT</h3>
-        <p>Diese Seite erlaubt keine Einbettung aus Sicherheitsgründen. Nutze den Button um sie in einem neuen Tab zu öffnen.</p>
-        <a id="blocked-ext-btn" class="btn btn-m" href="#" target="_blank">↗ IN NEUEM TAB ÖFFNEN</a>
-      </div>
-
-      <!-- Iframe -->
-      <iframe id="main-iframe" style="display:none;" allowfullscreen
-        allow="camera; microphone; clipboard-read; clipboard-write"></iframe>
+      <div id="tv-container"></div>
     </div>
 
     <!-- ═══ RECHTE SPALTE ═══ -->
     <div class="col-right">
 
       <!-- 🤖 KI-MODELLE -->
-      <div class="section-block ki">
-        <div class="section-head open" onclick="toggleSection(this)">
-          <span class="section-title">🤖 KI-MODELLE</span>
-          <span class="section-arrow">▾</span>
+      <div class="sec ki">
+        <div class="sec-head open" onclick="toggleSec(this)">
+          <span class="sec-title">🤖 KI-MODELLE</span><span class="sec-arrow">▾</span>
         </div>
-        <div class="section-links open">
-          <div class="slink" onclick="loadSite('https://claude.ai','Claude','ki')"><span class="slink-icon">🟣</span>Claude</div>
-          <div class="slink" onclick="loadSite('https://chatgpt.com','ChatGPT','ki')"><span class="slink-icon">🟢</span>ChatGPT</div>
-          <div class="slink" onclick="loadSite('https://gemini.google.com','Gemini','ki')"><span class="slink-icon">🔵</span>Gemini</div>
-          <div class="slink" onclick="loadSite('https://grok.com','Grok','ki')"><span class="slink-icon">⚡</span>Grok</div>
-          <div class="slink" onclick="loadSite('https://www.perplexity.ai','Perplexity','ki')"><span class="slink-icon">🔍</span>Perplexity</div>
+        <div class="sec-links open">
+          <a class="slink" href="https://claude.ai" target="_blank"><span class="slink-i">🟣</span>Claude</a>
+          <a class="slink" href="https://chatgpt.com" target="_blank"><span class="slink-i">🟢</span>ChatGPT</a>
+          <a class="slink" href="https://gemini.google.com" target="_blank"><span class="slink-i">🔵</span>Gemini</a>
+          <a class="slink" href="https://grok.com" target="_blank"><span class="slink-i">⚡</span>Grok</a>
+          <a class="slink" href="https://www.perplexity.ai" target="_blank"><span class="slink-i">🔍</span>Perplexity</a>
+        </div>
+      </div>
+
+      <!-- 📈 TRADING -->
+      <div class="sec trading">
+        <div class="sec-head open" onclick="toggleSec(this)">
+          <span class="sec-title">📈 TRADING</span><span class="sec-arrow">▾</span>
+        </div>
+        <div class="sec-links open">
+          <a class="slink" href="https://www.tradingview.com" target="_blank"><span class="slink-i">📊</span>TradingView</a>
+          <a class="slink" href="https://www.mexc.com" target="_blank"><span class="slink-i">🔷</span>MEXC</a>
+          <a class="slink" href="https://app.hyperliquid.xyz" target="_blank"><span class="slink-i">💧</span>Hyperliquid</a>
+          <a class="slink" href="https://coinmarketcap.com" target="_blank"><span class="slink-i">🪙</span>CoinMarketCap</a>
         </div>
       </div>
 
       <!-- 🔬 RESEARCH -->
-      <div class="section-block research">
-        <div class="section-head open" onclick="toggleSection(this)">
-          <span class="section-title">🔬 RESEARCH</span>
-          <span class="section-arrow">▾</span>
+      <div class="sec research">
+        <div class="sec-head" onclick="toggleSec(this)">
+          <span class="sec-title">🔬 RESEARCH</span><span class="sec-arrow">▾</span>
         </div>
-        <div class="section-links open">
-          <div class="slink" onclick="loadSite('https://scholar.google.com','Google Scholar','research')"><span class="slink-icon">🎓</span>Scholar</div>
-          <div class="slink" onclick="loadSite('https://www.researchgate.net','ResearchGate','research')"><span class="slink-icon">📚</span>ResearchGate</div>
-          <div class="slink" onclick="loadSite('https://pubmed.ncbi.nlm.nih.gov','PubMed','research')"><span class="slink-icon">🧬</span>PubMed</div>
-          <div class="slink" onclick="loadSite('https://www.semanticscholar.org','Semantic Scholar','research')"><span class="slink-icon">🔭</span>Semantic Scholar</div>
-          <div class="slink" onclick="loadSite('https://www.connectedpapers.com','Connected Papers','research')"><span class="slink-icon">🕸️</span>Connected Papers</div>
+        <div class="sec-links">
+          <a class="slink" href="https://scholar.google.com" target="_blank"><span class="slink-i">🎓</span>Scholar</a>
+          <a class="slink" href="https://www.researchgate.net" target="_blank"><span class="slink-i">📚</span>ResearchGate</a>
+          <a class="slink" href="https://pubmed.ncbi.nlm.nih.gov" target="_blank"><span class="slink-i">🧬</span>PubMed</a>
+          <a class="slink" href="https://www.semanticscholar.org" target="_blank"><span class="slink-i">🔭</span>Semantic Scholar</a>
+          <a class="slink" href="https://www.connectedpapers.com" target="_blank"><span class="slink-i">🕸️</span>Connected Papers</a>
         </div>
       </div>
 
       <!-- 🗂️ ORGANISATION -->
-      <div class="section-block org">
-        <div class="section-head open" onclick="toggleSection(this)">
-          <span class="section-title">🗂️ ORGANISATION</span>
-          <span class="section-arrow">▾</span>
+      <div class="sec org">
+        <div class="sec-head" onclick="toggleSec(this)">
+          <span class="sec-title">🗂️ ORGANISATION</span><span class="sec-arrow">▾</span>
         </div>
-        <div class="section-links open">
-          <div class="slink" onclick="loadSite('https://keep.google.com','Google Keep','org')"><span class="slink-icon">📝</span>Keep</div>
-          <div class="slink" onclick="loadSite('https://drive.google.com','Google Drive','org')"><span class="slink-icon">💾</span>Drive</div>
-          <div class="slink" onclick="loadSite('https://calendar.google.com','Google Kalender','org')"><span class="slink-icon">📅</span>Kalender</div>
-          <div class="slink" onclick="loadSite('https://mail.google.com','Gmail','org')"><span class="slink-icon">📧</span>Gmail</div>
-          <div class="slink" onclick="loadSite('https://bokuonline.boku.ac.at','Boku Online','org')"><span class="slink-icon">🎓</span>Boku Online</div>
-          <div class="slink" onclick="loadSite('https://learn.boku.ac.at','Boku Learn','org')"><span class="slink-icon">📖</span>Boku Learn</div>
+        <div class="sec-links">
+          <a class="slink" href="https://keep.google.com" target="_blank"><span class="slink-i">📝</span>Keep</a>
+          <a class="slink" href="https://drive.google.com" target="_blank"><span class="slink-i">💾</span>Drive</a>
+          <a class="slink" href="https://calendar.google.com" target="_blank"><span class="slink-i">📅</span>Kalender</a>
+          <a class="slink" href="https://mail.google.com" target="_blank"><span class="slink-i">📧</span>Gmail</a>
+          <a class="slink" href="https://bokuonline.boku.ac.at" target="_blank"><span class="slink-i">🎓</span>Boku Online</a>
+          <a class="slink" href="https://learn.boku.ac.at" target="_blank"><span class="slink-i">📖</span>Boku Learn</a>
         </div>
       </div>
 
       <!-- 🛠️ ENTWICKLUNG -->
-      <div class="section-block dev">
-        <div class="section-head" onclick="toggleSection(this)">
-          <span class="section-title">🛠️ ENTWICKLUNG</span>
-          <span class="section-arrow">▾</span>
+      <div class="sec dev">
+        <div class="sec-head" onclick="toggleSec(this)">
+          <span class="sec-title">🛠️ ENTWICKLUNG</span><span class="sec-arrow">▾</span>
         </div>
-        <div class="section-links">
-          <div class="slink" onclick="loadSite('https://github.com','GitHub','dev')"><span class="slink-icon">🐙</span>GitHub</div>
-          <div class="slink" onclick="loadSite('https://www.overleaf.com','Overleaf','dev')"><span class="slink-icon">📄</span>Overleaf</div>
-          <div class="slink" onclick="loadSite('https://stackoverflow.com','Stack Overflow','dev')"><span class="slink-icon">💬</span>Stack Overflow</div>
-          <div class="slink" onclick="loadSite('https://www.rdocumentation.org','RDocumentation','dev')"><span class="slink-icon">📊</span>RDocumentation</div>
+        <div class="sec-links">
+          <a class="slink" href="https://github.com" target="_blank"><span class="slink-i">🐙</span>GitHub</a>
+          <a class="slink" href="https://www.overleaf.com" target="_blank"><span class="slink-i">📄</span>Overleaf</a>
+          <a class="slink" href="https://stackoverflow.com" target="_blank"><span class="slink-i">💬</span>Stack Overflow</a>
+          <a class="slink" href="https://www.rdocumentation.org" target="_blank"><span class="slink-i">📊</span>RDocumentation</a>
         </div>
       </div>
 
-      <!-- 🎵 FOKUS -->
-      <div class="section-block fokus">
-        <div class="section-head" onclick="toggleSection(this)">
-          <span class="section-title">🎵 FOKUS & FLOW</span>
-          <span class="section-arrow">▾</span>
+      <!-- 🎵 RADIO PLAYER -->
+      <div class="radio-widget">
+        <div class="radio-ph">
+          <span class="ph-title" style="color:var(--purple);letter-spacing:3px;font-family:'Orbitron',sans-serif;font-size:.6rem;font-weight:700;">🎵 RADIO // FOKUS</span>
+          <span style="font-size:.6rem;color:var(--dim);" id="radio-status">// GESTOPPT</span>
         </div>
-        <div class="section-links">
-          <div class="slink" onclick="loadSite('https://www.youtube.com/watch?v=jfKfPfyJRdk','Lofi Girl','fokus')"><span class="slink-icon">🎶</span>Lofi Girl</div>
-          <div class="slink" onclick="loadSite('https://mynoise.net','myNoise','fokus')"><span class="slink-icon">🌊</span>myNoise</div>
-          <div class="slink" onclick="loadSite('https://asoftmurmur.com','A Soft Murmur','fokus')"><span class="slink-icon">🌧️</span>Soft Murmur</div>
-          <div class="slink" onclick="loadSite('https://www.brain.fm','Brain.fm','fokus')"><span class="slink-icon">🧠</span>Brain.fm</div>
+        <div class="radio-tabs">
+          <div class="rtab active" onclick="switchTab('musik',this)">MUSIK</div>
+          <div class="rtab" onclick="switchTab('radio',this)">RADIO</div>
+        </div>
+        <div class="radio-body">
+
+          <!-- MUSIK TAB -->
+          <div id="tab-musik">
+            <div class="station-grid">
+              <div class="station-btn active" onclick="playYT('jfKfPfyJRdk','Lofi Hip-Hop // Lofi Girl',this)">
+                <span class="station-icon">🎧</span>
+                <span class="station-name">Lofi Hip-Hop</span>
+                <span class="station-tag">24/7</span>
+              </div>
+              <div class="station-btn" onclick="playYT('5yx6BWlEVcY','Chillhop Beats',this)">
+                <span class="station-icon">☕</span>
+                <span class="station-name">Chillhop Beats</span>
+                <span class="station-tag">CHILL</span>
+              </div>
+              <div class="station-btn" onclick="playYT('n61ULEU7CO0','Synthwave // Dark Future',this)">
+                <span class="station-icon">🌆</span>
+                <span class="station-name">Synthwave Radio</span>
+                <span class="station-tag">CYBER</span>
+              </div>
+              <div class="station-btn" onclick="playYT('DWcJFNfaw9c','Deep Focus // Study',this)">
+                <span class="station-icon">🧠</span>
+                <span class="station-name">Deep Focus</span>
+                <span class="station-tag">STUDY</span>
+              </div>
+            </div>
+            <iframe id="yt-frame" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+          </div>
+
+          <!-- RADIO TAB -->
+          <div id="tab-radio" style="display:none;">
+            <div class="station-grid">
+              <div class="station-btn" onclick="playAudio('https://orf-live.ors-shoutcast.at/oe3-q2a','Ö3 // Austrian Pop Radio',this)">
+                <span class="station-icon">📻</span>
+                <span class="station-name">Ö3</span>
+                <span class="station-tag">AT</span>
+              </div>
+              <div class="station-btn" onclick="playAudio('https://orf-live.ors-shoutcast.at/wie-q2a','Radio Wien',this)">
+                <span class="station-icon">📻</span>
+                <span class="station-name">Radio Wien</span>
+                <span class="station-tag">AT</span>
+              </div>
+              <div class="station-btn" onclick="playAudio('https://orf-live.ors-shoutcast.at/oe1-q2a','Ö1 // Klassik & Kultur',this)">
+                <span class="station-icon">🎼</span>
+                <span class="station-name">Ö1</span>
+                <span class="station-tag">KLASSIK</span>
+              </div>
+              <div class="station-btn" onclick="playAudio('https://streams.br.de/br-klassik_2.m3u8','BR Klassik',this)">
+                <span class="station-icon">🎻</span>
+                <span class="station-name">BR Klassik</span>
+                <span class="station-tag">DE</span>
+              </div>
+            </div>
+            <audio id="audio-player" controls style="width:100%;margin-top:6px;display:none;"></audio>
+          </div>
+
+          <!-- NOW PLAYING -->
+          <div class="now-playing" id="now-playing" style="display:none;">
+            <div class="np-dot"></div>
+            <span class="np-text" id="np-text">–</span>
+            <button class="np-stop" onclick="stopAll()">■ STOP</button>
+          </div>
         </div>
       </div>
 
       <!-- NOTIZEN -->
       <div class="panel" style="flex-shrink:0;">
         <div class="ph">
-          <span class="ph-title">⬡ Notizen</span>
-          <button class="btn btn-c" style="padding:3px 9px;font-size:.52rem;" onclick="toggleForm()">+ NEU</button>
+          <span class="ph-title">⬡ NOTIZEN</span>
+          <button class="btn btn-c" style="padding:3px 8px;font-size:.5rem;" onclick="toggleForm()">+ NEU</button>
         </div>
         <div class="pb">
           <div class="note-form" id="note-form">
             <input class="ni" id="ni-title" type="text" placeholder="TITEL …">
             <textarea class="nta" id="ni-body" placeholder="Notiz …"></textarea>
             <div class="color-row">
-              <span style="font-size:.6rem;color:var(--dim);">FARBE:</span>
+              <span style="font-size:.58rem;color:var(--dim);">FARBE:</span>
               <div class="cdot c sel" data-c="c" onclick="pickColor(this)"></div>
               <div class="cdot m"    data-c="m" onclick="pickColor(this)"></div>
               <div class="cdot g"    data-c="g" onclick="pickColor(this)"></div>
@@ -425,7 +429,7 @@
             </div>
             <div class="brow">
               <button class="btn btn-c" onclick="saveNote()">✓ SPEICHERN</button>
-              <button class="btn btn-d" onclick="toggleForm()">✕ ABBRUCH</button>
+              <button class="btn btn-d" onclick="toggleForm()">✕</button>
             </div>
           </div>
           <div class="notes-list" id="notes-list"></div>
@@ -435,15 +439,15 @@
       <!-- POMODORO -->
       <div class="panel" style="flex-shrink:0;">
         <div class="ph">
-          <span class="ph-title">⬡ Pomodoro</span>
-          <span style="font-size:.6rem;color:var(--dim);" id="pomo-badge">// BEREIT</span>
+          <span class="ph-title">⬡ POMODORO</span>
+          <span style="font-size:.58rem;color:var(--dim);" id="pomo-badge">// BEREIT</span>
         </div>
         <div class="pb">
           <div class="pomo-time" id="pomo-time">25:00</div>
           <div class="pomo-label" id="pomo-label">FOKUS-SESSION</div>
           <div class="pomo-bar-bg"><div class="pomo-bar" id="pomo-bar" style="width:100%"></div></div>
           <div class="pomo-btns">
-            <button class="btn btn-c" id="pomo-start-btn" onclick="pomoToggle()">▶ START</button>
+            <button class="btn btn-c" id="pomo-btn" onclick="pomoToggle()">▶ START</button>
             <button class="btn btn-d" onclick="pomoReset()">↺ RESET</button>
             <button class="btn btn-d" onclick="pomoSwitch()">⇄ PAUSE</button>
           </div>
@@ -455,154 +459,165 @@
 </div><!-- /app -->
 
 <script>
-// ─── BEKANNTE BLOCKED SITES ────────────────────────────
-// Sites die Iframe-Einbettung via X-Frame-Options blockieren
-const BLOCKED = [
-  'claude.ai','chatgpt.com','gemini.google.com','grok.com',
-  'mail.google.com','calendar.google.com','drive.google.com',
-  'keep.google.com','researchgate.net','brain.fm',
-  'youtube.com','bokuonline.boku.ac.at','learn.boku.ac.at'
-];
-
-function isBlocked(url) {
-  return BLOCKED.some(d => url.includes(d));
+// ─── UHR ──────────────────────────────────────────────────
+const DAYS=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+const MONTHS=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+function tick(){
+  const n=new Date(),p=v=>String(v).padStart(2,'0');
+  document.getElementById('clock').textContent=`${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;
+  document.getElementById('cdate').textContent=`${DAYS[n.getDay()]}, ${n.getDate()}. ${MONTHS[n.getMonth()]} ${n.getFullYear()}`;
 }
+setInterval(tick,1000);tick();
 
-// ─── HAUPT-IFRAME LADEN ────────────────────────────────
-let currentUrl   = '';
-let currentTitle = '';
-let activeLink   = null;
-
-function loadSite(url, name, category) {
-  // Aktiven Link markieren
-  if (activeLink) activeLink.classList.remove('active');
-  const links = document.querySelectorAll('.slink');
-  links.forEach(l => { if (l.getAttribute('onclick') && l.getAttribute('onclick').includes(url)) { l.classList.add('active'); activeLink = l; }});
-
-  currentUrl   = url;
-  currentTitle = name;
-
-  document.getElementById('main-site-name').textContent = `// ${name.toUpperCase()}`;
-  document.getElementById('active-site').textContent    = `// ${name.toUpperCase()}`;
-  document.getElementById('main-ext-btn').href          = url;
-  document.getElementById('main-ext-btn').style.display = 'inline-block';
-
-  const iframe       = document.getElementById('main-iframe');
-  const homeScreen   = document.getElementById('home-screen');
-  const blockedScreen= document.getElementById('blocked-screen');
-
-  if (isBlocked(url)) {
-    // Blockiert → zeige Blocked-Screen
-    iframe.style.display        = 'none';
-    homeScreen.style.display    = 'none';
-    blockedScreen.style.display = 'flex';
-    document.getElementById('blocked-ext-btn').href = url;
-  } else {
-    // Versuch iframe
-    homeScreen.style.display    = 'none';
-    blockedScreen.style.display = 'none';
-    iframe.style.display        = 'flex';
-    iframe.src = url;
-  }
+// ─── TRADINGVIEW ───────────────────────────────────────────
+let currentSymbol='BINANCE:BTCUSDT';
+function setSymbol(sym,btn){
+  if(!sym||!sym.trim())return;
+  sym=sym.trim().toUpperCase();
+  currentSymbol=sym;
+  document.getElementById('tv-active').textContent=`// ${sym}`;
+  document.querySelectorAll('.tv-sym-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  loadTVWidget(sym);
 }
+function loadTVWidget(sym){
+  const c=document.getElementById('tv-container');
+  c.innerHTML='';
+  const wrap=document.createElement('div');
+  wrap.className='tradingview-widget-container';
+  wrap.style.cssText='height:100%;width:100%;';
+  const inner=document.createElement('div');
+  inner.className='tradingview-widget-container__widget';
+  inner.style.cssText='height:100%;width:100%;';
+  wrap.appendChild(inner);
+  const s=document.createElement('script');
+  s.type='text/javascript';
+  s.src='https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+  s.async=true;
+  s.textContent=JSON.stringify({
+    autosize:true,symbol:sym,interval:'D',
+    timezone:'Europe/Vienna',theme:'dark',style:'1',locale:'de',
+    backgroundColor:'#0b0b1a',gridColor:'rgba(0,245,255,0.05)',
+    hide_top_toolbar:false,hide_legend:false,save_image:false,
+    calendar:false,support_host:'https://www.tradingview.com'
+  });
+  wrap.appendChild(s);
+  c.appendChild(wrap);
+}
+loadTVWidget('BINANCE:BTCUSDT');
 
-// ─── SEKTIONEN TOGGLE ─────────────────────────────────
-function toggleSection(head) {
+// ─── SEKTIONEN ────────────────────────────────────────────
+function toggleSec(head){
   head.classList.toggle('open');
-  const links = head.nextElementSibling;
-  links.classList.toggle('open');
+  head.nextElementSibling.classList.toggle('open');
 }
 
-// ─── UHR ──────────────────────────────────────────────
-const DAYS   = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
-const MONTHS = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+// ─── RADIO PLAYER ─────────────────────────────────────────
+let activeStationBtn=null;
+let currentMode='musik';
 
-function tick() {
-  const n = new Date();
-  const p = v => String(v).padStart(2,'0');
-  document.getElementById('clock').textContent = `${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;
-  document.getElementById('cdate').textContent = `${DAYS[n.getDay()]}, ${n.getDate()}. ${MONTHS[n.getMonth()]} ${n.getFullYear()}`;
+function switchTab(tab,el){
+  document.querySelectorAll('.rtab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-musik').style.display=tab==='musik'?'block':'none';
+  document.getElementById('tab-radio').style.display=tab==='radio'?'block':'none';
+  currentMode=tab;
+  stopAll();
 }
-setInterval(tick,1000); tick();
 
-// ─── NOTIZEN ──────────────────────────────────────────
-const N_LS = 'db_notes_v2';
-let noteColor = 'c';
+function setActiveBtn(btn){
+  if(activeStationBtn)activeStationBtn.classList.remove('active');
+  if(btn){btn.classList.add('active');activeStationBtn=btn;}
+}
 
-const getNotes = () => JSON.parse(localStorage.getItem(N_LS) || '[]');
-const putNotes = arr => localStorage.setItem(N_LS, JSON.stringify(arr));
-const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function playYT(videoId,name,btn){
+  stopAll(false);
+  setActiveBtn(btn);
+  const frame=document.getElementById('yt-frame');
+  frame.src=`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0`;
+  frame.style.display='block';
+  document.getElementById('now-playing').style.display='flex';
+  document.getElementById('np-text').textContent=name;
+  document.getElementById('radio-status').textContent='// LÄUFT';
+}
 
-function renderNotes() {
-  const el = document.getElementById('notes-list');
-  const notes = getNotes();
-  if (!notes.length) { el.innerHTML = '<div class="note-empty">// KEINE NOTIZEN //</div>'; return; }
-  el.innerHTML = notes.map((n,i) => `
+function playAudio(url,name,btn){
+  stopAll(false);
+  setActiveBtn(btn);
+  const audio=document.getElementById('audio-player');
+  audio.src=url;
+  audio.style.display='block';
+  audio.play().catch(()=>{});
+  document.getElementById('now-playing').style.display='flex';
+  document.getElementById('np-text').textContent=name;
+  document.getElementById('radio-status').textContent='// LÄUFT';
+}
+
+function stopAll(resetBtn=true){
+  const frame=document.getElementById('yt-frame');
+  frame.src='';frame.style.display='none';
+  const audio=document.getElementById('audio-player');
+  audio.pause();audio.src='';audio.style.display='none';
+  document.getElementById('now-playing').style.display='none';
+  document.getElementById('radio-status').textContent='// GESTOPPT';
+  if(resetBtn)setActiveBtn(null);
+}
+
+// ─── NOTIZEN ──────────────────────────────────────────────
+const NLS='db_notes_v3';
+let noteColor='c';
+const getNotes=()=>JSON.parse(localStorage.getItem(NLS)||'[]');
+const putNotes=a=>localStorage.setItem(NLS,JSON.stringify(a));
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+function renderNotes(){
+  const el=document.getElementById('notes-list');
+  const notes=getNotes();
+  if(!notes.length){el.innerHTML='<div class="note-empty">// KEINE NOTIZEN //</div>';return;}
+  el.innerHTML=notes.map((n,i)=>`
     <div class="note ${n.color}">
-      ${n.title ? `<div class="note-title">${esc(n.title)}</div>` : ''}
+      ${n.title?`<div class="note-title">${esc(n.title)}</div>`:''}
       <div class="note-body">${esc(n.body)}</div>
-      <div class="note-foot">
-        <span class="note-ts">${n.ts}</span>
-        <button class="note-del" onclick="delNote(${i})">✕</button>
-      </div>
+      <div class="note-foot"><span class="note-ts">${n.ts}</span><button class="note-del" onclick="delNote(${i})">✕</button></div>
     </div>`).join('');
 }
-
-function toggleForm() {
-  const f = document.getElementById('note-form');
+function toggleForm(){
+  const f=document.getElementById('note-form');
   f.classList.toggle('open');
-  if (!f.classList.contains('open')) {
-    document.getElementById('ni-title').value = '';
-    document.getElementById('ni-body').value  = '';
-  }
+  if(!f.classList.contains('open')){document.getElementById('ni-title').value='';document.getElementById('ni-body').value='';}
 }
-
-function pickColor(el) {
-  document.querySelectorAll('.cdot').forEach(d => d.classList.remove('sel'));
-  el.classList.add('sel'); noteColor = el.dataset.c;
+function pickColor(el){document.querySelectorAll('.cdot').forEach(d=>d.classList.remove('sel'));el.classList.add('sel');noteColor=el.dataset.c;}
+function saveNote(){
+  const body=document.getElementById('ni-body').value.trim();if(!body)return;
+  const n=new Date(),p=v=>String(v).padStart(2,'0');
+  const notes=getNotes();
+  notes.unshift({title:document.getElementById('ni-title').value.trim(),body,color:noteColor,
+    ts:`${p(n.getDate())}.${p(n.getMonth()+1)}.${n.getFullYear()} ${p(n.getHours())}:${p(n.getMinutes())}`});
+  putNotes(notes);renderNotes();toggleForm();
 }
-
-function saveNote() {
-  const body = document.getElementById('ni-body').value.trim();
-  if (!body) return;
-  const n = new Date(), p = v => String(v).padStart(2,'0');
-  const notes = getNotes();
-  notes.unshift({ title:document.getElementById('ni-title').value.trim(), body, color:noteColor,
-    ts:`${p(n.getDate())}.${p(n.getMonth()+1)}.${n.getFullYear()} ${p(n.getHours())}:${p(n.getMinutes())}` });
-  putNotes(notes); renderNotes(); toggleForm();
-}
-
-function delNote(i) {
-  const notes = getNotes(); notes.splice(i,1); putNotes(notes); renderNotes();
-}
-
+function delNote(i){const notes=getNotes();notes.splice(i,1);putNotes(notes);renderNotes();}
 renderNotes();
 
-// ─── POMODORO ─────────────────────────────────────────
-const MODES = { fokus:{label:'FOKUS-SESSION',secs:25*60}, pause:{label:'KURZE PAUSE',secs:5*60} };
-let mode='fokus', total=MODES.fokus.secs, left=total, running=false, timer=null;
-
-function pomoRender() {
-  const p = v => String(v).padStart(2,'0');
-  document.getElementById('pomo-time').textContent  = `${p(Math.floor(left/60))}:${p(left%60)}`;
-  document.getElementById('pomo-label').textContent = MODES[mode].label;
-  document.getElementById('pomo-bar').style.width   = (left/total*100)+'%';
-  document.getElementById('pomo-badge').textContent = running ? '// LÄUFT' : (left===total ? '// BEREIT' : '// PAUSIERT');
-  document.getElementById('pomo-start-btn').textContent = running ? '⏸ PAUSE' : '▶ START';
+// ─── POMODORO ─────────────────────────────────────────────
+const PMODES={fokus:{label:'FOKUS-SESSION',secs:25*60},pause:{label:'KURZE PAUSE',secs:5*60}};
+let pmode='fokus',ptotal=PMODES.fokus.secs,pleft=ptotal,prun=false,ptimer=null;
+function pomoRender(){
+  const p=v=>String(v).padStart(2,'0');
+  document.getElementById('pomo-time').textContent=`${p(Math.floor(pleft/60))}:${p(pleft%60)}`;
+  document.getElementById('pomo-label').textContent=PMODES[pmode].label;
+  document.getElementById('pomo-bar').style.width=(pleft/ptotal*100)+'%';
+  document.getElementById('pomo-badge').textContent=prun?'// LÄUFT':(pleft===ptotal?'// BEREIT':'// PAUSIERT');
+  document.getElementById('pomo-btn').textContent=prun?'⏸ PAUSE':'▶ START';
 }
-
-function pomoToggle() {
-  if (running) { clearInterval(timer); running=false; }
-  else {
-    running=true;
-    timer=setInterval(()=>{ if(left<=0){clearInterval(timer);running=false;pomoRender();return;} left--; pomoRender(); },1000);
-  }
+function pomoToggle(){
+  if(prun){clearInterval(ptimer);prun=false;}
+  else{prun=true;ptimer=setInterval(()=>{if(pleft<=0){clearInterval(ptimer);prun=false;pomoRender();return;}pleft--;pomoRender();},1000);}
   pomoRender();
 }
-function pomoReset()  { clearInterval(timer); running=false; left=total; pomoRender(); }
-function pomoSwitch() {
-  clearInterval(timer); running=false;
-  mode = mode==='fokus'?'pause':'fokus'; total=MODES[mode].secs; left=total; pomoRender();
+function pomoReset(){clearInterval(ptimer);prun=false;pleft=ptotal;pomoRender();}
+function pomoSwitch(){
+  clearInterval(ptimer);prun=false;
+  pmode=pmode==='fokus'?'pause':'fokus';ptotal=PMODES[pmode].secs;pleft=ptotal;pomoRender();
 }
 pomoRender();
 </script>
