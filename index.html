@@ -235,6 +235,20 @@
     @keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
     .quote-wrap{animation:fadein .8s ease forwards;}
 
+    /* ── GOOGLE BUTTON ─────────────────────────── */
+    .google-btn{
+      display:flex;align-items:center;justify-content:center;
+      width:100%;max-width:420px;padding:22px 0;
+      font-family:'Orbitron',sans-serif;font-size:1.4rem;font-weight:900;
+      letter-spacing:6px;color:var(--cyan);text-decoration:none;
+      background:rgba(0,245,255,.04);border:2px solid rgba(0,245,255,.3);
+      transition:all .25s;text-shadow:var(--glow-c);
+    }
+    .google-btn:hover{
+      background:rgba(0,245,255,.12);border-color:var(--cyan);
+      box-shadow:var(--glow-c),inset 0 0 30px rgba(0,245,255,.06);
+    }
+
     /* ── TRADING PAGE ───────────────────────────── */
     .trading-page-header{padding:16px 22px;border:1px solid rgba(255,60,60,.3);
       background:rgba(255,60,60,.04);position:relative;overflow:hidden;flex-shrink:0;}
@@ -257,6 +271,38 @@
     .tc-btn{margin-top:4px;padding:7px 18px;border:1px solid var(--red);background:rgba(255,60,60,.08);
       color:var(--red);font-family:'Orbitron',sans-serif;font-size:.55rem;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .2s;}
     .tc-btn:hover{background:rgba(255,60,60,.2);box-shadow:var(--glow-r);}
+
+    /* ── TICKER BAR ────────────────────────────── */
+    .ticker-bar{
+      display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
+      padding:4px;flex-shrink:0;
+    }
+    .tick{
+      background:var(--panel);border:1px solid rgba(255,60,60,.18);
+      padding:14px 16px;display:flex;align-items:center;gap:12px;
+      transition:all .2s;
+    }
+    .tick:hover{border-color:rgba(255,60,60,.45);background:rgba(255,60,60,.04);}
+    .tick-symbol{
+      font-family:'Orbitron',sans-serif;font-size:.7rem;font-weight:900;
+      color:var(--red);letter-spacing:2px;min-width:52px;
+    }
+    .tick-price{
+      font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;
+      color:var(--text);letter-spacing:1px;flex:1;
+    }
+    .tick-change{
+      font-family:'Share Tech Mono',monospace;font-size:.72rem;
+      font-weight:700;padding:3px 8px;border:1px solid;min-width:68px;text-align:center;
+    }
+    .tick-change.up{color:var(--green);border-color:rgba(57,255,20,.3);background:rgba(57,255,20,.06);}
+    .tick-change.down{color:var(--red);border-color:rgba(255,60,60,.3);background:rgba(255,60,60,.06);}
+    .tick-change.neutral{color:var(--dim);border-color:var(--border);background:transparent;}
+    .tick-loading{color:var(--dim);font-size:.6rem;letter-spacing:1px;}
+    .ticker-update{
+      text-align:right;font-size:.5rem;color:var(--dim);letter-spacing:1px;
+      padding:2px 8px;flex-shrink:0;
+    }
   </style>
 </head>
 <body>
@@ -330,10 +376,10 @@
           <span class="sec-title">🎓 UNI // BOKU</span><span class="sec-arrow">▾</span>
         </div>
         <div class="sec-links open">
-          <a class="slink" href="https://bokuonline.boku.ac.at" target="_blank"><span class="si">🏛️</span>BOKU Online</a>
+          <a class="slink" href="https://online.boku.ac.at/BOKUonline/ee/ui/ca2/app/desktop/#/" target="_blank"><span class="si">🏛️</span>BOKU Online</a>
           <a class="slink" href="https://learn.boku.ac.at" target="_blank"><span class="si">📖</span>BOKU Learn</a>
-          <a class="slink" href="#" target="_blank" id="ma-link"><span class="si">📁</span>Masterarbeit</a>
-          <button class="slink" onclick="setMaLink()" style="border-style:dashed;cursor:pointer;"><span class="si">⚙</span>Link setzen</button>
+          <a class="slink" href="https://drive.google.com/drive/folders/11ENjUZu3O3zfBvh4CzH-MMjG-MwS8_GZ" target="_blank"><span class="si">📁</span>Masterarbeit</a>
+          <a class="slink" href="https://students.boku.ac.at" target="_blank"><span class="si">📧</span>BOKU Mail</a>
         </div>
       </div>
 
@@ -400,6 +446,7 @@
     <!-- ── HAUPT-PANEL: Suche + Zitat ── -->
     <div class="main-panel">
       <div class="search-area">
+        <a class="google-btn" href="https://www.google.com" target="_blank">GOOGLE ↗</a>
         <div class="search-label">// SUCHE</div>
         <form class="search-form" action="https://www.google.com/search" method="get" target="_blank">
           <input class="search-input" name="q" type="text" placeholder="WAS WILLST DU WISSEN?" autocomplete="off" autofocus>
@@ -425,6 +472,32 @@
       </div>
       <div class="tp-warn">⚠ DU BEFINDEST DICH IM TRADING-MODUS.</div>
     </div>
+
+    <!-- TICKER -->
+    <div class="ticker-bar" id="ticker-bar">
+      <div class="tick" id="tick-btc">
+        <span class="tick-symbol">$BTC</span>
+        <span class="tick-price tick-loading">LADEN…</span>
+        <span class="tick-change neutral">–</span>
+      </div>
+      <div class="tick" id="tick-eth">
+        <span class="tick-symbol">$ETH</span>
+        <span class="tick-price tick-loading">LADEN…</span>
+        <span class="tick-change neutral">–</span>
+      </div>
+      <div class="tick" id="tick-pepe">
+        <span class="tick-symbol">$PEPE</span>
+        <span class="tick-price tick-loading">LADEN…</span>
+        <span class="tick-change neutral">–</span>
+      </div>
+      <div class="tick" id="tick-qubic">
+        <span class="tick-symbol">$QUBIC</span>
+        <span class="tick-price tick-loading">LADEN…</span>
+        <span class="tick-change neutral">–</span>
+      </div>
+    </div>
+    <div class="ticker-update" id="ticker-update"></div>
+
     <div class="trading-cards">
       <a class="tc" href="https://www.tradingview.com" target="_blank">
         <div class="tc-icon">📊</div><div class="tc-name">TRADINGVIEW</div>
@@ -520,14 +593,6 @@ tRender();
 // ─── SEKTIONEN ────────────────────────────────────────────
 function toggleSec(head){head.classList.toggle('open');head.nextElementSibling.classList.toggle('open');}
 function toggleRadio(head){head.classList.toggle('open');document.getElementById('radio-body').classList.toggle('open');}
-
-// ─── MASTERARBEIT LINK ────────────────────────────────────
-(function(){const u=localStorage.getItem('ma_link_url');if(u)document.getElementById('ma-link').href=u;})();
-function setMaLink(){
-  const cur=localStorage.getItem('ma_link_url')||'';
-  const url=prompt('Google Drive Masterarbeit-Ordner Link:',cur);
-  if(url&&url.trim()){localStorage.setItem('ma_link_url',url.trim());document.getElementById('ma-link').href=url.trim();}
-}
 
 // ─── ZITAT DES TAGES ──────────────────────────────────────
 // Kuratierte Fallback-Zitate von großen Persönlichkeiten
@@ -627,6 +692,69 @@ function toggleMute(){
   document.getElementById('vol-icon').textContent=muted?'🔇':'🔊';
   document.getElementById('vol-slider').value=muted?0:lastVol;
 }
+
+// ─── CRYPTO TICKER ───────────────────────────────────────
+const COINS=[
+  {id:'bitcoin',      symbol:'BTC',  elId:'tick-btc'},
+  {id:'ethereum',     symbol:'ETH',  elId:'tick-eth'},
+  {id:'pepe',         symbol:'PEPE', elId:'tick-pepe'},
+  {id:'qubic-network',symbol:'QUBIC',elId:'tick-qubic'},
+];
+
+function formatPrice(p,sym){
+  if(p==null)return '–';
+  if(sym==='PEPE') return '$'+p.toFixed(8);
+  if(sym==='QUBIC') return '$'+p.toFixed(6);
+  if(p>=1) return '$'+p.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  return '$'+p.toFixed(6);
+}
+
+function renderTick(coin,price,change24h){
+  const el=document.getElementById(coin.elId);
+  if(!el)return;
+  const priceEl=el.querySelector('.tick-price');
+  const changeEl=el.querySelector('.tick-change');
+  priceEl.classList.remove('tick-loading');
+  priceEl.textContent=formatPrice(price,coin.symbol);
+  if(change24h!=null){
+    const dir=change24h>0?'up':change24h<0?'down':'neutral';
+    const sign=change24h>0?'+':'';
+    changeEl.className='tick-change '+dir;
+    changeEl.textContent=sign+change24h.toFixed(2)+'%';
+  }
+}
+
+async function fetchTickers(){
+  const ids=COINS.map(c=>c.id).join(',');
+  try{
+    const res=await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`);
+    if(!res.ok)throw new Error(res.status);
+    const data=await res.json();
+    COINS.forEach(c=>{
+      const d=data[c.id];
+      if(d) renderTick(c,d.usd,d.usd_24h_change);
+      else renderTick(c,null,null);
+    });
+    const now=new Date();
+    const p=v=>String(v).padStart(2,'0');
+    document.getElementById('ticker-update').textContent=
+      `LAST UPDATE: ${p(now.getHours())}:${p(now.getMinutes())}:${p(now.getSeconds())}`;
+  }catch(e){
+    COINS.forEach(c=>{
+      const el=document.getElementById(c.elId);
+      if(el){
+        const pr=el.querySelector('.tick-price');
+        pr.classList.remove('tick-loading');
+        pr.textContent='API ERROR';
+      }
+    });
+    document.getElementById('ticker-update').textContent='⚠ COINGECKO API FEHLER';
+  }
+}
+
+// Beim Laden und dann alle 60 Sekunden
+fetchTickers();
+setInterval(fetchTickers,60000);
 </script>
 </body>
 </html>
