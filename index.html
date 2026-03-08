@@ -12,7 +12,6 @@
       --cyan:   #00f5ff;
       --mag:    #ff00a0;
       --green:  #39ff14;
-      --orange: #ff6b00;
       --purple: #bf5fff;
       --yellow: #ffe600;
       --red:    #ff3c3c;
@@ -24,8 +23,6 @@
       --glow-m: 0 0 8px rgba(255,0,160,0.45),0 0 18px rgba(255,0,160,0.1);
       --glow-g: 0 0 8px rgba(57,255,20,0.45);
       --glow-r: 0 0 8px rgba(255,60,60,0.45),0 0 18px rgba(255,60,60,0.1);
-      --glow-p: 0 0 8px rgba(191,95,255,0.45);
-      --glow-b: 0 0 8px rgba(68,136,255,0.45);
     }
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
     html,body{height:100%;overflow:hidden;}
@@ -93,12 +90,12 @@
     #page-main{flex:1;display:grid;grid-template-columns:255px 1fr;gap:9px;min-height:0;}
     #page-trading{flex:1;display:none;flex-direction:column;gap:12px;min-height:0;overflow-y:auto;}
 
-    /* ── LEFT COLUMN (Sektionen) ─────────────────── */
+    /* ── LEFT COLUMN ─────────────────────────────── */
     .col-left{display:flex;flex-direction:column;gap:7px;overflow-y:auto;min-height:0;}
     .col-left::-webkit-scrollbar{width:2px;}
     .col-left::-webkit-scrollbar-thumb{background:var(--cyan);}
 
-    /* ── SECTION BLOCKS ─────────────────────────── */
+    /* ── SECTIONS ────────────────────────────────── */
     .sec{background:var(--panel);border:1px solid var(--border);flex-shrink:0;position:relative;}
     .sec::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;}
     .sec.ki::before      {background:linear-gradient(180deg,var(--mag),transparent 80%);}
@@ -129,7 +126,8 @@
     .research .slink:hover{border-color:var(--green);color:var(--green);background:rgba(57,255,20,.05);}
     .org      .slink:hover{border-color:var(--cyan); color:var(--cyan); background:rgba(0,245,255,.05);}
     .uni      .slink:hover{border-color:var(--blue); color:var(--blue); background:rgba(68,136,255,.05);}
-    .si{font-size:.8rem;}
+    .si{font-size:.8rem;display:flex;align-items:center;}
+    .si img{width:.9rem;height:.9rem;object-fit:contain;vertical-align:middle;}
 
     /* ── RADIO ─────────────────────────────────── */
     .radio-sec{background:var(--panel);border:1px solid var(--border);flex-shrink:0;position:relative;}
@@ -151,11 +149,10 @@
       background:rgba(191,95,255,.04);border:1px solid var(--border);cursor:pointer;
       transition:all .18s;font-family:'Share Tech Mono',monospace;text-align:center;}
     .stn:hover,.stn.active{border-color:var(--purple);background:rgba(191,95,255,.1);}
-    .stn.active{box-shadow:0 0 6px rgba(191,95,255,.2);}
     .stn-icon{font-size:.85rem;}
     .stn-name{font-size:.58rem;color:var(--text);line-height:1.2;}
     .stn.active .stn-name{color:var(--purple);}
-    .stn-tag{font-size:.47rem;color:var(--dim);letter-spacing:1px;}
+    .stn-tag{font-size:.47rem;color:var(--dim);}
     .stn.active .stn-tag{color:var(--purple);}
     .player-bar{display:none;flex-direction:column;gap:4px;padding:6px 8px;margin-top:5px;
       background:rgba(191,95,255,.05);border:1px solid rgba(191,95,255,.2);}
@@ -168,110 +165,75 @@
       font-size:.55rem;color:var(--dim);padding:2px 5px;font-family:'Share Tech Mono',monospace;transition:all .18s;flex-shrink:0;}
     .pb-btn:hover{border-color:var(--purple);color:var(--purple);}
     .pb-btn.stop:hover{border-color:var(--mag);color:var(--mag);}
-    .vol-row{display:flex;align-items:center;gap:6px;}
+    .vol-row{display:flex;align-items:center;gap:6px;margin-top:2px;}
     .vol-icon{font-size:.7rem;cursor:pointer;flex-shrink:0;user-select:none;}
     input[type=range].vol-slider{-webkit-appearance:none;flex:1;height:3px;
       background:rgba(191,95,255,.25);outline:none;border-radius:2px;cursor:pointer;}
     input[type=range].vol-slider::-webkit-slider-thumb{-webkit-appearance:none;
       width:10px;height:10px;border-radius:50%;background:var(--purple);cursor:pointer;}
 
-    /* ── MAIN PANEL (rechts, mit Tabs) ──────────── */
+    /* ── MAIN PANEL ──────────────────────────────── */
     .main-panel{
       background:var(--panel);border:1px solid var(--border);
-      display:flex;flex-direction:column;position:relative;min-height:0;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      position:relative;min-height:0;gap:0;overflow:hidden;
     }
     .main-panel::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;
       background:linear-gradient(180deg,var(--cyan),transparent 80%);}
     .main-panel::after{content:'';position:absolute;bottom:-1px;right:-1px;width:12px;height:12px;
       border-bottom:2px solid var(--cyan);border-right:2px solid var(--cyan);}
 
-    /* Tabs */
-    .tab-bar{display:flex;gap:0;flex-shrink:0;border-bottom:2px solid var(--border);}
-    .tab-btn{
-      font-family:'Orbitron',sans-serif;font-size:.58rem;font-weight:700;letter-spacing:2px;
-      padding:10px 20px;cursor:pointer;background:transparent;border:none;
-      border-right:1px solid var(--border);color:var(--dim);
-      transition:all .2s;position:relative;white-space:nowrap;
+    /* ── SEARCH ──────────────────────────────────── */
+    .search-area{
+      display:flex;flex-direction:column;align-items:center;
+      gap:16px;width:100%;max-width:640px;padding:0 32px;
     }
-    .tab-btn:hover{color:var(--text);background:rgba(255,255,255,.02);}
-    .tab-btn.active{color:var(--cyan);background:rgba(0,245,255,.04);}
-    .tab-btn.active::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;background:var(--cyan);}
+    .search-label{
+      font-family:'Orbitron',sans-serif;font-size:.55rem;font-weight:700;
+      color:var(--dim);letter-spacing:4px;
+    }
+    .search-form{display:flex;width:100%;gap:0;position:relative;}
+    .search-input{
+      flex:1;background:rgba(0,245,255,.03);
+      border:1px solid rgba(0,245,255,.25);border-right:none;
+      color:var(--text);font-family:'Share Tech Mono',monospace;font-size:1.1rem;
+      padding:14px 20px;outline:none;letter-spacing:1px;
+      transition:border-color .2s,box-shadow .2s;
+    }
+    .search-input::placeholder{color:var(--dim);font-size:.85rem;letter-spacing:2px;}
+    .search-input:focus{
+      border-color:var(--cyan);
+      box-shadow:0 0 20px rgba(0,245,255,.12),inset 0 0 12px rgba(0,245,255,.04);
+    }
+    .search-btn{
+      background:rgba(0,245,255,.08);border:1px solid rgba(0,245,255,.25);
+      border-left:none;color:var(--cyan);cursor:pointer;
+      font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;
+      padding:14px 22px;transition:all .2s;letter-spacing:1px;
+    }
+    .search-btn:hover{background:rgba(0,245,255,.18);box-shadow:var(--glow-c);}
+    .search-input:focus + .search-btn{border-color:var(--cyan);}
 
-    /* Tab content */
-    .tab-content{display:none;flex:1;min-height:0;}
-    .tab-content.active{display:flex;flex-direction:column;}
-
-    /* ── KALENDER TAB ─────────────────────────── */
-    .cal-wrap{flex:1;display:flex;flex-direction:column;min-height:0;}
-    .cal-setup{display:flex;flex-direction:column;align-items:center;justify-content:center;
-      gap:14px;flex:1;text-align:center;padding:30px;}
-    .cal-setup-text{font-size:.65rem;color:var(--dim);line-height:2;letter-spacing:1px;}
-    .cal-cfg-btn{background:rgba(0,245,255,.07);border:1px solid var(--cyan);color:var(--cyan);
-      cursor:pointer;font-family:'Orbitron',sans-serif;font-size:.55rem;font-weight:700;
-      letter-spacing:2px;padding:8px 18px;transition:all .2s;}
-    .cal-cfg-btn:hover{background:rgba(0,245,255,.16);box-shadow:var(--glow-c);}
-    .cal-open-link{background:transparent;border:1px solid var(--dim);color:var(--dim);
-      font-family:'Share Tech Mono',monospace;font-size:.62rem;padding:5px 12px;
-      text-decoration:none;transition:all .2s;display:inline-block;}
-    .cal-open-link:hover{border-color:var(--cyan);color:var(--cyan);}
-    .cal-toolbar{display:flex;align-items:center;justify-content:flex-end;gap:8px;
-      padding:5px 10px;border-bottom:1px solid var(--border);flex-shrink:0;}
-    #cal-frame{width:100%;flex:1;border:none;display:block;min-height:0;}
-
-    /* ── KANBAN TAB ───────────────────────────── */
-    .kanban{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;padding:10px;min-height:0;overflow:hidden;}
-    .kb-col{display:flex;flex-direction:column;gap:7px;min-height:0;}
-    .kb-head{display:flex;align-items:center;justify-content:space-between;
-      padding:6px 10px;border-bottom:1px solid var(--border);flex-shrink:0;}
-    .kb-title{font-family:'Orbitron',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:2px;}
-    .col-todo .kb-title{color:var(--cyan);}
-    .col-prog .kb-title{color:var(--yellow);}
-    .col-done .kb-title{color:var(--green);}
-    .kb-count{font-size:.58rem;color:var(--dim);}
-    .kb-stats-bar{flex-shrink:0;padding:5px 12px;border-bottom:1px solid var(--border);
-      font-size:.58rem;color:var(--dim);text-align:right;}
-    .kb-cards{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding:2px;}
-    .kb-cards::-webkit-scrollbar{width:2px;}
-    .kb-cards::-webkit-scrollbar-thumb{background:var(--cyan);}
-    .kb-empty{font-size:.65rem;color:var(--dim);text-align:center;padding:20px 0;letter-spacing:1px;}
-    .card{background:rgba(0,245,255,.03);border:1px solid var(--border);border-left:3px solid var(--cyan);
-      padding:8px 10px;flex-shrink:0;transition:border-color .2s;}
-    .card:hover{border-color:rgba(0,245,255,.35);}
-    .card.cy{border-left-color:var(--cyan);}.card.ma{border-left-color:var(--mag);}
-    .card.gr{border-left-color:var(--green);}.card.or{border-left-color:var(--orange);}
-    .card.ye{border-left-color:var(--yellow);}
-    .card-title{font-size:.72rem;color:var(--text);line-height:1.4;word-break:break-word;}
-    .card-note{font-size:.62rem;color:var(--dim);margin-top:4px;line-height:1.4;word-break:break-word;}
-    .card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:7px;}
-    .card-btns{display:flex;gap:4px;}
-    .cbtn{background:none;border:1px solid var(--dim);color:var(--dim);cursor:pointer;
-      font-size:.58rem;padding:2px 6px;transition:all .18s;font-family:'Share Tech Mono',monospace;}
-    .cbtn:hover{border-color:var(--cyan);color:var(--cyan);}
-    .cbtn.del:hover{border-color:var(--mag);color:var(--mag);}
-    .card-ts{font-size:.55rem;color:var(--dim);}
-    .add-card-btn{flex-shrink:0;padding:6px;border:1px dashed var(--border);
-      background:transparent;color:var(--dim);cursor:pointer;font-family:'Share Tech Mono',monospace;
-      font-size:.65rem;text-align:center;transition:all .2s;letter-spacing:1px;}
-    .add-card-btn:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,245,255,.03);}
-    .card-form{display:none;flex-direction:column;gap:6px;padding:8px;
-      border:1px dashed rgba(0,245,255,.25);background:rgba(0,245,255,.02);flex-shrink:0;}
-    .card-form.open{display:flex;}
-    .cni,.cnta{background:transparent;border:1px solid var(--border);color:var(--text);
-      font-family:'Share Tech Mono',monospace;font-size:.68rem;padding:5px 8px;outline:none;width:100%;}
-    .cni:focus,.cnta:focus{border-color:var(--cyan);}
-    .cnta{resize:none;height:50px;}
-    .cc-row{display:flex;gap:5px;}
-    .cc{width:12px;height:12px;border-radius:50%;cursor:pointer;border:2px solid transparent;}
-    .cc.sel{border-color:#fff;}
-    .cc.cy{background:var(--cyan);}.cc.ma{background:var(--mag);}.cc.gr{background:var(--green);}
-    .cc.or{background:var(--orange);}.cc.ye{background:var(--yellow);}
-    .btn{font-family:'Orbitron',sans-serif;font-size:.52rem;font-weight:700;letter-spacing:2px;
-      padding:5px 11px;cursor:pointer;border:1px solid;text-transform:uppercase;transition:all .2s;text-decoration:none;display:inline-block;}
-    .btn-c{background:rgba(0,245,255,.07);border-color:var(--cyan);color:var(--cyan);}
-    .btn-c:hover{background:rgba(0,245,255,.16);box-shadow:var(--glow-c);}
-    .btn-d{background:transparent;border-color:var(--dim);color:var(--dim);}
-    .btn-d:hover{border-color:var(--mag);color:var(--mag);}
-    .brow{display:flex;gap:5px;}
+    /* ── QUOTE ───────────────────────────────────── */
+    .quote-wrap{
+      text-align:center;max-width:580px;
+      padding:20px 24px;
+      border-top:1px solid rgba(0,245,255,.08);
+      margin-top:8px;width:100%;
+    }
+    .quote-text{
+      font-size:.8rem;color:var(--text);line-height:1.9;letter-spacing:.5px;
+      font-style:italic;opacity:.85;
+      transition:opacity .6s;
+    }
+    .quote-author{
+      margin-top:10px;font-family:'Orbitron',sans-serif;
+      font-size:.5rem;font-weight:700;color:var(--cyan);
+      letter-spacing:3px;opacity:.6;
+    }
+    .quote-wrap.fade{opacity:0;}
+    @keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+    .quote-wrap{animation:fadein .8s ease forwards;}
 
     /* ── TRADING PAGE ───────────────────────────── */
     .trading-page-header{padding:16px 22px;border:1px solid rgba(255,60,60,.3);
@@ -280,6 +242,8 @@
     .tp-back{display:flex;align-items:center;gap:12px;}
     .tp-title{font-family:'Orbitron',sans-serif;font-size:1.2rem;font-weight:900;color:var(--red);text-shadow:var(--glow-r);letter-spacing:4px;}
     .tp-warn{font-size:.68rem;color:rgba(255,60,60,.6);margin-top:4px;letter-spacing:1px;}
+    .btn{font-family:'Orbitron',sans-serif;font-size:.52rem;font-weight:700;letter-spacing:2px;
+      padding:5px 11px;cursor:pointer;border:1px solid;text-transform:uppercase;transition:all .2s;text-decoration:none;display:inline-block;}
     .btn-r{background:rgba(255,60,60,.08);border-color:var(--red);color:var(--red);}
     .btn-r:hover{background:rgba(255,60,60,.18);box-shadow:var(--glow-r);}
     .trading-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;padding:4px;}
@@ -301,12 +265,10 @@
   <!-- ── HEADER ── -->
   <header class="header">
     <div class="logo">⬡ CYBER<span>//</span>DASH</div>
-
     <div class="clock-block">
       <div class="clock-time" id="clock">00:00:00</div>
       <div class="clock-date" id="cdate">–</div>
     </div>
-
     <div class="hdr-right">
       <button class="degen-btn" onclick="showPage('trading')">DEGEN →</button>
       <div class="timer-wrap">
@@ -318,7 +280,7 @@
           </div>
           <button class="tbtn" id="t-start-btn" onclick="tToggle()">▶</button>
           <button class="tbtn" onclick="tReset()">↺</button>
-          <button class="tbtn" onclick="tSwitch()" title="Fokus / Pause">⇄</button>
+          <button class="tbtn" onclick="tSwitch()">⇄</button>
         </div>
       </div>
       <div class="sys-status"><div><span class="dot"></span>ONLINE</div></div>
@@ -353,11 +315,12 @@
           <span class="sec-title">🤖 KI-MODELLE</span><span class="sec-arrow">▾</span>
         </div>
         <div class="sec-links open">
-          <a class="slink" href="https://claude.ai" target="_blank"><span class="si">🟣</span>Claude</a>
+          <a class="slink" href="https://claude.ai" target="_blank">
+            <span class="si"><img src="https://www.google.com/s2/favicons?domain=claude.ai&sz=32" alt="Claude" onerror="this.outerHTML='<span style=\'color:#da7756;font-size:.9rem;\'>✦</span>'"></span>Claude
+          </a>
           <a class="slink" href="https://chatgpt.com" target="_blank"><span class="si">🟢</span>ChatGPT</a>
           <a class="slink" href="https://gemini.google.com" target="_blank"><span class="si">🔵</span>Gemini</a>
           <a class="slink" href="https://grok.com" target="_blank"><span class="si">⚡</span>Grok</a>
-          <a class="slink" href="https://www.perplexity.ai" target="_blank"><span class="si">🔍</span>Perplexity</a>
         </div>
       </div>
 
@@ -434,93 +397,20 @@
 
     </div><!-- /col-left -->
 
-    <!-- ── HAUPT-PANEL: Tabs ── -->
+    <!-- ── HAUPT-PANEL: Suche + Zitat ── -->
     <div class="main-panel">
-
-      <!-- Tab-Leiste -->
-      <div class="tab-bar">
-        <button class="tab-btn active" id="tab-btn-cal" onclick="switchTab('cal')">📅 KALENDER</button>
-        <button class="tab-btn" id="tab-btn-kanban" onclick="switchTab('kanban')">⬡ AUFGABEN-BOARD</button>
-      </div>
-
-      <!-- Tab 1: Kalender -->
-      <div class="tab-content active" id="tab-cal">
-        <div class="cal-wrap">
-          <!-- Toolbar (nur wenn konfiguriert) -->
-          <div class="cal-toolbar" id="cal-toolbar" style="display:none;">
-            <a class="cal-open-link" href="https://calendar.google.com" target="_blank">↗ In Google öffnen</a>
-            <button class="cal-open-link" style="cursor:pointer;" onclick="calConfigure()">⚙ URL ändern</button>
-          </div>
-          <!-- Setup-Screen -->
-          <div class="cal-setup" id="cal-setup">
-            <div class="cal-setup-text">
-              KALENDER EINRICHTEN<br><br>
-              Google Kalender → Einstellungen (⚙) →<br>
-              Kalender auswählen → „Kalender einbetten"<br>
-              → Link kopieren und hier einfügen
-            </div>
-            <button class="cal-cfg-btn" onclick="calConfigure()">⚙ URL KONFIGURIEREN</button>
-            <a class="cal-open-link" href="https://calendar.google.com" target="_blank">↗ KALENDER ÖFFNEN</a>
-          </div>
-          <!-- Kalender iframe -->
-          <iframe id="cal-frame" src="" frameborder="0" scrolling="no"
-            style="display:none;width:100%;flex:1;border:none;min-height:0;"></iframe>
+      <div class="search-area">
+        <div class="search-label">// SUCHE</div>
+        <form class="search-form" action="https://www.google.com/search" method="get" target="_blank">
+          <input class="search-input" name="q" type="text" placeholder="WAS WILLST DU WISSEN?" autocomplete="off" autofocus>
+          <button class="search-btn" type="submit">↵</button>
+        </form>
+        <div class="quote-wrap" id="quote-wrap">
+          <div class="quote-text" id="quote-text">Lade Zitat …</div>
+          <div class="quote-author" id="quote-author">—</div>
         </div>
       </div>
-
-      <!-- Tab 2: Kanban -->
-      <div class="tab-content" id="tab-kanban">
-        <div class="kb-stats-bar" id="kb-stats">–</div>
-        <div class="kanban">
-
-          <!-- TO-DO -->
-          <div class="kb-col col-todo">
-            <div class="kb-head">
-              <span class="kb-title">TO-DO</span>
-              <span class="kb-count" id="cnt-todo">0</span>
-            </div>
-            <div class="kb-cards" id="cards-todo"></div>
-            <div class="card-form" id="form-todo">
-              <input class="cni" id="ci-todo" type="text" placeholder="AUFGABE …" onkeydown="if(event.key==='Enter')addCard('todo')">
-              <textarea class="cnta" id="cn-todo" placeholder="Notiz (optional) …"></textarea>
-              <div class="cc-row">
-                <div class="cc cy sel" data-c="cy" onclick="pickCC(this,'todo')"></div>
-                <div class="cc ma" data-c="ma" onclick="pickCC(this,'todo')"></div>
-                <div class="cc gr" data-c="gr" onclick="pickCC(this,'todo')"></div>
-                <div class="cc or" data-c="or" onclick="pickCC(this,'todo')"></div>
-                <div class="cc ye" data-c="ye" onclick="pickCC(this,'todo')"></div>
-              </div>
-              <div class="brow">
-                <button class="btn btn-c" onclick="addCard('todo')">+ HINZUFÜGEN</button>
-                <button class="btn btn-d" onclick="closeCardForm('todo')">✕</button>
-              </div>
-            </div>
-            <button class="add-card-btn" id="add-btn-todo" onclick="openCardForm('todo')">+ NEUE AUFGABE</button>
-          </div>
-
-          <!-- IN PROGRESS -->
-          <div class="kb-col col-prog">
-            <div class="kb-head">
-              <span class="kb-title">IN BEARBEITUNG</span>
-              <span class="kb-count" id="cnt-prog">0</span>
-            </div>
-            <div class="kb-cards" id="cards-prog"></div>
-          </div>
-
-          <!-- DONE -->
-          <div class="kb-col col-done">
-            <div class="kb-head">
-              <span class="kb-title">ERLEDIGT</span>
-              <span class="kb-count" id="cnt-done">0</span>
-            </div>
-            <div class="kb-cards" id="cards-done"></div>
-            <button class="add-card-btn" style="border-color:rgba(57,255,20,.2);color:rgba(57,255,20,.4);" onclick="clearDone()">✓ ERLEDIGTE LÖSCHEN</button>
-          </div>
-
-        </div>
-      </div>
-
-    </div><!-- /main-panel -->
+    </div>
 
   </div><!-- /page-main -->
 
@@ -537,26 +427,22 @@
     </div>
     <div class="trading-cards">
       <a class="tc" href="https://www.tradingview.com" target="_blank">
-        <div class="tc-icon">📊</div>
-        <div class="tc-name">TRADINGVIEW</div>
+        <div class="tc-icon">📊</div><div class="tc-name">TRADINGVIEW</div>
         <div class="tc-desc">Charts, Analyse &amp; Screener.</div>
         <div class="tc-btn">ÖFFNEN ↗</div>
       </a>
       <a class="tc" href="https://app.hyperliquid.xyz" target="_blank">
-        <div class="tc-icon">💧</div>
-        <div class="tc-name">HYPERLIQUID</div>
+        <div class="tc-icon">💧</div><div class="tc-name">HYPERLIQUID</div>
         <div class="tc-desc">Dezentrale Perpetuals.</div>
         <div class="tc-btn">ÖFFNEN ↗</div>
       </a>
       <a class="tc" href="https://www.mexc.com" target="_blank">
-        <div class="tc-icon">🔷</div>
-        <div class="tc-name">MEXC</div>
+        <div class="tc-icon">🔷</div><div class="tc-name">MEXC</div>
         <div class="tc-desc">Spot &amp; Futures Trading.</div>
         <div class="tc-btn">ÖFFNEN ↗</div>
       </a>
       <a class="tc" href="https://coinmarketcap.com" target="_blank">
-        <div class="tc-icon">🪙</div>
-        <div class="tc-name">COINMARKETCAP</div>
+        <div class="tc-icon">🪙</div><div class="tc-name">COINMARKETCAP</div>
         <div class="tc-desc">Marktdaten &amp; Rankings.</div>
         <div class="tc-btn">ÖFFNEN ↗</div>
       </a>
@@ -575,18 +461,10 @@ function tick(){
 }
 setInterval(tick,1000);tick();
 
-// ─── SEITEN-NAVIGATION ────────────────────────────────────
+// ─── NAVIGATION ───────────────────────────────────────────
 function showPage(page){
   document.getElementById('page-main').style.display    = page==='main'    ? 'grid' : 'none';
   document.getElementById('page-trading').style.display = page==='trading' ? 'flex' : 'none';
-}
-
-// ─── TABS ─────────────────────────────────────────────────
-function switchTab(name){
-  ['cal','kanban'].forEach(t=>{
-    document.getElementById('tab-'+t).classList.toggle('active', t===name);
-    document.getElementById('tab-btn-'+t).classList.toggle('active', t===name);
-  });
 }
 
 // ─── TIMER ALARM ──────────────────────────────────────────
@@ -624,8 +502,7 @@ function tToggle(){
       clearInterval(tTimer);tRun=false;
       playAlarm();
       const d=document.getElementById('t-display');
-      d.classList.add('alarm');
-      setTimeout(()=>d.classList.remove('alarm'),3500);
+      d.classList.add('alarm');setTimeout(()=>d.classList.remove('alarm'),3500);
       tRender();return;
     }
     tLeft--;tRender();
@@ -644,45 +521,78 @@ tRender();
 function toggleSec(head){head.classList.toggle('open');head.nextElementSibling.classList.toggle('open');}
 function toggleRadio(head){head.classList.toggle('open');document.getElementById('radio-body').classList.toggle('open');}
 
-// ─── GOOGLE KALENDER ──────────────────────────────────────
-(function initCal(){
-  const url=localStorage.getItem('cal_embed_url');
-  if(url){
-    document.getElementById('cal-setup').style.display='none';
-    document.getElementById('cal-toolbar').style.display='flex';
-    const f=document.getElementById('cal-frame');
-    f.src=url;f.style.display='block';
-  }
-})();
-function calConfigure(){
-  const cur=localStorage.getItem('cal_embed_url')||'';
-  const url=prompt(
-    'Google Kalender Embed-URL einfügen:\n\n'+
-    'Anleitung: calendar.google.com → Einstellungen (⚙) →\n'+
-    'Kalender auswählen → „Kalender einbetten" → Link kopieren\n\n'+
-    'Aktuell: '+(cur||'–'),cur);
-  if(url&&url.trim()){
-    localStorage.setItem('cal_embed_url',url.trim());
-    document.getElementById('cal-setup').style.display='none';
-    document.getElementById('cal-toolbar').style.display='flex';
-    const f=document.getElementById('cal-frame');
-    f.src=url.trim();f.style.display='block';
-  }
-}
-
 // ─── MASTERARBEIT LINK ────────────────────────────────────
-(function initMaLink(){
-  const url=localStorage.getItem('ma_link_url');
-  if(url)document.getElementById('ma-link').href=url;
-})();
+(function(){const u=localStorage.getItem('ma_link_url');if(u)document.getElementById('ma-link').href=u;})();
 function setMaLink(){
   const cur=localStorage.getItem('ma_link_url')||'';
-  const url=prompt('Google Drive Masterarbeit-Ordner Link einfügen:',cur);
-  if(url&&url.trim()){
-    localStorage.setItem('ma_link_url',url.trim());
-    document.getElementById('ma-link').href=url.trim();
+  const url=prompt('Google Drive Masterarbeit-Ordner Link:',cur);
+  if(url&&url.trim()){localStorage.setItem('ma_link_url',url.trim());document.getElementById('ma-link').href=url.trim();}
+}
+
+// ─── ZITAT DES TAGES ──────────────────────────────────────
+// Kuratierte Fallback-Zitate von großen Persönlichkeiten
+const QUOTES=[
+  {q:"The secret of getting ahead is getting started.",a:"Mark Twain"},
+  {q:"It does not matter how slowly you go as long as you do not stop.",a:"Konfuzius"},
+  {q:"Our greatest glory is not in never falling, but in rising every time we fall.",a:"Konfuzius"},
+  {q:"The only way to do great work is to love what you do.",a:"Steve Jobs"},
+  {q:"In the middle of every difficulty lies opportunity.",a:"Albert Einstein"},
+  {q:"Life is what happens when you're busy making other plans.",a:"John Lennon"},
+  {q:"The future belongs to those who believe in the beauty of their dreams.",a:"Eleanor Roosevelt"},
+  {q:"It is during our darkest moments that we must focus to see the light.",a:"Aristoteles"},
+  {q:"Spread love everywhere you go. Let no one ever come to you without leaving happier.",a:"Mutter Teresa"},
+  {q:"When you reach the end of your rope, tie a knot in it and hang on.",a:"Franklin D. Roosevelt"},
+  {q:"Always remember that you are absolutely unique. Just like everyone else.",a:"Margaret Mead"},
+  {q:"Do not go where the path may lead, go instead where there is no path and leave a trail.",a:"Ralph Waldo Emerson"},
+  {q:"You will face many defeats in life, but never let yourself be defeated.",a:"Maya Angelou"},
+  {q:"The greatest glory in living lies not in never falling, but in rising every time we fall.",a:"Nelson Mandela"},
+  {q:"In the end, it's not the years in your life that count. It's the life in your years.",a:"Abraham Lincoln"},
+  {q:"Never let the fear of striking out keep you from playing the game.",a:"Babe Ruth"},
+  {q:"Life is either a daring adventure or nothing at all.",a:"Helen Keller"},
+  {q:"Many of life's failures are people who did not realize how close they were to success when they gave up.",a:"Thomas A. Edison"},
+  {q:"You have brains in your head. You have feet in your shoes. You can steer yourself any direction you choose.",a:"Dr. Seuss"},
+  {q:"If life were predictable it would cease to be life and be without flavor.",a:"Eleanor Roosevelt"},
+  {q:"If you look at what you have in life, you'll always have more.",a:"Oprah Winfrey"},
+  {q:"If you want to live a happy life, tie it to a goal, not to people or things.",a:"Albert Einstein"},
+  {q:"Never let the fear of striking out keep you from playing the game.",a:"Babe Ruth"},
+  {q:"Money and success don't change people; they merely amplify what is already there.",a:"Will Smith"},
+  {q:"Your time is limited, so don't waste it living someone else's life.",a:"Steve Jobs"},
+  {q:"Not how long, but how well you have lived is the main thing.",a:"Seneca"},
+  {q:"If you're not stubborn, you'll give up on experiments too soon. And if you're not flexible, you'll pound your head against the wall and you won't see a different solution.",a:"Jeff Bezos"},
+  {q:"I have not failed. I've just found 10,000 ways that won't work.",a:"Thomas Edison"},
+  {q:"A person who never made a mistake never tried anything new.",a:"Albert Einstein"},
+  {q:"The only impossible journey is the one you never begin.",a:"Tony Robbins"},
+  {q:"In this life we cannot do great things. We can only do small things with great love.",a:"Mutter Teresa"},
+  {q:"It is not the strongest of the species that survive, nor the most intelligent, but the one most responsive to change.",a:"Charles Darwin"},
+  {q:"If you genuinely want something, don't wait for it — teach yourself to be impatient.",a:"Gurbaksh Chahal"},
+  {q:"Do one thing every day that scares you.",a:"Eleanor Roosevelt"},
+  {q:"Well done is better than well said.",a:"Benjamin Franklin"},
+  {q:"The best time to plant a tree was 20 years ago. The second best time is now.",a:"Chinesisches Sprichwort"},
+];
+
+function showFallbackQuote(){
+  const day=Math.floor(Date.now()/86400000);
+  const q=QUOTES[day%QUOTES.length];
+  document.getElementById('quote-text').textContent=`"${q.q}"`;
+  document.getElementById('quote-author').textContent=`— ${q.a}`;
+}
+
+async function loadQuote(){
+  try{
+    // ZenQuotes API — tägliches Zitat
+    const res=await fetch('https://zenquotes.io/api/today');
+    if(!res.ok)throw new Error();
+    const data=await res.json();
+    const q=data[0];
+    if(q&&q.q&&q.a){
+      document.getElementById('quote-text').textContent=`"${q.q}"`;
+      document.getElementById('quote-author').textContent=`— ${q.a}`;
+    } else {showFallbackQuote();}
+  }catch(e){
+    showFallbackQuote();
   }
 }
+loadQuote();
 
 // ─── RADIO ────────────────────────────────────────────────
 const STATIONS=[
@@ -698,8 +608,7 @@ const STATIONS=[
 let activeIdx=-1,muted=false,lastVol=80;
 function playIdx(i){
   if(activeIdx>=0)document.getElementById('stn-'+activeIdx).classList.remove('active');
-  activeIdx=i;
-  document.getElementById('stn-'+i).classList.add('active');
+  activeIdx=i;document.getElementById('stn-'+i).classList.add('active');
   const a=document.getElementById('audio-player');
   a.src=STATIONS[i].url;a.volume=lastVol/100;a.play().catch(()=>{});
   document.getElementById('pb-name').textContent=STATIONS[i].name;
@@ -718,73 +627,6 @@ function toggleMute(){
   document.getElementById('vol-icon').textContent=muted?'🔇':'🔊';
   document.getElementById('vol-slider').value=muted?0:lastVol;
 }
-
-// ─── KANBAN ───────────────────────────────────────────────
-const KB_LS='db_kanban_v1';
-const COLS=['todo','prog','done'];
-let cardColors={todo:'cy',prog:'cy',done:'cy'};
-function getBoard(){return JSON.parse(localStorage.getItem(KB_LS)||'{"todo":[],"prog":[],"done":[]}');}
-function putBoard(b){localStorage.setItem(KB_LS,JSON.stringify(b));}
-function renderBoard(){
-  const b=getBoard();
-  COLS.forEach(col=>{
-    const el=document.getElementById(`cards-${col}`);
-    const cnt=document.getElementById(`cnt-${col}`);
-    cnt.textContent=b[col].length;
-    if(!b[col].length){el.innerHTML=`<div class="kb-empty">// LEER</div>`;return;}
-    el.innerHTML=b[col].map((c,i)=>`
-      <div class="card ${c.color}">
-        <div class="card-title">${esc(c.title)}</div>
-        ${c.note?`<div class="card-note">${esc(c.note)}</div>`:''}
-        <div class="card-foot">
-          <div class="card-btns">
-            ${col!=='todo'?`<button class="cbtn" onclick="moveCard('${col}','left',${i})">←</button>`:''}
-            ${col!=='done'?`<button class="cbtn" onclick="moveCard('${col}','right',${i})">→</button>`:''}
-            <button class="cbtn del" onclick="deleteCard('${col}',${i})">✕</button>
-          </div>
-          <span class="card-ts">${c.ts}</span>
-        </div>
-      </div>`).join('');
-  });
-  const total=b.todo.length+b.prog.length+b.done.length;
-  document.getElementById('kb-stats').textContent=`${b.done.length}/${total} ERLEDIGT`;
-}
-function openCardForm(col){
-  document.getElementById(`form-${col}`).classList.add('open');
-  document.getElementById(`add-btn-${col}`).style.display='none';
-  document.getElementById(`ci-${col}`).focus();
-}
-function closeCardForm(col){
-  document.getElementById(`form-${col}`).classList.remove('open');
-  document.getElementById(`add-btn-${col}`).style.display='block';
-  document.getElementById(`ci-${col}`).value='';
-  document.getElementById(`cn-${col}`).value='';
-}
-function pickCC(el,col){
-  document.querySelectorAll(`#form-${col} .cc`).forEach(d=>d.classList.remove('sel'));
-  el.classList.add('sel');cardColors[col]=el.dataset.c;
-}
-function addCard(col){
-  const title=document.getElementById(`ci-${col}`).value.trim();if(!title)return;
-  const note=document.getElementById(`cn-${col}`).value.trim();
-  const b=getBoard();
-  const n=new Date(),p=v=>String(v).padStart(2,'0');
-  b[col].push({id:Date.now(),title,note,color:cardColors[col],
-    ts:`${p(n.getDate())}.${p(n.getMonth()+1)}.${n.getFullYear()}`});
-  putBoard(b);renderBoard();closeCardForm(col);
-}
-function moveCard(col,dir,i){
-  const b=getBoard();
-  const order=['todo','prog','done'];
-  const ci=order.indexOf(col);
-  const target=dir==='right'?order[ci+1]:order[ci-1];
-  if(!target)return;
-  b[target].push(b[col].splice(i,1)[0]);putBoard(b);renderBoard();
-}
-function deleteCard(col,i){const b=getBoard();b[col].splice(i,1);putBoard(b);renderBoard();}
-function clearDone(){const b=getBoard();b.done=[];putBoard(b);renderBoard();}
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-renderBoard();
 </script>
 </body>
 </html>
