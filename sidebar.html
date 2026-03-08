@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sidebar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #07070f; --panel: #0b0b1a;
+      --cyan: #00f5ff; --mag: #ff00a0; --green: #39ff14;
+      --orange: #ff6b00; --purple: #bf5fff; --yellow: #ffe600; --red: #ff3c3c;
+      --text: #a8cce0; --dim: #374a58; --border: rgba(0,245,255,0.13);
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{
+      background:var(--bg);color:var(--text);
+      font-family:'Share Tech Mono',monospace;font-size:.67rem;
+      width:100%;min-height:100vh;overflow-x:hidden;
+    }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar{width:3px;}
+    ::-webkit-scrollbar-track{background:var(--bg);}
+    ::-webkit-scrollbar-thumb{background:var(--dim);}
+
+    /* ── LAYOUT ── */
+    .sidebar{display:flex;flex-direction:column;gap:4px;padding:8px;}
+
+    /* ── SECTION ── */
+    .sec{background:var(--panel);border:1px solid var(--border);position:relative;}
+    .sec::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;}
+    .sec.ki::before{background:linear-gradient(180deg,var(--cyan),transparent 80%);}
+    .sec.trading::before{background:linear-gradient(180deg,var(--red),transparent 80%);}
+    .sec.research::before{background:linear-gradient(180deg,var(--green),transparent 80%);}
+    .sec.org::before{background:linear-gradient(180deg,var(--yellow),transparent 80%);}
+    .sec.dev::before{background:linear-gradient(180deg,var(--orange),transparent 80%);}
+
+    .sec-head{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:7px 10px 7px 13px;cursor:pointer;user-select:none;
+      border-bottom:1px solid transparent;transition:background .15s;
+    }
+    .sec-head:hover{background:rgba(255,255,255,.02);}
+    .sec-head.open{border-bottom-color:var(--border);}
+    .sec-title{font-family:'Orbitron',sans-serif;font-size:.54rem;font-weight:700;letter-spacing:2px;}
+    .sec.ki .sec-title{color:var(--cyan);}
+    .sec.trading .sec-title{color:var(--red);}
+    .sec.research .sec-title{color:var(--green);}
+    .sec.org .sec-title{color:var(--yellow);}
+    .sec.dev .sec-title{color:var(--orange);}
+    .sec-arrow{font-size:.55rem;color:var(--dim);transition:transform .2s;}
+    .sec-head.open .sec-arrow{transform:rotate(180deg);}
+
+    .sec-links{display:none;flex-direction:column;padding:5px 8px;}
+    .sec-links.open{display:flex;}
+    .slink{
+      display:flex;align-items:center;gap:7px;padding:5px 6px;
+      color:var(--text);text-decoration:none;border-radius:1px;
+      transition:all .15s;border-bottom:1px solid transparent;
+    }
+    .slink:last-child{border-bottom:none;}
+    .slink:hover{color:var(--cyan);background:rgba(0,245,255,.04);border-bottom-color:var(--border);}
+    .si{font-size:.8rem;width:16px;text-align:center;flex-shrink:0;}
+
+    /* ── RADIO ── */
+    .radio-sec{background:var(--panel);border:1px solid var(--border);position:relative;}
+    .radio-sec::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;
+      background:linear-gradient(180deg,var(--purple),transparent 80%);}
+    .radio-head{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:7px 10px 7px 13px;cursor:pointer;user-select:none;
+      border-bottom:1px solid transparent;transition:background .15s;
+    }
+    .radio-head:hover{background:rgba(255,255,255,.02);}
+    .radio-head.open{border-bottom-color:var(--border);}
+    .radio-title{font-family:'Orbitron',sans-serif;font-size:.54rem;font-weight:700;color:var(--purple);letter-spacing:2px;}
+    .radio-arrow{font-size:.55rem;color:var(--dim);transition:transform .2s;}
+    .radio-head.open .radio-arrow{transform:rotate(180deg);}
+
+    .radio-body{display:none;padding:8px;}
+    .radio-body.open{display:block;}
+
+    .radio-group-label{font-size:.52rem;color:var(--dim);letter-spacing:2px;
+      padding:3px 0 3px;border-bottom:1px solid var(--border);margin-bottom:5px;}
+
+    .stn-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:8px;}
+    .stn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 4px;
+      background:rgba(191,95,255,.04);border:1px solid var(--border);cursor:pointer;
+      transition:all .18s;text-align:center;}
+    .stn:hover,.stn.active{border-color:var(--purple);background:rgba(191,95,255,.1);}
+    .stn.active{box-shadow:0 0 8px rgba(191,95,255,.25);}
+    .stn-icon{font-size:.95rem;}
+    .stn-name{font-size:.6rem;color:var(--text);line-height:1.2;}
+    .stn.active .stn-name{color:var(--purple);}
+    .stn-tag{font-size:.48rem;color:var(--dim);letter-spacing:1px;}
+    .stn.active .stn-tag{color:var(--purple);}
+
+    .player-bar{display:none;flex-direction:column;gap:5px;padding:7px 8px;margin-top:2px;
+      background:rgba(191,95,255,.05);border:1px solid rgba(191,95,255,.2);}
+    .player-bar.on{display:flex;}
+    .pb-top{display:flex;align-items:center;gap:4px;}
+    .pb-dot{width:6px;height:6px;border-radius:50%;background:var(--purple);
+      box-shadow:0 0 6px var(--purple);animation:blink 1s ease-in-out infinite;flex-shrink:0;}
+    @keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+    .pb-name{font-size:.6rem;color:var(--purple);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .pb-btn{background:none;border:1px solid rgba(191,95,255,.3);cursor:pointer;
+      font-size:.53rem;color:var(--dim);padding:2px 5px;font-family:'Share Tech Mono',monospace;
+      transition:all .18s;flex-shrink:0;}
+    .pb-btn:hover{border-color:var(--purple);color:var(--purple);}
+    .pb-btn.stop:hover{border-color:var(--mag);color:var(--mag);}
+    .vol-row{display:flex;align-items:center;gap:7px;}
+    .vol-icon{font-size:.75rem;cursor:pointer;flex-shrink:0;user-select:none;}
+    input[type=range].vol-slider{-webkit-appearance:none;flex:1;height:3px;
+      background:rgba(191,95,255,.25);outline:none;border-radius:2px;cursor:pointer;}
+    input[type=range].vol-slider::-webkit-slider-thumb{-webkit-appearance:none;
+      width:11px;height:11px;border-radius:50%;background:var(--purple);cursor:pointer;}
+    input[type=range].vol-slider::-moz-range-thumb{width:11px;height:11px;
+      border-radius:50%;background:var(--purple);border:none;cursor:pointer;}
+  </style>
+</head>
+<body>
+<div class="sidebar">
+
+  <!-- KI-MODELLE -->
+  <div class="sec ki">
+    <div class="sec-head open" onclick="toggleSec(this)">
+      <span class="sec-title">🤖 KI-MODELLE</span><span class="sec-arrow">▾</span>
+    </div>
+    <div class="sec-links open">
+      <a class="slink" href="https://claude.ai" target="_blank"><span class="si">🟣</span>Claude</a>
+      <a class="slink" href="https://chatgpt.com" target="_blank"><span class="si">🟢</span>ChatGPT</a>
+      <a class="slink" href="https://gemini.google.com" target="_blank"><span class="si">🔵</span>Gemini</a>
+      <a class="slink" href="https://grok.com" target="_blank"><span class="si">⚡</span>Grok</a>
+      <a class="slink" href="https://www.perplexity.ai" target="_blank"><span class="si">🔍</span>Perplexity</a>
+    </div>
+  </div>
+
+  <!-- TRADING -->
+  <div class="sec trading">
+    <div class="sec-head" onclick="toggleSec(this)">
+      <span class="sec-title">📈 TRADING</span><span class="sec-arrow">▾</span>
+    </div>
+    <div class="sec-links">
+      <a class="slink" href="https://www.tradingview.com" target="_blank"><span class="si">📊</span>TradingView</a>
+      <a class="slink" href="https://app.hyperliquid.xyz" target="_blank"><span class="si">💧</span>Hyperliquid</a>
+      <a class="slink" href="https://www.mexc.com" target="_blank"><span class="si">🔷</span>MEXC</a>
+      <a class="slink" href="https://coinmarketcap.com" target="_blank"><span class="si">🪙</span>CoinMarketCap</a>
+    </div>
+  </div>
+
+  <!-- RESEARCH -->
+  <div class="sec research">
+    <div class="sec-head" onclick="toggleSec(this)">
+      <span class="sec-title">🔬 RESEARCH</span><span class="sec-arrow">▾</span>
+    </div>
+    <div class="sec-links">
+      <a class="slink" href="https://scholar.google.com" target="_blank"><span class="si">🎓</span>Scholar</a>
+      <a class="slink" href="https://www.researchgate.net" target="_blank"><span class="si">📚</span>ResearchGate</a>
+      <a class="slink" href="https://pubmed.ncbi.nlm.nih.gov" target="_blank"><span class="si">🧬</span>PubMed</a>
+      <a class="slink" href="https://www.semanticscholar.org" target="_blank"><span class="si">🔭</span>Semantic Scholar</a>
+      <a class="slink" href="https://www.connectedpapers.com" target="_blank"><span class="si">🕸️</span>Connected Papers</a>
+    </div>
+  </div>
+
+  <!-- ORGANISATION -->
+  <div class="sec org">
+    <div class="sec-head" onclick="toggleSec(this)">
+      <span class="sec-title">🗂️ ORGANISATION</span><span class="sec-arrow">▾</span>
+    </div>
+    <div class="sec-links">
+      <a class="slink" href="https://keep.google.com" target="_blank"><span class="si">📝</span>Keep</a>
+      <a class="slink" href="https://drive.google.com" target="_blank"><span class="si">💾</span>Drive</a>
+      <a class="slink" href="https://calendar.google.com" target="_blank"><span class="si">📅</span>Kalender</a>
+      <a class="slink" href="https://mail.google.com" target="_blank"><span class="si">📧</span>Gmail</a>
+      <a class="slink" href="https://bokuonline.boku.ac.at" target="_blank"><span class="si">🎓</span>Boku Online</a>
+      <a class="slink" href="https://learn.boku.ac.at" target="_blank"><span class="si">📖</span>Boku Learn</a>
+    </div>
+  </div>
+
+  <!-- ENTWICKLUNG -->
+  <div class="sec dev">
+    <div class="sec-head" onclick="toggleSec(this)">
+      <span class="sec-title">🛠️ ENTWICKLUNG</span><span class="sec-arrow">▾</span>
+    </div>
+    <div class="sec-links">
+      <a class="slink" href="https://github.com" target="_blank"><span class="si">🐙</span>GitHub</a>
+      <a class="slink" href="https://www.overleaf.com" target="_blank"><span class="si">📄</span>Overleaf</a>
+      <a class="slink" href="https://stackoverflow.com" target="_blank"><span class="si">💬</span>Stack Overflow</a>
+      <a class="slink" href="https://www.rdocumentation.org" target="_blank"><span class="si">📊</span>RDocs</a>
+    </div>
+  </div>
+
+  <!-- RADIO -->
+  <div class="radio-sec">
+    <div class="radio-head open" onclick="toggleRadio(this)">
+      <span class="radio-title">🎵 RADIO // FOKUS</span>
+      <span class="radio-arrow">▾</span>
+    </div>
+    <div class="radio-body open" id="radio-body">
+      <div class="radio-group-label">// FOKUS &amp; AMBIENT</div>
+      <div class="stn-grid">
+        <div class="stn" id="stn-0" onclick="playIdx(0)"><span class="stn-icon">🌿</span><span class="stn-name">Groove Salad</span><span class="stn-tag">AMBIENT</span></div>
+        <div class="stn" id="stn-1" onclick="playIdx(1)"><span class="stn-icon">🌌</span><span class="stn-name">Drone Zone</span><span class="stn-tag">DEEP</span></div>
+        <div class="stn" id="stn-2" onclick="playIdx(2)"><span class="stn-icon">⚡</span><span class="stn-name">Digitalis</span><span class="stn-tag">SYNTH</span></div>
+        <div class="stn" id="stn-3" onclick="playIdx(3)"><span class="stn-icon">🚀</span><span class="stn-name">Deep Space One</span><span class="stn-tag">SPACE</span></div>
+      </div>
+      <div class="radio-group-label">// RADIO ÖSTERREICH</div>
+      <div class="stn-grid">
+        <div class="stn" id="stn-4" onclick="playIdx(4)"><span class="stn-icon">📻</span><span class="stn-name">Ö3</span><span class="stn-tag">POP</span></div>
+        <div class="stn" id="stn-5" onclick="playIdx(5)"><span class="stn-icon">📻</span><span class="stn-name">Radio Wien</span><span class="stn-tag">WIEN</span></div>
+        <div class="stn" id="stn-6" onclick="playIdx(6)"><span class="stn-icon">🎼</span><span class="stn-name">Ö1</span><span class="stn-tag">KLASSIK</span></div>
+        <div class="stn" id="stn-7" onclick="playIdx(7)"><span class="stn-icon">🎸</span><span class="stn-name">FM4</span><span class="stn-tag">ALT</span></div>
+      </div>
+      <audio id="audio-player"></audio>
+      <div class="player-bar" id="player-bar">
+        <div class="pb-top">
+          <button class="pb-btn" onclick="playPrev()">&#9664; PREV</button>
+          <div class="pb-dot"></div>
+          <span class="pb-name" id="pb-name">–</span>
+          <button class="pb-btn" onclick="playNext()">NEXT &#9654;</button>
+          <button class="pb-btn stop" onclick="stopStream()">&#9632; STOP</button>
+        </div>
+        <div class="vol-row">
+          <span class="vol-icon" id="vol-icon" onclick="toggleMute()">🔊</span>
+          <input type="range" class="vol-slider" id="vol-slider" min="0" max="100" value="80" oninput="setVolume(this.value)">
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script>
+function toggleSec(head){
+  head.classList.toggle('open');
+  head.nextElementSibling.classList.toggle('open');
+}
+function toggleRadio(head){
+  head.classList.toggle('open');
+  document.getElementById('radio-body').classList.toggle('open');
+}
+
+const STATIONS=[
+  {name:'Groove Salad',   url:'https://ice1.somafm.com/groovesalad-256-mp3'},
+  {name:'Drone Zone',     url:'https://ice1.somafm.com/dronezone-256-mp3'},
+  {name:'Digitalis',      url:'https://ice1.somafm.com/digitalis-128-mp3'},
+  {name:'Deep Space One', url:'https://ice1.somafm.com/deepspaceone-128-mp3'},
+  {name:'Ö3',             url:'https://orf-live.ors-shoutcast.at/oe3-q2a'},
+  {name:'Radio Wien',     url:'https://orf-live.ors-shoutcast.at/wie-q2a'},
+  {name:'Ö1',             url:'https://orf-live.ors-shoutcast.at/oe1-q2a'},
+  {name:'FM4',            url:'https://orf-live.ors-shoutcast.at/fm4-q2a'},
+];
+let activeIdx=-1,muted=false,lastVol=80;
+function playIdx(i){
+  if(activeIdx>=0)document.getElementById('stn-'+activeIdx).classList.remove('active');
+  activeIdx=i;
+  document.getElementById('stn-'+i).classList.add('active');
+  const a=document.getElementById('audio-player');
+  a.src=STATIONS[i].url;a.volume=lastVol/100;a.play().catch(()=>{});
+  document.getElementById('pb-name').textContent=STATIONS[i].name;
+  document.getElementById('player-bar').classList.add('on');
+}
+function playNext(){playIdx((activeIdx+1)%STATIONS.length);}
+function playPrev(){playIdx((activeIdx-1+STATIONS.length)%STATIONS.length);}
+function stopStream(){
+  const a=document.getElementById('audio-player');a.pause();a.src='';
+  document.getElementById('player-bar').classList.remove('on');
+  if(activeIdx>=0){document.getElementById('stn-'+activeIdx).classList.remove('active');activeIdx=-1;}
+}
+function setVolume(v){
+  lastVol=+v;muted=false;
+  document.getElementById('audio-player').volume=v/100;
+  document.getElementById('vol-icon').textContent=v==0?'🔇':'🔊';
+}
+function toggleMute(){
+  const a=document.getElementById('audio-player');
+  muted=!muted;
+  a.volume=muted?0:lastVol/100;
+  document.getElementById('vol-icon').textContent=muted?'🔇':'🔊';
+  document.getElementById('vol-slider').value=muted?0:lastVol;
+}
+</script>
+</body>
+</html>
