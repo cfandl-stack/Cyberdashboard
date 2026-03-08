@@ -23,10 +23,9 @@
       --glow-c: 0 0 8px rgba(0,245,255,0.45),0 0 18px rgba(0,245,255,0.1);
       --glow-m: 0 0 8px rgba(255,0,160,0.45),0 0 18px rgba(255,0,160,0.1);
       --glow-g: 0 0 8px rgba(57,255,20,0.45);
-      --glow-y: 0 0 8px rgba(255,230,0,0.45);
       --glow-r: 0 0 8px rgba(255,60,60,0.45),0 0 18px rgba(255,60,60,0.1);
-      --glow-p: 0 0 8px rgba(191,95,255,0.45),0 0 18px rgba(191,95,255,0.1);
-      --glow-b: 0 0 8px rgba(68,136,255,0.45),0 0 18px rgba(68,136,255,0.1);
+      --glow-p: 0 0 8px rgba(191,95,255,0.45);
+      --glow-b: 0 0 8px rgba(68,136,255,0.45);
     }
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
     html,body{height:100%;overflow:hidden;}
@@ -62,7 +61,7 @@
 
     .hdr-right{display:flex;align-items:center;justify-content:flex-end;gap:10px;}
 
-    /* Timer in header */
+    /* Timer */
     .timer-wrap{display:flex;align-items:center;gap:6px;}
     .timer-toggle{background:none;border:1px solid var(--dim);color:var(--dim);cursor:pointer;
       font-family:'Share Tech Mono',monospace;font-size:.62rem;padding:3px 8px;transition:all .2s;}
@@ -72,12 +71,18 @@
     .timer-box.open{display:flex;}
     .timer-display{font-family:'Orbitron',sans-serif;font-size:.85rem;font-weight:700;
       color:var(--cyan);text-shadow:var(--glow-c);letter-spacing:2px;min-width:52px;}
-    .timer-display.alarm{color:var(--mag);text-shadow:var(--glow-m);animation:pulse-alarm 0.5s ease-in-out infinite;}
+    .timer-display.alarm{color:var(--mag);text-shadow:var(--glow-m);animation:pulse-alarm .5s ease-in-out infinite;}
     @keyframes pulse-alarm{0%,100%{opacity:1}50%{opacity:.3}}
     .timer-label{font-size:.55rem;color:var(--dim);letter-spacing:1px;}
     .tbtn{background:none;border:1px solid var(--dim);color:var(--dim);cursor:pointer;
       font-size:.65rem;padding:3px 7px;transition:all .18s;font-family:'Share Tech Mono',monospace;}
     .tbtn:hover{border-color:var(--cyan);color:var(--cyan);}
+
+    /* Degen button */
+    .degen-btn{background:rgba(255,60,60,.06);border:1px solid rgba(255,60,60,.35);
+      color:var(--red);cursor:pointer;font-family:'Orbitron',sans-serif;
+      font-size:.5rem;font-weight:700;letter-spacing:2px;padding:4px 9px;transition:all .2s;}
+    .degen-btn:hover{background:rgba(255,60,60,.16);box-shadow:var(--glow-r);}
 
     .dot{display:inline-block;width:7px;height:7px;border-radius:50%;
       background:var(--green);box-shadow:var(--glow-g);animation:blink 2s ease-in-out infinite;margin-right:4px;}
@@ -85,22 +90,136 @@
     .sys-status{font-size:.62rem;line-height:1.8;text-align:right;}
 
     /* ── PAGES ─────────────────────────────────── */
-    #page-main{flex:1;display:grid;grid-template-columns:300px 1fr;gap:9px;min-height:0;}
+    #page-main{flex:1;display:grid;grid-template-columns:255px 1fr;gap:9px;min-height:0;}
     #page-trading{flex:1;display:none;flex-direction:column;gap:12px;min-height:0;overflow-y:auto;}
 
-    /* ── PANEL ─────────────────────────────────── */
-    .panel{background:var(--panel);border:1px solid var(--border);position:relative;display:flex;flex-direction:column;}
-    .panel::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;
-      background:linear-gradient(180deg,var(--cyan),transparent 80%);}
-    .panel::after{content:'';position:absolute;bottom:-1px;right:-1px;width:10px;height:10px;
-      border-bottom:2px solid var(--cyan);border-right:2px solid var(--cyan);}
-    .ph{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;
-      padding:7px 13px;border-bottom:1px solid var(--border);background:rgba(0,245,255,0.018);}
-    .ph-title{font-family:'Orbitron',sans-serif;font-size:.58rem;font-weight:700;color:var(--cyan);letter-spacing:3px;}
-    .pb{padding:10px;}
+    /* ── LEFT COLUMN (Sektionen) ─────────────────── */
+    .col-left{display:flex;flex-direction:column;gap:7px;overflow-y:auto;min-height:0;}
+    .col-left::-webkit-scrollbar{width:2px;}
+    .col-left::-webkit-scrollbar-thumb{background:var(--cyan);}
 
-    /* ── KANBAN BOARD ───────────────────────────── */
-    .kanban{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;padding:6px;min-height:0;overflow:hidden;}
+    /* ── SECTION BLOCKS ─────────────────────────── */
+    .sec{background:var(--panel);border:1px solid var(--border);flex-shrink:0;position:relative;}
+    .sec::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;}
+    .sec.ki::before      {background:linear-gradient(180deg,var(--mag),transparent 80%);}
+    .sec.research::before{background:linear-gradient(180deg,var(--green),transparent 80%);}
+    .sec.org::before     {background:linear-gradient(180deg,var(--cyan),transparent 80%);}
+    .sec.uni::before     {background:linear-gradient(180deg,var(--blue),transparent 80%);}
+
+    .sec-head{display:flex;align-items:center;justify-content:space-between;
+      padding:7px 12px;cursor:pointer;border-bottom:1px solid transparent;
+      transition:background .15s;user-select:none;}
+    .sec-head:hover{background:rgba(255,255,255,.02);}
+    .sec-head.open{border-bottom-color:var(--border);}
+    .sec-title{font-family:'Orbitron',sans-serif;font-size:.55rem;font-weight:700;letter-spacing:2px;}
+    .ki .sec-title      {color:var(--mag);}
+    .research .sec-title{color:var(--green);}
+    .org .sec-title     {color:var(--cyan);}
+    .uni .sec-title     {color:var(--blue);}
+    .sec-arrow{font-size:.55rem;color:var(--dim);transition:transform .2s;}
+    .sec-head.open .sec-arrow{transform:rotate(180deg);}
+    .sec-links{display:none;padding:6px 8px;flex-wrap:wrap;gap:5px;}
+    .sec-links.open{display:flex;}
+
+    .slink{display:flex;align-items:center;gap:5px;padding:5px 8px;
+      background:rgba(255,255,255,.02);border:1px solid var(--border);
+      cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--text);
+      transition:all .16s;white-space:nowrap;text-decoration:none;}
+    .ki       .slink:hover{border-color:var(--mag);  color:var(--mag);  background:rgba(255,0,160,.05);}
+    .research .slink:hover{border-color:var(--green);color:var(--green);background:rgba(57,255,20,.05);}
+    .org      .slink:hover{border-color:var(--cyan); color:var(--cyan); background:rgba(0,245,255,.05);}
+    .uni      .slink:hover{border-color:var(--blue); color:var(--blue); background:rgba(68,136,255,.05);}
+    .si{font-size:.8rem;}
+
+    /* ── RADIO ─────────────────────────────────── */
+    .radio-sec{background:var(--panel);border:1px solid var(--border);flex-shrink:0;position:relative;}
+    .radio-sec::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;
+      background:linear-gradient(180deg,var(--purple),transparent 80%);}
+    .radio-head{display:flex;align-items:center;justify-content:space-between;
+      padding:7px 12px;cursor:pointer;border-bottom:1px solid transparent;
+      transition:background .15s;user-select:none;}
+    .radio-head:hover{background:rgba(255,255,255,.02);}
+    .radio-head.open{border-bottom-color:var(--border);}
+    .radio-title{font-family:'Orbitron',sans-serif;font-size:.55rem;font-weight:700;color:var(--purple);letter-spacing:2px;}
+    .radio-arrow{font-size:.55rem;color:var(--dim);transition:transform .2s;}
+    .radio-head.open .radio-arrow{transform:rotate(180deg);}
+    .radio-body{display:none;padding:7px;}
+    .radio-body.open{display:block;}
+    .radio-group-label{font-size:.52rem;color:var(--dim);letter-spacing:2px;padding:3px 0;border-bottom:1px solid var(--border);margin-bottom:4px;}
+    .stn-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:6px;}
+    .stn{display:flex;flex-direction:column;align-items:center;gap:1px;padding:5px 4px;
+      background:rgba(191,95,255,.04);border:1px solid var(--border);cursor:pointer;
+      transition:all .18s;font-family:'Share Tech Mono',monospace;text-align:center;}
+    .stn:hover,.stn.active{border-color:var(--purple);background:rgba(191,95,255,.1);}
+    .stn.active{box-shadow:0 0 6px rgba(191,95,255,.2);}
+    .stn-icon{font-size:.85rem;}
+    .stn-name{font-size:.58rem;color:var(--text);line-height:1.2;}
+    .stn.active .stn-name{color:var(--purple);}
+    .stn-tag{font-size:.47rem;color:var(--dim);letter-spacing:1px;}
+    .stn.active .stn-tag{color:var(--purple);}
+    .player-bar{display:none;flex-direction:column;gap:4px;padding:6px 8px;margin-top:5px;
+      background:rgba(191,95,255,.05);border:1px solid rgba(191,95,255,.2);}
+    .player-bar.on{display:flex;}
+    .pb-top{display:flex;align-items:center;gap:5px;}
+    .pb-dot{width:6px;height:6px;border-radius:50%;background:var(--purple);
+      box-shadow:0 0 6px var(--purple);animation:blink 1s ease-in-out infinite;flex-shrink:0;}
+    .pb-name{font-size:.58rem;color:var(--purple);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .pb-btn{background:none;border:1px solid rgba(191,95,255,.3);cursor:pointer;
+      font-size:.55rem;color:var(--dim);padding:2px 5px;font-family:'Share Tech Mono',monospace;transition:all .18s;flex-shrink:0;}
+    .pb-btn:hover{border-color:var(--purple);color:var(--purple);}
+    .pb-btn.stop:hover{border-color:var(--mag);color:var(--mag);}
+    .vol-row{display:flex;align-items:center;gap:6px;}
+    .vol-icon{font-size:.7rem;cursor:pointer;flex-shrink:0;user-select:none;}
+    input[type=range].vol-slider{-webkit-appearance:none;flex:1;height:3px;
+      background:rgba(191,95,255,.25);outline:none;border-radius:2px;cursor:pointer;}
+    input[type=range].vol-slider::-webkit-slider-thumb{-webkit-appearance:none;
+      width:10px;height:10px;border-radius:50%;background:var(--purple);cursor:pointer;}
+
+    /* ── MAIN PANEL (rechts, mit Tabs) ──────────── */
+    .main-panel{
+      background:var(--panel);border:1px solid var(--border);
+      display:flex;flex-direction:column;position:relative;min-height:0;
+    }
+    .main-panel::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;
+      background:linear-gradient(180deg,var(--cyan),transparent 80%);}
+    .main-panel::after{content:'';position:absolute;bottom:-1px;right:-1px;width:12px;height:12px;
+      border-bottom:2px solid var(--cyan);border-right:2px solid var(--cyan);}
+
+    /* Tabs */
+    .tab-bar{display:flex;gap:0;flex-shrink:0;border-bottom:2px solid var(--border);}
+    .tab-btn{
+      font-family:'Orbitron',sans-serif;font-size:.58rem;font-weight:700;letter-spacing:2px;
+      padding:10px 20px;cursor:pointer;background:transparent;border:none;
+      border-right:1px solid var(--border);color:var(--dim);
+      transition:all .2s;position:relative;white-space:nowrap;
+    }
+    .tab-btn:hover{color:var(--text);background:rgba(255,255,255,.02);}
+    .tab-btn.active{color:var(--cyan);background:rgba(0,245,255,.04);}
+    .tab-btn.active::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;background:var(--cyan);}
+
+    /* Tab content */
+    .tab-content{display:none;flex:1;min-height:0;}
+    .tab-content.active{display:flex;flex-direction:column;}
+
+    /* ── KALENDER TAB ─────────────────────────── */
+    .cal-wrap{flex:1;display:flex;flex-direction:column;min-height:0;}
+    .cal-setup{display:flex;flex-direction:column;align-items:center;justify-content:center;
+      gap:14px;flex:1;text-align:center;padding:30px;}
+    .cal-setup-text{font-size:.65rem;color:var(--dim);line-height:2;letter-spacing:1px;}
+    .cal-cfg-btn{background:rgba(0,245,255,.07);border:1px solid var(--cyan);color:var(--cyan);
+      cursor:pointer;font-family:'Orbitron',sans-serif;font-size:.55rem;font-weight:700;
+      letter-spacing:2px;padding:8px 18px;transition:all .2s;}
+    .cal-cfg-btn:hover{background:rgba(0,245,255,.16);box-shadow:var(--glow-c);}
+    .cal-open-link{background:transparent;border:1px solid var(--dim);color:var(--dim);
+      font-family:'Share Tech Mono',monospace;font-size:.62rem;padding:5px 12px;
+      text-decoration:none;transition:all .2s;display:inline-block;}
+    .cal-open-link:hover{border-color:var(--cyan);color:var(--cyan);}
+    .cal-toolbar{display:flex;align-items:center;justify-content:flex-end;gap:8px;
+      padding:5px 10px;border-bottom:1px solid var(--border);flex-shrink:0;}
+    #cal-frame{width:100%;flex:1;border:none;display:block;min-height:0;}
+
+    /* ── KANBAN TAB ───────────────────────────── */
+    .kanban{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;padding:10px;min-height:0;overflow:hidden;}
     .kb-col{display:flex;flex-direction:column;gap:7px;min-height:0;}
     .kb-head{display:flex;align-items:center;justify-content:space-between;
       padding:6px 10px;border-bottom:1px solid var(--border);flex-shrink:0;}
@@ -109,19 +228,17 @@
     .col-prog .kb-title{color:var(--yellow);}
     .col-done .kb-title{color:var(--green);}
     .kb-count{font-size:.58rem;color:var(--dim);}
+    .kb-stats-bar{flex-shrink:0;padding:5px 12px;border-bottom:1px solid var(--border);
+      font-size:.58rem;color:var(--dim);text-align:right;}
     .kb-cards{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding:2px;}
     .kb-cards::-webkit-scrollbar{width:2px;}
     .kb-cards::-webkit-scrollbar-thumb{background:var(--cyan);}
     .kb-empty{font-size:.65rem;color:var(--dim);text-align:center;padding:20px 0;letter-spacing:1px;}
-
-    /* Card */
     .card{background:rgba(0,245,255,.03);border:1px solid var(--border);border-left:3px solid var(--cyan);
       padding:8px 10px;flex-shrink:0;transition:border-color .2s;}
     .card:hover{border-color:rgba(0,245,255,.35);}
-    .card.cy{border-left-color:var(--cyan);}
-    .card.ma{border-left-color:var(--mag);}
-    .card.gr{border-left-color:var(--green);}
-    .card.or{border-left-color:var(--orange);}
+    .card.cy{border-left-color:var(--cyan);}.card.ma{border-left-color:var(--mag);}
+    .card.gr{border-left-color:var(--green);}.card.or{border-left-color:var(--orange);}
     .card.ye{border-left-color:var(--yellow);}
     .card-title{font-size:.72rem;color:var(--text);line-height:1.4;word-break:break-word;}
     .card-note{font-size:.62rem;color:var(--dim);margin-top:4px;line-height:1.4;word-break:break-word;}
@@ -132,13 +249,9 @@
     .cbtn:hover{border-color:var(--cyan);color:var(--cyan);}
     .cbtn.del:hover{border-color:var(--mag);color:var(--mag);}
     .card-ts{font-size:.55rem;color:var(--dim);}
-
-    /* Add card form */
-    .add-card-btn{
-      flex-shrink:0;padding:6px;border:1px dashed var(--border);
+    .add-card-btn{flex-shrink:0;padding:6px;border:1px dashed var(--border);
       background:transparent;color:var(--dim);cursor:pointer;font-family:'Share Tech Mono',monospace;
-      font-size:.65rem;text-align:center;transition:all .2s;letter-spacing:1px;
-    }
+      font-size:.65rem;text-align:center;transition:all .2s;letter-spacing:1px;}
     .add-card-btn:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,245,255,.03);}
     .card-form{display:none;flex-direction:column;gap:6px;padding:8px;
       border:1px dashed rgba(0,245,255,.25);background:rgba(0,245,255,.02);flex-shrink:0;}
@@ -149,157 +262,30 @@
     .cnta{resize:none;height:50px;}
     .cc-row{display:flex;gap:5px;}
     .cc{width:12px;height:12px;border-radius:50%;cursor:pointer;border:2px solid transparent;}
-    .cc.sel{border-color:#fff;}.cc.cy{background:var(--cyan);}.cc.ma{background:var(--mag);}.cc.gr{background:var(--green);}.cc.or{background:var(--orange);}.cc.ye{background:var(--yellow);}
-
-    /* ── RIGHT COLUMN ───────────────────────────── */
-    .col-right{grid-column:2;display:flex;flex-direction:column;gap:8px;overflow-y:auto;min-height:0;}
-    .col-right::-webkit-scrollbar{width:3px;}
-    .col-right::-webkit-scrollbar-thumb{background:var(--cyan);}
-
-    /* ── GOOGLE CALENDAR ─────────────────────────── */
-    .cal-sec{background:var(--panel);border:1px solid var(--border);flex-shrink:0;position:relative;}
-    .cal-sec::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;
-      background:linear-gradient(180deg,var(--cyan),transparent 80%);}
-    .cal-head{display:flex;align-items:center;justify-content:space-between;
-      padding:8px 13px;cursor:pointer;border-bottom:1px solid transparent;transition:background .15s;user-select:none;}
-    .cal-head:hover{background:rgba(255,255,255,.02);}
-    .cal-head.open{border-bottom-color:var(--border);}
-    .cal-title{font-family:'Orbitron',sans-serif;font-size:.57rem;font-weight:700;color:var(--cyan);letter-spacing:2px;}
-    .cal-arrow{font-size:.57rem;color:var(--dim);transition:transform .2s;}
-    .cal-head.open .cal-arrow{transform:rotate(180deg);}
-    .cal-body{display:none;flex-direction:column;}
-    .cal-body.open{display:flex;}
-    .cal-frame-wrap{position:relative;width:100%;height:280px;background:#0a0a18;}
-    .cal-frame-wrap iframe{width:100%;height:100%;border:none;display:block;}
-    .cal-setup{display:flex;flex-direction:column;align-items:center;justify-content:center;
-      gap:10px;padding:20px;height:280px;text-align:center;}
-    .cal-setup-text{font-size:.6rem;color:var(--dim);line-height:1.8;letter-spacing:1px;}
-    .cal-cfg-btn{background:rgba(0,245,255,.07);border:1px solid var(--cyan);color:var(--cyan);
-      cursor:pointer;font-family:'Orbitron',sans-serif;font-size:.52rem;font-weight:700;
-      letter-spacing:2px;padding:6px 14px;transition:all .2s;}
-    .cal-cfg-btn:hover{background:rgba(0,245,255,.16);box-shadow:var(--glow-c);}
-    .cal-open-btn{background:transparent;border:1px solid var(--dim);color:var(--dim);
-      cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.58rem;
-      padding:4px 10px;transition:all .2s;text-decoration:none;display:inline-block;}
-    .cal-open-btn:hover{border-color:var(--cyan);color:var(--cyan);}
-
-    /* ── SECTION BLOCKS ─────────────────────────── */
-    .sec{background:var(--panel);border:1px solid var(--border);flex-shrink:0;position:relative;}
-    .sec::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;}
-    .sec.ki::before     {background:linear-gradient(180deg,var(--mag),transparent 80%);}
-    .sec.research::before{background:linear-gradient(180deg,var(--green),transparent 80%);}
-    .sec.org::before    {background:linear-gradient(180deg,var(--cyan),transparent 80%);}
-    .sec.uni::before    {background:linear-gradient(180deg,var(--blue),transparent 80%);}
-
-    .sec-head{display:flex;align-items:center;justify-content:space-between;
-      padding:8px 13px;cursor:pointer;border-bottom:1px solid transparent;transition:background .15s;user-select:none;}
-    .sec-head:hover{background:rgba(255,255,255,.02);}
-    .sec-head.open{border-bottom-color:var(--border);}
-    .sec-title{font-family:'Orbitron',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:2px;}
-    .ki .sec-title      {color:var(--mag);}
-    .research .sec-title{color:var(--green);}
-    .org .sec-title     {color:var(--cyan);}
-    .uni .sec-title     {color:var(--blue);}
-    .sec-arrow{font-size:.57rem;color:var(--dim);transition:transform .2s;}
-    .sec-head.open .sec-arrow{transform:rotate(180deg);}
-    .sec-links{display:none;padding:8px 9px;gap:6px;}
-    .sec-links.open{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));}
-
-    .slink{display:flex;align-items:center;gap:6px;padding:7px 10px;
-      background:rgba(255,255,255,.02);border:1px solid var(--border);
-      cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.7rem;color:var(--text);
-      transition:all .16s;white-space:nowrap;text-decoration:none;}
-    .ki       .slink:hover{border-color:var(--mag);   color:var(--mag);   background:rgba(255,0,160,.05);}
-    .research .slink:hover{border-color:var(--green); color:var(--green); background:rgba(57,255,20,.05);}
-    .org      .slink:hover{border-color:var(--cyan);  color:var(--cyan);  background:rgba(0,245,255,.05);}
-    .uni      .slink:hover{border-color:var(--blue);  color:var(--blue);  background:rgba(68,136,255,.05);}
-    .si{font-size:.85rem;}
-
-    /* Degen button (header) */
-    .degen-btn{
-      background:rgba(255,60,60,.06);border:1px solid rgba(255,60,60,.35);
-      color:var(--red);cursor:pointer;font-family:'Orbitron',sans-serif;
-      font-size:.5rem;font-weight:700;letter-spacing:2px;padding:4px 9px;
-      transition:all .2s;white-space:nowrap;
-    }
-    .degen-btn:hover{background:rgba(255,60,60,.16);box-shadow:var(--glow-r);}
-
-    /* ── RADIO ─────────────────────────────────── */
-    .radio-sec{background:var(--panel);border:1px solid var(--border);flex-shrink:0;position:relative;}
-    .radio-sec::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;
-      background:linear-gradient(180deg,var(--purple),transparent 80%);}
-    .radio-sec::after{content:'';position:absolute;bottom:-1px;right:-1px;width:10px;height:10px;
-      border-bottom:2px solid var(--purple);border-right:2px solid var(--purple);}
-    .radio-head{display:flex;align-items:center;justify-content:space-between;
-      padding:8px 13px;cursor:pointer;border-bottom:1px solid transparent;transition:background .15s;user-select:none;}
-    .radio-head:hover{background:rgba(255,255,255,.02);}
-    .radio-head.open{border-bottom-color:var(--border);}
-    .radio-title{font-family:'Orbitron',sans-serif;font-size:.6rem;font-weight:700;color:var(--purple);letter-spacing:2px;}
-    .radio-arrow{font-size:.57rem;color:var(--dim);transition:transform .2s;}
-    .radio-head.open .radio-arrow{transform:rotate(180deg);}
-    .radio-body{display:none;padding:8px;}
-    .radio-body.open{display:block;}
-
-    .radio-group-label{font-size:.55rem;color:var(--dim);letter-spacing:2px;padding:4px 0 3px;border-bottom:1px solid var(--border);margin-bottom:5px;}
-    .stn-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:8px;}
-    .stn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 6px;
-      background:rgba(191,95,255,.04);border:1px solid var(--border);cursor:pointer;
-      transition:all .18s;font-family:'Share Tech Mono',monospace;text-align:center;}
-    .stn:hover,.stn.active{border-color:var(--purple);background:rgba(191,95,255,.1);}
-    .stn.active{box-shadow:0 0 8px rgba(191,95,255,.25);}
-    .stn-icon{font-size:1rem;}
-    .stn-name{font-size:.62rem;color:var(--text);line-height:1.2;}
-    .stn.active .stn-name{color:var(--purple);}
-    .stn-tag{font-size:.5rem;color:var(--dim);letter-spacing:1px;}
-    .stn.active .stn-tag{color:var(--purple);}
-
-    .player-bar{display:none;flex-direction:column;gap:5px;padding:7px 9px;margin-top:6px;
-      background:rgba(191,95,255,.05);border:1px solid rgba(191,95,255,.2);}
-    .player-bar.on{display:flex;}
-    .pb-top{display:flex;align-items:center;gap:6px;}
-    .pb-dot{width:7px;height:7px;border-radius:50%;background:var(--purple);
-      box-shadow:0 0 7px var(--purple);animation:blink 1s ease-in-out infinite;flex-shrink:0;}
-    .pb-name{font-size:.63rem;color:var(--purple);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .pb-btn{background:none;border:1px solid rgba(191,95,255,.3);cursor:pointer;
-      font-size:.58rem;color:var(--dim);padding:2px 7px;font-family:'Share Tech Mono',monospace;transition:all .18s;flex-shrink:0;}
-    .pb-btn:hover{border-color:var(--purple);color:var(--purple);}
-    .pb-btn.stop:hover{border-color:var(--mag);color:var(--mag);}
-    .vol-row{display:flex;align-items:center;gap:7px;}
-    .vol-icon{font-size:.75rem;cursor:pointer;flex-shrink:0;user-select:none;}
-    input[type=range].vol-slider{-webkit-appearance:none;flex:1;height:3px;
-      background:rgba(191,95,255,.25);outline:none;border-radius:2px;cursor:pointer;}
-    input[type=range].vol-slider::-webkit-slider-thumb{-webkit-appearance:none;
-      width:11px;height:11px;border-radius:50%;background:var(--purple);cursor:pointer;}
-    input[type=range].vol-slider::-moz-range-thumb{width:11px;height:11px;
-      border-radius:50%;background:var(--purple);border:none;cursor:pointer;}
-
-    /* ── BUTTONS ────────────────────────────────── */
+    .cc.sel{border-color:#fff;}
+    .cc.cy{background:var(--cyan);}.cc.ma{background:var(--mag);}.cc.gr{background:var(--green);}
+    .cc.or{background:var(--orange);}.cc.ye{background:var(--yellow);}
     .btn{font-family:'Orbitron',sans-serif;font-size:.52rem;font-weight:700;letter-spacing:2px;
       padding:5px 11px;cursor:pointer;border:1px solid;text-transform:uppercase;transition:all .2s;text-decoration:none;display:inline-block;}
     .btn-c{background:rgba(0,245,255,.07);border-color:var(--cyan);color:var(--cyan);}
     .btn-c:hover{background:rgba(0,245,255,.16);box-shadow:var(--glow-c);}
     .btn-d{background:transparent;border-color:var(--dim);color:var(--dim);}
     .btn-d:hover{border-color:var(--mag);color:var(--mag);}
-    .btn-r{background:rgba(255,60,60,.08);border-color:var(--red);color:var(--red);}
-    .btn-r:hover{background:rgba(255,60,60,.18);box-shadow:var(--glow-r);}
     .brow{display:flex;gap:5px;}
 
     /* ── TRADING PAGE ───────────────────────────── */
-    .trading-page-header{
-      padding:16px 22px;border:1px solid rgba(255,60,60,.3);
-      background:rgba(255,60,60,.04);position:relative;overflow:hidden;flex-shrink:0;
-    }
+    .trading-page-header{padding:16px 22px;border:1px solid rgba(255,60,60,.3);
+      background:rgba(255,60,60,.04);position:relative;overflow:hidden;flex-shrink:0;}
     .trading-page-header::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--red);}
     .tp-back{display:flex;align-items:center;gap:12px;}
     .tp-title{font-family:'Orbitron',sans-serif;font-size:1.2rem;font-weight:900;color:var(--red);text-shadow:var(--glow-r);letter-spacing:4px;}
     .tp-warn{font-size:.68rem;color:rgba(255,60,60,.6);margin-top:4px;letter-spacing:1px;}
-
+    .btn-r{background:rgba(255,60,60,.08);border-color:var(--red);color:var(--red);}
+    .btn-r:hover{background:rgba(255,60,60,.18);box-shadow:var(--glow-r);}
     .trading-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;padding:4px;}
-    .tc{
-      background:var(--panel);border:1px solid rgba(255,60,60,.2);
-      padding:22px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;
-      transition:all .2s;text-decoration:none;
-    }
+    .tc{background:var(--panel);border:1px solid rgba(255,60,60,.2);padding:22px;
+      display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;
+      transition:all .2s;text-decoration:none;}
     .tc:hover{border-color:var(--red);box-shadow:var(--glow-r);background:rgba(255,60,60,.05);}
     .tc-icon{font-size:2.5rem;}
     .tc-name{font-family:'Orbitron',sans-serif;font-size:.85rem;font-weight:700;color:var(--red);letter-spacing:3px;}
@@ -322,11 +308,9 @@
     </div>
 
     <div class="hdr-right">
-      <!-- Degen-Seite -->
       <button class="degen-btn" onclick="showPage('trading')">DEGEN →</button>
-      <!-- Timer -->
       <div class="timer-wrap">
-        <button class="timer-toggle" onclick="timerToggle()" title="Timer ein-/ausblenden">⏱ TIMER</button>
+        <button class="timer-toggle" onclick="timerToggle()">⏱ TIMER</button>
         <div class="timer-box" id="timer-box">
           <div>
             <div class="timer-display" id="t-display">25:00</div>
@@ -334,12 +318,10 @@
           </div>
           <button class="tbtn" id="t-start-btn" onclick="tToggle()">▶</button>
           <button class="tbtn" onclick="tReset()">↺</button>
-          <button class="tbtn" onclick="tSwitch()" title="Fokus / Pause wechseln">⇄</button>
+          <button class="tbtn" onclick="tSwitch()" title="Fokus / Pause">⇄</button>
         </div>
       </div>
-      <div class="sys-status">
-        <div><span class="dot"></span>ONLINE</div>
-      </div>
+      <div class="sys-status"><div><span class="dot"></span>ONLINE</div></div>
     </div>
   </header>
 
@@ -348,91 +330,10 @@
   <!-- ══════════════════════════════════════════ -->
   <div id="page-main">
 
-    <!-- ── KANBAN BOARD ── -->
-    <div class="panel">
-      <div class="ph">
-        <span class="ph-title">⬡ AUFGABEN-BOARD</span>
-        <span style="font-size:.58rem;color:var(--dim);" id="kb-stats">–</span>
-      </div>
-      <div class="kanban">
+    <!-- ── LINKE SPALTE: Sektionen ── -->
+    <div class="col-left">
 
-        <!-- TO-DO -->
-        <div class="kb-col col-todo">
-          <div class="kb-head">
-            <span class="kb-title">TO-DO</span>
-            <span class="kb-count" id="cnt-todo">0</span>
-          </div>
-          <div class="kb-cards" id="cards-todo"></div>
-          <div class="card-form" id="form-todo">
-            <input class="cni" id="ci-todo" type="text" placeholder="AUFGABE …" onkeydown="if(event.key==='Enter')addCard('todo')">
-            <textarea class="cnta" id="cn-todo" placeholder="Notiz (optional) …"></textarea>
-            <div class="cc-row">
-              <div class="cc cy sel" data-c="cy" onclick="pickCC(this,'todo')"></div>
-              <div class="cc ma" data-c="ma" onclick="pickCC(this,'todo')"></div>
-              <div class="cc gr" data-c="gr" onclick="pickCC(this,'todo')"></div>
-              <div class="cc or" data-c="or" onclick="pickCC(this,'todo')"></div>
-              <div class="cc ye" data-c="ye" onclick="pickCC(this,'todo')"></div>
-            </div>
-            <div class="brow">
-              <button class="btn btn-c" onclick="addCard('todo')">+ HINZUFÜGEN</button>
-              <button class="btn btn-d" onclick="closeCardForm('todo')">✕</button>
-            </div>
-          </div>
-          <button class="add-card-btn" id="add-btn-todo" onclick="openCardForm('todo')">+ NEUE AUFGABE</button>
-        </div>
-
-        <!-- IN PROGRESS -->
-        <div class="kb-col col-prog">
-          <div class="kb-head">
-            <span class="kb-title">IN BEARBEITUNG</span>
-            <span class="kb-count" id="cnt-prog">0</span>
-          </div>
-          <div class="kb-cards" id="cards-prog"></div>
-        </div>
-
-        <!-- DONE -->
-        <div class="kb-col col-done">
-          <div class="kb-head">
-            <span class="kb-title">ERLEDIGT</span>
-            <span class="kb-count" id="cnt-done">0</span>
-          </div>
-          <div class="kb-cards" id="cards-done"></div>
-          <button class="add-card-btn" style="border-color:rgba(57,255,20,.2);color:rgba(57,255,20,.4);" onclick="clearDone()">✓ ERLEDIGTE LÖSCHEN</button>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- ── RECHTE SPALTE ── -->
-    <div class="col-right">
-
-      <!-- 1. GOOGLE KALENDER -->
-      <div class="cal-sec">
-        <div class="cal-head open" onclick="toggleCal(this)">
-          <span class="cal-title">📅 GOOGLE KALENDER</span>
-          <span class="cal-arrow">▾</span>
-        </div>
-        <div class="cal-body open" id="cal-body">
-          <div id="cal-setup" class="cal-setup">
-            <div class="cal-setup-text">
-              KALENDER EINRICHTEN:<br>
-              Google Kalender → Einstellungen →<br>
-              Kalender auswählen → Einbetten → Link kopieren
-            </div>
-            <button class="cal-cfg-btn" onclick="calConfigure()">⚙ URL KONFIGURIEREN</button>
-            <a class="cal-open-btn" href="https://calendar.google.com" target="_blank">↗ KALENDER ÖFFNEN</a>
-          </div>
-          <div id="cal-frame-wrap" class="cal-frame-wrap" style="display:none;">
-            <iframe id="cal-frame" src="" frameborder="0" scrolling="no"></iframe>
-          </div>
-          <div style="display:flex;justify-content:flex-end;padding:4px 8px;gap:6px;border-top:1px solid var(--border);">
-            <a class="cal-open-btn" href="https://calendar.google.com" target="_blank">↗ ÖFFNEN</a>
-            <button class="cal-open-btn" onclick="calConfigure()">⚙ URL</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- 2. ORGANISATION -->
+      <!-- ORGANISATION -->
       <div class="sec org">
         <div class="sec-head open" onclick="toggleSec(this)">
           <span class="sec-title">🗂️ ORGANISATION</span><span class="sec-arrow">▾</span>
@@ -446,7 +347,7 @@
         </div>
       </div>
 
-      <!-- 3. KI-MODELLE -->
+      <!-- KI -->
       <div class="sec ki">
         <div class="sec-head open" onclick="toggleSec(this)">
           <span class="sec-title">🤖 KI-MODELLE</span><span class="sec-arrow">▾</span>
@@ -460,7 +361,7 @@
         </div>
       </div>
 
-      <!-- 4. UNI -->
+      <!-- UNI -->
       <div class="sec uni">
         <div class="sec-head open" onclick="toggleSec(this)">
           <span class="sec-title">🎓 UNI // BOKU</span><span class="sec-arrow">▾</span>
@@ -468,36 +369,32 @@
         <div class="sec-links open">
           <a class="slink" href="https://bokuonline.boku.ac.at" target="_blank"><span class="si">🏛️</span>BOKU Online</a>
           <a class="slink" href="https://learn.boku.ac.at" target="_blank"><span class="si">📖</span>BOKU Learn</a>
-          <!-- Masterarbeit: Ablage > Studium > KTWW > Masterarbeit — URL hier eintragen -->
-          <a class="slink" href="https://drive.google.com/drive/folders/MASTERARBEIT_FOLDER_ID" target="_blank" id="ma-link"><span class="si">📁</span>Masterarbeit</a>
-          <button class="slink" onclick="setMaLink()" style="border-style:dashed;cursor:pointer;"><span class="si">⚙</span>Ordner-Link setzen</button>
+          <a class="slink" href="#" target="_blank" id="ma-link"><span class="si">📁</span>Masterarbeit</a>
+          <button class="slink" onclick="setMaLink()" style="border-style:dashed;cursor:pointer;"><span class="si">⚙</span>Link setzen</button>
         </div>
       </div>
 
-      <!-- 5. RESEARCH -->
+      <!-- RESEARCH -->
       <div class="sec research">
         <div class="sec-head open" onclick="toggleSec(this)">
-          <span class="sec-title">🔬 RESEARCH // DATEN</span><span class="sec-arrow">▾</span>
+          <span class="sec-title">🔬 RESEARCH</span><span class="sec-arrow">▾</span>
         </div>
         <div class="sec-links open">
-          <!-- Österreich & EU -->
           <a class="slink" href="https://www.statistik.at" target="_blank"><span class="si">📊</span>Statistik Austria</a>
           <a class="slink" href="https://www.data.gv.at" target="_blank"><span class="si">🇦🇹</span>data.gv.at</a>
           <a class="slink" href="https://ec.europa.eu/eurostat" target="_blank"><span class="si">🇪🇺</span>Eurostat</a>
           <a class="slink" href="https://www.umweltbundesamt.at" target="_blank"><span class="si">🌿</span>Umweltbundesamt</a>
           <a class="slink" href="https://www.geosphere.at" target="_blank"><span class="si">🌍</span>GeoSphere AT</a>
           <a class="slink" href="https://www.ages.at" target="_blank"><span class="si">🔬</span>AGES</a>
-          <!-- International -->
           <a class="slink" href="https://data.oecd.org" target="_blank"><span class="si">📈</span>OECD Data</a>
           <a class="slink" href="https://data.worldbank.org" target="_blank"><span class="si">🌐</span>World Bank</a>
-          <!-- Literatur -->
           <a class="slink" href="https://scholar.google.com" target="_blank"><span class="si">🎓</span>Google Scholar</a>
           <a class="slink" href="https://www.researchgate.net" target="_blank"><span class="si">📚</span>ResearchGate</a>
           <a class="slink" href="https://www.semanticscholar.org" target="_blank"><span class="si">🔭</span>Semantic Scholar</a>
         </div>
       </div>
 
-      <!-- 6. RADIO -->
+      <!-- RADIO -->
       <div class="radio-sec">
         <div class="radio-head" onclick="toggleRadio(this)">
           <span class="radio-title">🎵 RADIO // FOKUS</span>
@@ -521,11 +418,11 @@
           <audio id="audio-player"></audio>
           <div class="player-bar" id="player-bar">
             <div class="pb-top">
-              <button class="pb-btn" onclick="playPrev()">&#9664; PREV</button>
+              <button class="pb-btn" onclick="playPrev()">&#9664;</button>
               <div class="pb-dot"></div>
               <span class="pb-name" id="pb-name">–</span>
-              <button class="pb-btn" onclick="playNext()">NEXT &#9654;</button>
-              <button class="pb-btn stop" onclick="stopStream()">&#9632; STOP</button>
+              <button class="pb-btn" onclick="playNext()">&#9654;</button>
+              <button class="pb-btn stop" onclick="stopStream()">&#9632;</button>
             </div>
             <div class="vol-row">
               <span class="vol-icon" id="vol-icon" onclick="toggleMute()">🔊</span>
@@ -535,43 +432,132 @@
         </div>
       </div>
 
-    </div><!-- /col-right -->
+    </div><!-- /col-left -->
+
+    <!-- ── HAUPT-PANEL: Tabs ── -->
+    <div class="main-panel">
+
+      <!-- Tab-Leiste -->
+      <div class="tab-bar">
+        <button class="tab-btn active" id="tab-btn-cal" onclick="switchTab('cal')">📅 KALENDER</button>
+        <button class="tab-btn" id="tab-btn-kanban" onclick="switchTab('kanban')">⬡ AUFGABEN-BOARD</button>
+      </div>
+
+      <!-- Tab 1: Kalender -->
+      <div class="tab-content active" id="tab-cal">
+        <div class="cal-wrap">
+          <!-- Toolbar (nur wenn konfiguriert) -->
+          <div class="cal-toolbar" id="cal-toolbar" style="display:none;">
+            <a class="cal-open-link" href="https://calendar.google.com" target="_blank">↗ In Google öffnen</a>
+            <button class="cal-open-link" style="cursor:pointer;" onclick="calConfigure()">⚙ URL ändern</button>
+          </div>
+          <!-- Setup-Screen -->
+          <div class="cal-setup" id="cal-setup">
+            <div class="cal-setup-text">
+              KALENDER EINRICHTEN<br><br>
+              Google Kalender → Einstellungen (⚙) →<br>
+              Kalender auswählen → „Kalender einbetten"<br>
+              → Link kopieren und hier einfügen
+            </div>
+            <button class="cal-cfg-btn" onclick="calConfigure()">⚙ URL KONFIGURIEREN</button>
+            <a class="cal-open-link" href="https://calendar.google.com" target="_blank">↗ KALENDER ÖFFNEN</a>
+          </div>
+          <!-- Kalender iframe -->
+          <iframe id="cal-frame" src="" frameborder="0" scrolling="no"
+            style="display:none;width:100%;flex:1;border:none;min-height:0;"></iframe>
+        </div>
+      </div>
+
+      <!-- Tab 2: Kanban -->
+      <div class="tab-content" id="tab-kanban">
+        <div class="kb-stats-bar" id="kb-stats">–</div>
+        <div class="kanban">
+
+          <!-- TO-DO -->
+          <div class="kb-col col-todo">
+            <div class="kb-head">
+              <span class="kb-title">TO-DO</span>
+              <span class="kb-count" id="cnt-todo">0</span>
+            </div>
+            <div class="kb-cards" id="cards-todo"></div>
+            <div class="card-form" id="form-todo">
+              <input class="cni" id="ci-todo" type="text" placeholder="AUFGABE …" onkeydown="if(event.key==='Enter')addCard('todo')">
+              <textarea class="cnta" id="cn-todo" placeholder="Notiz (optional) …"></textarea>
+              <div class="cc-row">
+                <div class="cc cy sel" data-c="cy" onclick="pickCC(this,'todo')"></div>
+                <div class="cc ma" data-c="ma" onclick="pickCC(this,'todo')"></div>
+                <div class="cc gr" data-c="gr" onclick="pickCC(this,'todo')"></div>
+                <div class="cc or" data-c="or" onclick="pickCC(this,'todo')"></div>
+                <div class="cc ye" data-c="ye" onclick="pickCC(this,'todo')"></div>
+              </div>
+              <div class="brow">
+                <button class="btn btn-c" onclick="addCard('todo')">+ HINZUFÜGEN</button>
+                <button class="btn btn-d" onclick="closeCardForm('todo')">✕</button>
+              </div>
+            </div>
+            <button class="add-card-btn" id="add-btn-todo" onclick="openCardForm('todo')">+ NEUE AUFGABE</button>
+          </div>
+
+          <!-- IN PROGRESS -->
+          <div class="kb-col col-prog">
+            <div class="kb-head">
+              <span class="kb-title">IN BEARBEITUNG</span>
+              <span class="kb-count" id="cnt-prog">0</span>
+            </div>
+            <div class="kb-cards" id="cards-prog"></div>
+          </div>
+
+          <!-- DONE -->
+          <div class="kb-col col-done">
+            <div class="kb-head">
+              <span class="kb-title">ERLEDIGT</span>
+              <span class="kb-count" id="cnt-done">0</span>
+            </div>
+            <div class="kb-cards" id="cards-done"></div>
+            <button class="add-card-btn" style="border-color:rgba(57,255,20,.2);color:rgba(57,255,20,.4);" onclick="clearDone()">✓ ERLEDIGTE LÖSCHEN</button>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- /main-panel -->
+
   </div><!-- /page-main -->
 
   <!-- ══════════════════════════════════════════ -->
-  <!-- PAGE: TRADING                              -->
+  <!-- PAGE: TRADING (DEGEN)                      -->
   <!-- ══════════════════════════════════════════ -->
   <div id="page-trading">
     <div class="trading-page-header">
       <div class="tp-back">
-        <button class="btn btn-r" onclick="showPage('main')">← ZURÜCK ZUM DASHBOARD</button>
-        <span class="tp-title">// TRADING ZONE</span>
+        <button class="btn btn-r" onclick="showPage('main')">← ZURÜCK</button>
+        <span class="tp-title">// DEGEN ZONE</span>
       </div>
-      <div class="tp-warn">⚠ ACHTUNG: DU BEFINDEST DICH IM TRADING-MODUS. PRODUKTIVITÄTS-DASHBOARD PAUSIERT.</div>
+      <div class="tp-warn">⚠ DU BEFINDEST DICH IM TRADING-MODUS.</div>
     </div>
     <div class="trading-cards">
       <a class="tc" href="https://www.tradingview.com" target="_blank">
         <div class="tc-icon">📊</div>
         <div class="tc-name">TRADINGVIEW</div>
-        <div class="tc-desc">Charts, Analyse &amp; Screener.<br>Dein Haupttool für technische Analyse.</div>
+        <div class="tc-desc">Charts, Analyse &amp; Screener.</div>
         <div class="tc-btn">ÖFFNEN ↗</div>
       </a>
       <a class="tc" href="https://app.hyperliquid.xyz" target="_blank">
         <div class="tc-icon">💧</div>
         <div class="tc-name">HYPERLIQUID</div>
-        <div class="tc-desc">Dezentrale Perpetuals.<br>On-chain Trading mit CEX-Performance.</div>
+        <div class="tc-desc">Dezentrale Perpetuals.</div>
         <div class="tc-btn">ÖFFNEN ↗</div>
       </a>
       <a class="tc" href="https://www.mexc.com" target="_blank">
         <div class="tc-icon">🔷</div>
         <div class="tc-name">MEXC</div>
-        <div class="tc-desc">Zentralisierte Exchange.<br>Spot &amp; Futures Trading.</div>
+        <div class="tc-desc">Spot &amp; Futures Trading.</div>
         <div class="tc-btn">ÖFFNEN ↗</div>
       </a>
       <a class="tc" href="https://coinmarketcap.com" target="_blank">
         <div class="tc-icon">🪙</div>
         <div class="tc-name">COINMARKETCAP</div>
-        <div class="tc-desc">Marktdaten &amp; Rankings.<br>Überblick über den Kryptomarkt.</div>
+        <div class="tc-desc">Marktdaten &amp; Rankings.</div>
         <div class="tc-btn">ÖFFNEN ↗</div>
       </a>
     </div>
@@ -589,36 +575,39 @@ function tick(){
 }
 setInterval(tick,1000);tick();
 
-// ─── NAVIGATION ───────────────────────────────────────────
+// ─── SEITEN-NAVIGATION ────────────────────────────────────
 function showPage(page){
   document.getElementById('page-main').style.display    = page==='main'    ? 'grid' : 'none';
   document.getElementById('page-trading').style.display = page==='trading' ? 'flex' : 'none';
 }
 
-// ─── TIMER ALARM SOUND ────────────────────────────────────
+// ─── TABS ─────────────────────────────────────────────────
+function switchTab(name){
+  ['cal','kanban'].forEach(t=>{
+    document.getElementById('tab-'+t).classList.toggle('active', t===name);
+    document.getElementById('tab-btn-'+t).classList.toggle('active', t===name);
+  });
+}
+
+// ─── TIMER ALARM ──────────────────────────────────────────
 function playAlarm(){
   try{
     const ctx=new(window.AudioContext||window.webkitAudioContext)();
-    // Drei sanfte Töne: 440Hz, 528Hz, 396Hz — weich und angenehm
-    const notes=[440,528,396];
-    notes.forEach((freq,i)=>{
-      const osc=ctx.createOscillator();
-      const gain=ctx.createGain();
+    [440,528,396].forEach((freq,i)=>{
+      const osc=ctx.createOscillator(),gain=ctx.createGain();
       osc.connect(gain);gain.connect(ctx.destination);
-      osc.type='sine';
-      osc.frequency.value=freq;
-      const start=ctx.currentTime+i*1.0;
-      gain.gain.setValueAtTime(0,start);
-      gain.gain.linearRampToValueAtTime(0.18,start+0.2);
-      gain.gain.setValueAtTime(0.18,start+0.65);
-      gain.gain.linearRampToValueAtTime(0,start+0.95);
-      osc.start(start);
-      osc.stop(start+1.0);
+      osc.type='sine';osc.frequency.value=freq;
+      const s=ctx.currentTime+i*1.0;
+      gain.gain.setValueAtTime(0,s);
+      gain.gain.linearRampToValueAtTime(0.18,s+0.2);
+      gain.gain.setValueAtTime(0.18,s+0.65);
+      gain.gain.linearRampToValueAtTime(0,s+0.95);
+      osc.start(s);osc.stop(s+1.0);
     });
   }catch(e){}
 }
 
-// ─── TIMER (HEADER) ───────────────────────────────────────
+// ─── TIMER ────────────────────────────────────────────────
 const T_MODES={fokus:{label:'FOKUS',secs:25*60},pause:{label:'PAUSE',secs:5*60}};
 let tMode='fokus',tTotal=T_MODES.fokus.secs,tLeft=tTotal,tRun=false,tTimer=null;
 function timerToggle(){document.getElementById('timer-box').classList.toggle('open');}
@@ -630,44 +619,39 @@ function tRender(){
 }
 function tToggle(){
   if(tRun){clearInterval(tTimer);tRun=false;}
-  else{
-    tRun=true;
-    tTimer=setInterval(()=>{
-      if(tLeft<=0){
-        clearInterval(tTimer);tRun=false;
-        // Alarm: 3 sanfte Töne über ~3 Sekunden
-        playAlarm();
-        const disp=document.getElementById('t-display');
-        disp.classList.add('alarm');
-        setTimeout(()=>disp.classList.remove('alarm'),3500);
-        tRender();return;
-      }
-      tLeft--;tRender();
-    },1000);
-  }
+  else{tRun=true;tTimer=setInterval(()=>{
+    if(tLeft<=0){
+      clearInterval(tTimer);tRun=false;
+      playAlarm();
+      const d=document.getElementById('t-display');
+      d.classList.add('alarm');
+      setTimeout(()=>d.classList.remove('alarm'),3500);
+      tRender();return;
+    }
+    tLeft--;tRender();
+  },1000);}
   tRender();
 }
-function tReset(){clearInterval(tTimer);tRun=false;tLeft=tTotal;tRender();document.getElementById('t-display').classList.remove('alarm');}
+function tReset(){clearInterval(tTimer);tRun=false;tLeft=tTotal;document.getElementById('t-display').classList.remove('alarm');tRender();}
 function tSwitch(){
   clearInterval(tTimer);tRun=false;
   tMode=tMode==='fokus'?'pause':'fokus';tTotal=T_MODES[tMode].secs;tLeft=tTotal;
-  document.getElementById('t-display').classList.remove('alarm');
-  tRender();
+  document.getElementById('t-display').classList.remove('alarm');tRender();
 }
 tRender();
 
 // ─── SEKTIONEN ────────────────────────────────────────────
 function toggleSec(head){head.classList.toggle('open');head.nextElementSibling.classList.toggle('open');}
 function toggleRadio(head){head.classList.toggle('open');document.getElementById('radio-body').classList.toggle('open');}
-function toggleCal(head){head.classList.toggle('open');document.getElementById('cal-body').classList.toggle('open');}
 
-// ─── GOOGLE KALENDER KONFIGURATION ────────────────────────
+// ─── GOOGLE KALENDER ──────────────────────────────────────
 (function initCal(){
   const url=localStorage.getItem('cal_embed_url');
   if(url){
     document.getElementById('cal-setup').style.display='none';
-    document.getElementById('cal-frame-wrap').style.display='block';
-    document.getElementById('cal-frame').src=url;
+    document.getElementById('cal-toolbar').style.display='flex';
+    const f=document.getElementById('cal-frame');
+    f.src=url;f.style.display='block';
   }
 })();
 function calConfigure(){
@@ -675,24 +659,25 @@ function calConfigure(){
   const url=prompt(
     'Google Kalender Embed-URL einfügen:\n\n'+
     'Anleitung: calendar.google.com → Einstellungen (⚙) →\n'+
-    'Kalender auswählen → "Kalender einbetten" → Link kopieren\n\n'+
+    'Kalender auswählen → „Kalender einbetten" → Link kopieren\n\n'+
     'Aktuell: '+(cur||'–'),cur);
   if(url&&url.trim()){
     localStorage.setItem('cal_embed_url',url.trim());
     document.getElementById('cal-setup').style.display='none';
-    document.getElementById('cal-frame-wrap').style.display='block';
-    document.getElementById('cal-frame').src=url.trim();
+    document.getElementById('cal-toolbar').style.display='flex';
+    const f=document.getElementById('cal-frame');
+    f.src=url.trim();f.style.display='block';
   }
 }
 
-// ─── MASTERARBEIT LINK ─────────────────────────────────────
+// ─── MASTERARBEIT LINK ────────────────────────────────────
 (function initMaLink(){
   const url=localStorage.getItem('ma_link_url');
   if(url)document.getElementById('ma-link').href=url;
 })();
 function setMaLink(){
   const cur=localStorage.getItem('ma_link_url')||'';
-  const url=prompt('Google Drive Masterarbeit-Ordner Link einfügen:\n(Drive → Masterarbeit-Ordner → Rechtsklick → Link kopieren)',cur);
+  const url=prompt('Google Drive Masterarbeit-Ordner Link einfügen:',cur);
   if(url&&url.trim()){
     localStorage.setItem('ma_link_url',url.trim());
     document.getElementById('ma-link').href=url.trim();
@@ -727,15 +712,9 @@ function stopStream(){
   document.getElementById('player-bar').classList.remove('on');
   if(activeIdx>=0){document.getElementById('stn-'+activeIdx).classList.remove('active');activeIdx=-1;}
 }
-function setVolume(v){
-  lastVol=+v;muted=false;
-  document.getElementById('audio-player').volume=v/100;
-  document.getElementById('vol-icon').textContent=v==0?'🔇':'🔊';
-}
+function setVolume(v){lastVol=+v;muted=false;document.getElementById('audio-player').volume=v/100;document.getElementById('vol-icon').textContent=v==0?'🔇':'🔊';}
 function toggleMute(){
-  const a=document.getElementById('audio-player');
-  muted=!muted;
-  a.volume=muted?0:lastVol/100;
+  const a=document.getElementById('audio-player');muted=!muted;a.volume=muted?0:lastVol/100;
   document.getElementById('vol-icon').textContent=muted?'🔇':'🔊';
   document.getElementById('vol-slider').value=muted?0:lastVol;
 }
@@ -744,10 +723,8 @@ function toggleMute(){
 const KB_LS='db_kanban_v1';
 const COLS=['todo','prog','done'];
 let cardColors={todo:'cy',prog:'cy',done:'cy'};
-
 function getBoard(){return JSON.parse(localStorage.getItem(KB_LS)||'{"todo":[],"prog":[],"done":[]}');}
 function putBoard(b){localStorage.setItem(KB_LS,JSON.stringify(b));}
-
 function renderBoard(){
   const b=getBoard();
   COLS.forEach(col=>{
@@ -761,8 +738,8 @@ function renderBoard(){
         ${c.note?`<div class="card-note">${esc(c.note)}</div>`:''}
         <div class="card-foot">
           <div class="card-btns">
-            ${col!=='todo'?`<button class="cbtn" onclick="moveCard('${col}','left',${i})" title="Zurück">←</button>`:''}
-            ${col!=='done'?`<button class="cbtn" onclick="moveCard('${col}','right',${i})" title="Weiter">→</button>`:''}
+            ${col!=='todo'?`<button class="cbtn" onclick="moveCard('${col}','left',${i})">←</button>`:''}
+            ${col!=='done'?`<button class="cbtn" onclick="moveCard('${col}','right',${i})">→</button>`:''}
             <button class="cbtn del" onclick="deleteCard('${col}',${i})">✕</button>
           </div>
           <span class="card-ts">${c.ts}</span>
@@ -772,7 +749,6 @@ function renderBoard(){
   const total=b.todo.length+b.prog.length+b.done.length;
   document.getElementById('kb-stats').textContent=`${b.done.length}/${total} ERLEDIGT`;
 }
-
 function openCardForm(col){
   document.getElementById(`form-${col}`).classList.add('open');
   document.getElementById(`add-btn-${col}`).style.display='none';
@@ -799,19 +775,14 @@ function addCard(col){
 }
 function moveCard(col,dir,i){
   const b=getBoard();
-  const colOrder=['todo','prog','done'];
-  const ci=colOrder.indexOf(col);
-  const target=dir==='right'?colOrder[ci+1]:colOrder[ci-1];
+  const order=['todo','prog','done'];
+  const ci=order.indexOf(col);
+  const target=dir==='right'?order[ci+1]:order[ci-1];
   if(!target)return;
-  const card=b[col].splice(i,1)[0];
-  b[target].push(card);putBoard(b);renderBoard();
+  b[target].push(b[col].splice(i,1)[0]);putBoard(b);renderBoard();
 }
-function deleteCard(col,i){
-  const b=getBoard();b[col].splice(i,1);putBoard(b);renderBoard();
-}
-function clearDone(){
-  const b=getBoard();b.done=[];putBoard(b);renderBoard();
-}
+function deleteCard(col,i){const b=getBoard();b[col].splice(i,1);putBoard(b);renderBoard();}
+function clearDone(){const b=getBoard();b.done=[];putBoard(b);renderBoard();}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 renderBoard();
 </script>
