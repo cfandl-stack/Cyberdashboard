@@ -16,6 +16,7 @@
       --purple: #bf5fff;
       --yellow: #ffe600;
       --red:    #ff3c3c;
+      --blue:   #4488ff;
       --text:   #a8cce0;
       --dim:    #374a58;
       --border: rgba(0,245,255,0.13);
@@ -24,6 +25,8 @@
       --glow-g: 0 0 8px rgba(57,255,20,0.45);
       --glow-y: 0 0 8px rgba(255,230,0,0.45);
       --glow-r: 0 0 8px rgba(255,60,60,0.45),0 0 18px rgba(255,60,60,0.1);
+      --glow-p: 0 0 8px rgba(191,95,255,0.45),0 0 18px rgba(191,95,255,0.1);
+      --glow-b: 0 0 8px rgba(68,136,255,0.45),0 0 18px rgba(68,136,255,0.1);
     }
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
     html,body{height:100%;overflow:hidden;}
@@ -69,6 +72,8 @@
     .timer-box.open{display:flex;}
     .timer-display{font-family:'Orbitron',sans-serif;font-size:.85rem;font-weight:700;
       color:var(--cyan);text-shadow:var(--glow-c);letter-spacing:2px;min-width:52px;}
+    .timer-display.alarm{color:var(--mag);text-shadow:var(--glow-m);animation:pulse-alarm 0.5s ease-in-out infinite;}
+    @keyframes pulse-alarm{0%,100%{opacity:1}50%{opacity:.3}}
     .timer-label{font-size:.55rem;color:var(--dim);letter-spacing:1px;}
     .tbtn{background:none;border:1px solid var(--dim);color:var(--dim);cursor:pointer;
       font-size:.65rem;padding:3px 7px;transition:all .18s;font-family:'Share Tech Mono',monospace;}
@@ -80,7 +85,7 @@
     .sys-status{font-size:.62rem;line-height:1.8;text-align:right;}
 
     /* ── PAGES ─────────────────────────────────── */
-    #page-main{flex:1;display:grid;grid-template-columns:1fr 330px;gap:9px;min-height:0;}
+    #page-main{flex:1;display:grid;grid-template-columns:1fr 370px;gap:9px;min-height:0;}
     #page-trading{flex:1;display:none;flex-direction:column;gap:12px;min-height:0;overflow-y:auto;}
 
     /* ── PANEL ─────────────────────────────────── */
@@ -100,9 +105,9 @@
     .kb-head{display:flex;align-items:center;justify-content:space-between;
       padding:6px 10px;border-bottom:1px solid var(--border);flex-shrink:0;}
     .kb-title{font-family:'Orbitron',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:2px;}
-    .col-todo   .kb-title{color:var(--cyan);}
-    .col-prog   .kb-title{color:var(--yellow);}
-    .col-done   .kb-title{color:var(--green);}
+    .col-todo .kb-title{color:var(--cyan);}
+    .col-prog .kb-title{color:var(--yellow);}
+    .col-done .kb-title{color:var(--green);}
     .kb-count{font-size:.58rem;color:var(--dim);}
     .kb-cards{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding:2px;}
     .kb-cards::-webkit-scrollbar{width:2px;}
@@ -119,7 +124,6 @@
     .card.or{border-left-color:var(--orange);}
     .card.ye{border-left-color:var(--yellow);}
     .card-title{font-size:.72rem;color:var(--text);line-height:1.4;word-break:break-word;}
-    .card.cy .card-title{} .card.ma .card-title{}
     .card-note{font-size:.62rem;color:var(--dim);margin-top:4px;line-height:1.4;word-break:break-word;}
     .card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:7px;}
     .card-btns{display:flex;gap:4px;}
@@ -152,48 +156,76 @@
     .col-right::-webkit-scrollbar{width:3px;}
     .col-right::-webkit-scrollbar-thumb{background:var(--cyan);}
 
+    /* ── GOOGLE CALENDAR ─────────────────────────── */
+    .cal-sec{background:var(--panel);border:1px solid var(--border);flex-shrink:0;position:relative;}
+    .cal-sec::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;
+      background:linear-gradient(180deg,var(--cyan),transparent 80%);}
+    .cal-head{display:flex;align-items:center;justify-content:space-between;
+      padding:8px 13px;cursor:pointer;border-bottom:1px solid transparent;transition:background .15s;user-select:none;}
+    .cal-head:hover{background:rgba(255,255,255,.02);}
+    .cal-head.open{border-bottom-color:var(--border);}
+    .cal-title{font-family:'Orbitron',sans-serif;font-size:.57rem;font-weight:700;color:var(--cyan);letter-spacing:2px;}
+    .cal-arrow{font-size:.57rem;color:var(--dim);transition:transform .2s;}
+    .cal-head.open .cal-arrow{transform:rotate(180deg);}
+    .cal-body{display:none;flex-direction:column;}
+    .cal-body.open{display:flex;}
+    .cal-frame-wrap{position:relative;width:100%;height:280px;background:#0a0a18;}
+    .cal-frame-wrap iframe{width:100%;height:100%;border:none;display:block;}
+    .cal-setup{display:flex;flex-direction:column;align-items:center;justify-content:center;
+      gap:10px;padding:20px;height:280px;text-align:center;}
+    .cal-setup-text{font-size:.6rem;color:var(--dim);line-height:1.8;letter-spacing:1px;}
+    .cal-cfg-btn{background:rgba(0,245,255,.07);border:1px solid var(--cyan);color:var(--cyan);
+      cursor:pointer;font-family:'Orbitron',sans-serif;font-size:.52rem;font-weight:700;
+      letter-spacing:2px;padding:6px 14px;transition:all .2s;}
+    .cal-cfg-btn:hover{background:rgba(0,245,255,.16);box-shadow:var(--glow-c);}
+    .cal-open-btn{background:transparent;border:1px solid var(--dim);color:var(--dim);
+      cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.58rem;
+      padding:4px 10px;transition:all .2s;text-decoration:none;display:inline-block;}
+    .cal-open-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+
     /* ── SECTION BLOCKS ─────────────────────────── */
     .sec{background:var(--panel);border:1px solid var(--border);flex-shrink:0;position:relative;}
     .sec::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;}
-    .sec.ki::before    {background:linear-gradient(180deg,var(--mag),transparent 80%);}
+    .sec.ki::before     {background:linear-gradient(180deg,var(--mag),transparent 80%);}
     .sec.research::before{background:linear-gradient(180deg,var(--green),transparent 80%);}
-    .sec.org::before   {background:linear-gradient(180deg,var(--cyan),transparent 80%);}
-    .sec.dev::before   {background:linear-gradient(180deg,var(--orange),transparent 80%);}
+    .sec.org::before    {background:linear-gradient(180deg,var(--cyan),transparent 80%);}
+    .sec.uni::before    {background:linear-gradient(180deg,var(--blue),transparent 80%);}
 
     .sec-head{display:flex;align-items:center;justify-content:space-between;
-      padding:7px 13px;cursor:pointer;border-bottom:1px solid transparent;transition:background .15s;user-select:none;}
+      padding:8px 13px;cursor:pointer;border-bottom:1px solid transparent;transition:background .15s;user-select:none;}
     .sec-head:hover{background:rgba(255,255,255,.02);}
     .sec-head.open{border-bottom-color:var(--border);}
-    .sec-title{font-family:'Orbitron',sans-serif;font-size:.57rem;font-weight:700;letter-spacing:2px;}
-    .ki .sec-title{color:var(--mag);}
+    .sec-title{font-family:'Orbitron',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:2px;}
+    .ki .sec-title      {color:var(--mag);}
     .research .sec-title{color:var(--green);}
-    .org .sec-title{color:var(--cyan);}
-    .dev .sec-title{color:var(--orange);}
+    .org .sec-title     {color:var(--cyan);}
+    .uni .sec-title     {color:var(--blue);}
     .sec-arrow{font-size:.57rem;color:var(--dim);transition:transform .2s;}
     .sec-head.open .sec-arrow{transform:rotate(180deg);}
-    .sec-links{display:none;padding:7px 8px;flex-wrap:wrap;gap:5px;}
+    .sec-links{display:none;padding:8px 9px;flex-wrap:wrap;gap:6px;}
     .sec-links.open{display:flex;}
-    .slink{display:flex;align-items:center;gap:5px;padding:5px 8px;
+
+    .slink{display:flex;align-items:center;gap:6px;padding:7px 10px;
       background:rgba(255,255,255,.02);border:1px solid var(--border);
-      cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.67rem;color:var(--text);
+      cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.7rem;color:var(--text);
       transition:all .16s;white-space:nowrap;text-decoration:none;}
-    .ki      .slink:hover{border-color:var(--mag);   color:var(--mag);   background:rgba(255,0,160,.05);}
+    .ki       .slink:hover{border-color:var(--mag);   color:var(--mag);   background:rgba(255,0,160,.05);}
     .research .slink:hover{border-color:var(--green); color:var(--green); background:rgba(57,255,20,.05);}
-    .org     .slink:hover{border-color:var(--cyan);  color:var(--cyan);  background:rgba(0,245,255,.05);}
-    .dev     .slink:hover{border-color:var(--orange);color:var(--orange);background:rgba(255,107,0,.05);}
-    .si{font-size:.8rem;}
+    .org      .slink:hover{border-color:var(--cyan);  color:var(--cyan);  background:rgba(0,245,255,.05);}
+    .uni      .slink:hover{border-color:var(--blue);  color:var(--blue);  background:rgba(68,136,255,.05);}
+    .si{font-size:.85rem;}
 
     /* Trading nav button */
     .trading-nav{
       display:flex;align-items:center;justify-content:space-between;
-      padding:7px 13px;cursor:pointer;background:rgba(255,60,60,.04);
+      padding:9px 13px;cursor:pointer;background:rgba(255,60,60,.04);
       border:1px solid rgba(255,60,60,.2);flex-shrink:0;
       transition:all .2s;user-select:none;position:relative;
     }
     .trading-nav::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--red);}
     .trading-nav:hover{background:rgba(255,60,60,.09);border-color:var(--red);box-shadow:var(--glow-r);}
-    .trading-nav-title{font-family:'Orbitron',sans-serif;font-size:.57rem;font-weight:700;color:var(--red);letter-spacing:2px;}
-    .trading-nav-arrow{font-size:.65rem;color:var(--red);}
+    .trading-nav-title{font-family:'Orbitron',sans-serif;font-size:.6rem;font-weight:700;color:var(--red);letter-spacing:2px;}
+    .trading-nav-arrow{font-size:.75rem;color:var(--red);}
 
     /* ── RADIO ─────────────────────────────────── */
     .radio-sec{background:var(--panel);border:1px solid var(--border);flex-shrink:0;position:relative;}
@@ -202,10 +234,10 @@
     .radio-sec::after{content:'';position:absolute;bottom:-1px;right:-1px;width:10px;height:10px;
       border-bottom:2px solid var(--purple);border-right:2px solid var(--purple);}
     .radio-head{display:flex;align-items:center;justify-content:space-between;
-      padding:7px 13px;cursor:pointer;border-bottom:1px solid transparent;transition:background .15s;user-select:none;}
+      padding:8px 13px;cursor:pointer;border-bottom:1px solid transparent;transition:background .15s;user-select:none;}
     .radio-head:hover{background:rgba(255,255,255,.02);}
     .radio-head.open{border-bottom-color:var(--border);}
-    .radio-title{font-family:'Orbitron',sans-serif;font-size:.57rem;font-weight:700;color:var(--purple);letter-spacing:2px;}
+    .radio-title{font-family:'Orbitron',sans-serif;font-size:.6rem;font-weight:700;color:var(--purple);letter-spacing:2px;}
     .radio-arrow{font-size:.57rem;color:var(--dim);transition:transform .2s;}
     .radio-head.open .radio-arrow{transform:rotate(180deg);}
     .radio-body{display:none;padding:8px;}
@@ -375,7 +407,47 @@
     <!-- ── RECHTE SPALTE ── -->
     <div class="col-right">
 
-      <!-- KI-MODELLE -->
+      <!-- 1. GOOGLE KALENDER -->
+      <div class="cal-sec">
+        <div class="cal-head open" onclick="toggleCal(this)">
+          <span class="cal-title">📅 GOOGLE KALENDER</span>
+          <span class="cal-arrow">▾</span>
+        </div>
+        <div class="cal-body open" id="cal-body">
+          <div id="cal-setup" class="cal-setup">
+            <div class="cal-setup-text">
+              KALENDER EINRICHTEN:<br>
+              Google Kalender → Einstellungen →<br>
+              Kalender auswählen → Einbetten → Link kopieren
+            </div>
+            <button class="cal-cfg-btn" onclick="calConfigure()">⚙ URL KONFIGURIEREN</button>
+            <a class="cal-open-btn" href="https://calendar.google.com" target="_blank">↗ KALENDER ÖFFNEN</a>
+          </div>
+          <div id="cal-frame-wrap" class="cal-frame-wrap" style="display:none;">
+            <iframe id="cal-frame" src="" frameborder="0" scrolling="no"></iframe>
+          </div>
+          <div style="display:flex;justify-content:flex-end;padding:4px 8px;gap:6px;border-top:1px solid var(--border);">
+            <a class="cal-open-btn" href="https://calendar.google.com" target="_blank">↗ ÖFFNEN</a>
+            <button class="cal-open-btn" onclick="calConfigure()">⚙ URL</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. ORGANISATION -->
+      <div class="sec org">
+        <div class="sec-head open" onclick="toggleSec(this)">
+          <span class="sec-title">🗂️ ORGANISATION</span><span class="sec-arrow">▾</span>
+        </div>
+        <div class="sec-links open">
+          <a class="slink" href="https://drive.google.com" target="_blank"><span class="si">💾</span>Drive</a>
+          <a class="slink" href="https://calendar.google.com" target="_blank"><span class="si">📅</span>Kalender</a>
+          <a class="slink" href="https://mail.google.com" target="_blank"><span class="si">📧</span>Gmail</a>
+          <a class="slink" href="https://keep.google.com" target="_blank"><span class="si">📝</span>Keep</a>
+          <a class="slink" href="https://github.com" target="_blank"><span class="si">🐙</span>GitHub</a>
+        </div>
+      </div>
+
+      <!-- 3. KI-MODELLE -->
       <div class="sec ki">
         <div class="sec-head open" onclick="toggleSec(this)">
           <span class="sec-title">🤖 KI-MODELLE</span><span class="sec-arrow">▾</span>
@@ -389,55 +461,50 @@
         </div>
       </div>
 
-      <!-- TRADING NAV BUTTON -->
+      <!-- 4. UNI -->
+      <div class="sec uni">
+        <div class="sec-head open" onclick="toggleSec(this)">
+          <span class="sec-title">🎓 UNI // BOKU</span><span class="sec-arrow">▾</span>
+        </div>
+        <div class="sec-links open">
+          <a class="slink" href="https://bokuonline.boku.ac.at" target="_blank"><span class="si">🏛️</span>BOKU Online</a>
+          <a class="slink" href="https://learn.boku.ac.at" target="_blank"><span class="si">📖</span>BOKU Learn</a>
+          <!-- Masterarbeit: Ablage > Studium > KTWW > Masterarbeit — URL hier eintragen -->
+          <a class="slink" href="https://drive.google.com/drive/folders/MASTERARBEIT_FOLDER_ID" target="_blank" id="ma-link"><span class="si">📁</span>Masterarbeit</a>
+          <button class="slink" onclick="setMaLink()" style="border-style:dashed;cursor:pointer;"><span class="si">⚙</span>Ordner-Link setzen</button>
+        </div>
+      </div>
+
+      <!-- 5. RESEARCH -->
+      <div class="sec research">
+        <div class="sec-head" onclick="toggleSec(this)">
+          <span class="sec-title">🔬 RESEARCH // DATEN</span><span class="sec-arrow">▾</span>
+        </div>
+        <div class="sec-links">
+          <!-- Österreich & EU -->
+          <a class="slink" href="https://www.statistik.at" target="_blank"><span class="si">📊</span>Statistik Austria</a>
+          <a class="slink" href="https://www.data.gv.at" target="_blank"><span class="si">🇦🇹</span>data.gv.at</a>
+          <a class="slink" href="https://ec.europa.eu/eurostat" target="_blank"><span class="si">🇪🇺</span>Eurostat</a>
+          <a class="slink" href="https://www.umweltbundesamt.at" target="_blank"><span class="si">🌿</span>Umweltbundesamt</a>
+          <a class="slink" href="https://www.geosphere.at" target="_blank"><span class="si">🌍</span>GeoSphere AT</a>
+          <a class="slink" href="https://www.ages.at" target="_blank"><span class="si">🔬</span>AGES</a>
+          <!-- International -->
+          <a class="slink" href="https://data.oecd.org" target="_blank"><span class="si">📈</span>OECD Data</a>
+          <a class="slink" href="https://data.worldbank.org" target="_blank"><span class="si">🌐</span>World Bank</a>
+          <!-- Literatur -->
+          <a class="slink" href="https://scholar.google.com" target="_blank"><span class="si">🎓</span>Google Scholar</a>
+          <a class="slink" href="https://www.researchgate.net" target="_blank"><span class="si">📚</span>ResearchGate</a>
+          <a class="slink" href="https://www.semanticscholar.org" target="_blank"><span class="si">🔭</span>Semantic Scholar</a>
+        </div>
+      </div>
+
+      <!-- 6. TRADING PFEIL -->
       <div class="trading-nav" onclick="showPage('trading')">
         <span class="trading-nav-title">📈 TRADING</span>
         <span class="trading-nav-arrow">→</span>
       </div>
 
-      <!-- RESEARCH -->
-      <div class="sec research">
-        <div class="sec-head" onclick="toggleSec(this)">
-          <span class="sec-title">🔬 RESEARCH</span><span class="sec-arrow">▾</span>
-        </div>
-        <div class="sec-links">
-          <a class="slink" href="https://scholar.google.com" target="_blank"><span class="si">🎓</span>Scholar</a>
-          <a class="slink" href="https://www.researchgate.net" target="_blank"><span class="si">📚</span>ResearchGate</a>
-          <a class="slink" href="https://pubmed.ncbi.nlm.nih.gov" target="_blank"><span class="si">🧬</span>PubMed</a>
-          <a class="slink" href="https://www.semanticscholar.org" target="_blank"><span class="si">🔭</span>Semantic Scholar</a>
-          <a class="slink" href="https://www.connectedpapers.com" target="_blank"><span class="si">🕸️</span>Connected Papers</a>
-        </div>
-      </div>
-
-      <!-- ORGANISATION -->
-      <div class="sec org">
-        <div class="sec-head" onclick="toggleSec(this)">
-          <span class="sec-title">🗂️ ORGANISATION</span><span class="sec-arrow">▾</span>
-        </div>
-        <div class="sec-links">
-          <a class="slink" href="https://keep.google.com" target="_blank"><span class="si">📝</span>Keep</a>
-          <a class="slink" href="https://drive.google.com" target="_blank"><span class="si">💾</span>Drive</a>
-          <a class="slink" href="https://calendar.google.com" target="_blank"><span class="si">📅</span>Kalender</a>
-          <a class="slink" href="https://mail.google.com" target="_blank"><span class="si">📧</span>Gmail</a>
-          <a class="slink" href="https://bokuonline.boku.ac.at" target="_blank"><span class="si">🎓</span>Boku Online</a>
-          <a class="slink" href="https://learn.boku.ac.at" target="_blank"><span class="si">📖</span>Boku Learn</a>
-        </div>
-      </div>
-
-      <!-- ENTWICKLUNG -->
-      <div class="sec dev">
-        <div class="sec-head" onclick="toggleSec(this)">
-          <span class="sec-title">🛠️ ENTWICKLUNG</span><span class="sec-arrow">▾</span>
-        </div>
-        <div class="sec-links">
-          <a class="slink" href="https://github.com" target="_blank"><span class="si">🐙</span>GitHub</a>
-          <a class="slink" href="https://www.overleaf.com" target="_blank"><span class="si">📄</span>Overleaf</a>
-          <a class="slink" href="https://stackoverflow.com" target="_blank"><span class="si">💬</span>Stack Overflow</a>
-          <a class="slink" href="https://www.rdocumentation.org" target="_blank"><span class="si">📊</span>RDocs</a>
-        </div>
-      </div>
-
-      <!-- RADIO -->
+      <!-- 7. RADIO -->
       <div class="radio-sec">
         <div class="radio-head open" onclick="toggleRadio(this)">
           <span class="radio-title">🎵 RADIO // FOKUS</span>
@@ -493,7 +560,7 @@
       <a class="tc" href="https://www.tradingview.com" target="_blank">
         <div class="tc-icon">📊</div>
         <div class="tc-name">TRADINGVIEW</div>
-        <div class="tc-desc">Charts, Analyse & Screener.<br>Dein Haupttool für technische Analyse.</div>
+        <div class="tc-desc">Charts, Analyse &amp; Screener.<br>Dein Haupttool für technische Analyse.</div>
         <div class="tc-btn">ÖFFNEN ↗</div>
       </a>
       <a class="tc" href="https://app.hyperliquid.xyz" target="_blank">
@@ -505,13 +572,13 @@
       <a class="tc" href="https://www.mexc.com" target="_blank">
         <div class="tc-icon">🔷</div>
         <div class="tc-name">MEXC</div>
-        <div class="tc-desc">Zentralisierte Exchange.<br>Spot & Futures Trading.</div>
+        <div class="tc-desc">Zentralisierte Exchange.<br>Spot &amp; Futures Trading.</div>
         <div class="tc-btn">ÖFFNEN ↗</div>
       </a>
       <a class="tc" href="https://coinmarketcap.com" target="_blank">
         <div class="tc-icon">🪙</div>
         <div class="tc-name">COINMARKETCAP</div>
-        <div class="tc-desc">Marktdaten & Rankings.<br>Überblick über den Kryptomarkt.</div>
+        <div class="tc-desc">Marktdaten &amp; Rankings.<br>Überblick über den Kryptomarkt.</div>
         <div class="tc-btn">ÖFFNEN ↗</div>
       </a>
     </div>
@@ -535,6 +602,29 @@ function showPage(page){
   document.getElementById('page-trading').style.display = page==='trading' ? 'flex' : 'none';
 }
 
+// ─── TIMER ALARM SOUND ────────────────────────────────────
+function playAlarm(){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    // Drei sanfte Töne: 440Hz, 528Hz, 396Hz — weich und angenehm
+    const notes=[440,528,396];
+    notes.forEach((freq,i)=>{
+      const osc=ctx.createOscillator();
+      const gain=ctx.createGain();
+      osc.connect(gain);gain.connect(ctx.destination);
+      osc.type='sine';
+      osc.frequency.value=freq;
+      const start=ctx.currentTime+i*1.0;
+      gain.gain.setValueAtTime(0,start);
+      gain.gain.linearRampToValueAtTime(0.18,start+0.2);
+      gain.gain.setValueAtTime(0.18,start+0.65);
+      gain.gain.linearRampToValueAtTime(0,start+0.95);
+      osc.start(start);
+      osc.stop(start+1.0);
+    });
+  }catch(e){}
+}
+
 // ─── TIMER (HEADER) ───────────────────────────────────────
 const T_MODES={fokus:{label:'FOKUS',secs:25*60},pause:{label:'PAUSE',secs:5*60}};
 let tMode='fokus',tTotal=T_MODES.fokus.secs,tLeft=tTotal,tRun=false,tTimer=null;
@@ -547,19 +637,74 @@ function tRender(){
 }
 function tToggle(){
   if(tRun){clearInterval(tTimer);tRun=false;}
-  else{tRun=true;tTimer=setInterval(()=>{if(tLeft<=0){clearInterval(tTimer);tRun=false;tRender();return;}tLeft--;tRender();},1000);}
+  else{
+    tRun=true;
+    tTimer=setInterval(()=>{
+      if(tLeft<=0){
+        clearInterval(tTimer);tRun=false;
+        // Alarm: 3 sanfte Töne über ~3 Sekunden
+        playAlarm();
+        const disp=document.getElementById('t-display');
+        disp.classList.add('alarm');
+        setTimeout(()=>disp.classList.remove('alarm'),3500);
+        tRender();return;
+      }
+      tLeft--;tRender();
+    },1000);
+  }
   tRender();
 }
-function tReset(){clearInterval(tTimer);tRun=false;tLeft=tTotal;tRender();}
+function tReset(){clearInterval(tTimer);tRun=false;tLeft=tTotal;tRender();document.getElementById('t-display').classList.remove('alarm');}
 function tSwitch(){
   clearInterval(tTimer);tRun=false;
-  tMode=tMode==='fokus'?'pause':'fokus';tTotal=T_MODES[tMode].secs;tLeft=tTotal;tRender();
+  tMode=tMode==='fokus'?'pause':'fokus';tTotal=T_MODES[tMode].secs;tLeft=tTotal;
+  document.getElementById('t-display').classList.remove('alarm');
+  tRender();
 }
 tRender();
 
 // ─── SEKTIONEN ────────────────────────────────────────────
 function toggleSec(head){head.classList.toggle('open');head.nextElementSibling.classList.toggle('open');}
 function toggleRadio(head){head.classList.toggle('open');document.getElementById('radio-body').classList.toggle('open');}
+function toggleCal(head){head.classList.toggle('open');document.getElementById('cal-body').classList.toggle('open');}
+
+// ─── GOOGLE KALENDER KONFIGURATION ────────────────────────
+(function initCal(){
+  const url=localStorage.getItem('cal_embed_url');
+  if(url){
+    document.getElementById('cal-setup').style.display='none';
+    document.getElementById('cal-frame-wrap').style.display='block';
+    document.getElementById('cal-frame').src=url;
+  }
+})();
+function calConfigure(){
+  const cur=localStorage.getItem('cal_embed_url')||'';
+  const url=prompt(
+    'Google Kalender Embed-URL einfügen:\n\n'+
+    'Anleitung: calendar.google.com → Einstellungen (⚙) →\n'+
+    'Kalender auswählen → "Kalender einbetten" → Link kopieren\n\n'+
+    'Aktuell: '+(cur||'–'),cur);
+  if(url&&url.trim()){
+    localStorage.setItem('cal_embed_url',url.trim());
+    document.getElementById('cal-setup').style.display='none';
+    document.getElementById('cal-frame-wrap').style.display='block';
+    document.getElementById('cal-frame').src=url.trim();
+  }
+}
+
+// ─── MASTERARBEIT LINK ─────────────────────────────────────
+(function initMaLink(){
+  const url=localStorage.getItem('ma_link_url');
+  if(url)document.getElementById('ma-link').href=url;
+})();
+function setMaLink(){
+  const cur=localStorage.getItem('ma_link_url')||'';
+  const url=prompt('Google Drive Masterarbeit-Ordner Link einfügen:\n(Drive → Masterarbeit-Ordner → Rechtsklick → Link kopieren)',cur);
+  if(url&&url.trim()){
+    localStorage.setItem('ma_link_url',url.trim());
+    document.getElementById('ma-link').href=url.trim();
+  }
+}
 
 // ─── RADIO ────────────────────────────────────────────────
 const STATIONS=[
@@ -676,7 +821,6 @@ function clearDone(){
 }
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 renderBoard();
-
 </script>
 </body>
 </html>
