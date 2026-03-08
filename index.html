@@ -85,7 +85,7 @@
     .sys-status{font-size:.62rem;line-height:1.8;text-align:right;}
 
     /* ── PAGES ─────────────────────────────────── */
-    #page-main{flex:1;display:grid;grid-template-columns:1fr 370px;gap:9px;min-height:0;}
+    #page-main{flex:1;display:grid;grid-template-columns:300px 1fr;gap:9px;min-height:0;}
     #page-trading{flex:1;display:none;flex-direction:column;gap:12px;min-height:0;overflow-y:auto;}
 
     /* ── PANEL ─────────────────────────────────── */
@@ -100,7 +100,7 @@
     .pb{padding:10px;}
 
     /* ── KANBAN BOARD ───────────────────────────── */
-    .kanban{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;padding:10px;min-height:0;overflow:hidden;}
+    .kanban{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;padding:6px;min-height:0;overflow:hidden;}
     .kb-col{display:flex;flex-direction:column;gap:7px;min-height:0;}
     .kb-head{display:flex;align-items:center;justify-content:space-between;
       padding:6px 10px;border-bottom:1px solid var(--border);flex-shrink:0;}
@@ -202,8 +202,8 @@
     .uni .sec-title     {color:var(--blue);}
     .sec-arrow{font-size:.57rem;color:var(--dim);transition:transform .2s;}
     .sec-head.open .sec-arrow{transform:rotate(180deg);}
-    .sec-links{display:none;padding:8px 9px;flex-wrap:wrap;gap:6px;}
-    .sec-links.open{display:flex;}
+    .sec-links{display:none;padding:8px 9px;gap:6px;}
+    .sec-links.open{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));}
 
     .slink{display:flex;align-items:center;gap:6px;padding:7px 10px;
       background:rgba(255,255,255,.02);border:1px solid var(--border);
@@ -215,17 +215,14 @@
     .uni      .slink:hover{border-color:var(--blue);  color:var(--blue);  background:rgba(68,136,255,.05);}
     .si{font-size:.85rem;}
 
-    /* Trading nav button */
-    .trading-nav{
-      display:flex;align-items:center;justify-content:space-between;
-      padding:9px 13px;cursor:pointer;background:rgba(255,60,60,.04);
-      border:1px solid rgba(255,60,60,.2);flex-shrink:0;
-      transition:all .2s;user-select:none;position:relative;
+    /* Degen button (header) */
+    .degen-btn{
+      background:rgba(255,60,60,.06);border:1px solid rgba(255,60,60,.35);
+      color:var(--red);cursor:pointer;font-family:'Orbitron',sans-serif;
+      font-size:.5rem;font-weight:700;letter-spacing:2px;padding:4px 9px;
+      transition:all .2s;white-space:nowrap;
     }
-    .trading-nav::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--red);}
-    .trading-nav:hover{background:rgba(255,60,60,.09);border-color:var(--red);box-shadow:var(--glow-r);}
-    .trading-nav-title{font-family:'Orbitron',sans-serif;font-size:.6rem;font-weight:700;color:var(--red);letter-spacing:2px;}
-    .trading-nav-arrow{font-size:.75rem;color:var(--red);}
+    .degen-btn:hover{background:rgba(255,60,60,.16);box-shadow:var(--glow-r);}
 
     /* ── RADIO ─────────────────────────────────── */
     .radio-sec{background:var(--panel);border:1px solid var(--border);flex-shrink:0;position:relative;}
@@ -325,6 +322,8 @@
     </div>
 
     <div class="hdr-right">
+      <!-- Degen-Seite -->
+      <button class="degen-btn" onclick="showPage('trading')">DEGEN →</button>
       <!-- Timer -->
       <div class="timer-wrap">
         <button class="timer-toggle" onclick="timerToggle()" title="Timer ein-/ausblenden">⏱ TIMER</button>
@@ -477,10 +476,10 @@
 
       <!-- 5. RESEARCH -->
       <div class="sec research">
-        <div class="sec-head" onclick="toggleSec(this)">
+        <div class="sec-head open" onclick="toggleSec(this)">
           <span class="sec-title">🔬 RESEARCH // DATEN</span><span class="sec-arrow">▾</span>
         </div>
-        <div class="sec-links">
+        <div class="sec-links open">
           <!-- Österreich & EU -->
           <a class="slink" href="https://www.statistik.at" target="_blank"><span class="si">📊</span>Statistik Austria</a>
           <a class="slink" href="https://www.data.gv.at" target="_blank"><span class="si">🇦🇹</span>data.gv.at</a>
@@ -498,19 +497,13 @@
         </div>
       </div>
 
-      <!-- 6. TRADING PFEIL -->
-      <div class="trading-nav" onclick="showPage('trading')">
-        <span class="trading-nav-title">📈 TRADING</span>
-        <span class="trading-nav-arrow">→</span>
-      </div>
-
-      <!-- 7. RADIO -->
+      <!-- 6. RADIO -->
       <div class="radio-sec">
-        <div class="radio-head open" onclick="toggleRadio(this)">
+        <div class="radio-head" onclick="toggleRadio(this)">
           <span class="radio-title">🎵 RADIO // FOKUS</span>
           <span class="radio-arrow">▾</span>
         </div>
-        <div class="radio-body open" id="radio-body">
+        <div class="radio-body" id="radio-body">
           <div class="radio-group-label">// FOKUS &amp; AMBIENT</div>
           <div class="stn-grid">
             <div class="stn" id="stn-0" onclick="playIdx(0)"><span class="stn-icon">🌿</span><span class="stn-name">Groove Salad</span><span class="stn-tag">AMBIENT</span></div>
