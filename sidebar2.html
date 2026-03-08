@@ -25,8 +25,20 @@
     ::-webkit-scrollbar-track{background:var(--bg);}
     ::-webkit-scrollbar-thumb{background:var(--dim);}
 
+    /* ── LEFT STRIP ── */
+    body::before{
+      content:'';position:fixed;top:0;left:0;width:4px;height:100vh;z-index:100;
+      background:linear-gradient(180deg,var(--cyan) 0%,var(--purple) 50%,var(--mag) 100%);
+      box-shadow:0 0 10px var(--cyan),0 0 20px rgba(0,245,255,.3);
+      animation:stripglow 4s ease-in-out infinite;
+    }
+    @keyframes stripglow{
+      0%,100%{box-shadow:0 0 8px var(--cyan),0 0 18px rgba(0,245,255,.3);}
+      50%{box-shadow:0 0 12px var(--purple),0 0 24px rgba(191,95,255,.4);}
+    }
+
     /* ── LAYOUT ── */
-    .sidebar{display:flex;flex-direction:column;gap:4px;padding:8px;}
+    .sidebar{display:flex;flex-direction:column;gap:4px;padding:8px;padding-left:12px;}
 
     /* ── SECTION ── */
     .sec{background:var(--panel);border:1px solid var(--border);position:relative;}
@@ -34,6 +46,7 @@
     .sec.ki::before{background:linear-gradient(180deg,var(--cyan),transparent 80%);}
     .sec.research::before{background:linear-gradient(180deg,var(--green),transparent 80%);}
     .sec.org::before{background:linear-gradient(180deg,var(--yellow),transparent 80%);}
+    .sec.uni::before{background:linear-gradient(180deg,var(--orange),transparent 80%);}
 
     .sec-head{
       display:flex;align-items:center;justify-content:space-between;
@@ -45,6 +58,7 @@
     .sec.ki .sec-title{color:var(--cyan);}
     .sec.research .sec-title{color:var(--green);}
     .sec.org .sec-title{color:var(--yellow);}
+    .sec.uni .sec-title{color:var(--orange);}
     .sec-arrow{font-size:.55rem;color:var(--dim);transition:transform .2s;}
     .sec-head.open .sec-arrow{transform:rotate(180deg);}
 
@@ -129,8 +143,17 @@
       <a class="slink" href="https://calendar.google.com" target="_blank"><span class="si">📅</span>Kalender</a>
       <a class="slink" href="https://mail.google.com" target="_blank"><span class="si">📧</span>Gmail</a>
       <a class="slink" href="https://github.com" target="_blank"><span class="si">🐙</span>GitHub</a>
-      <a class="slink" href="https://bokuonline.boku.ac.at" target="_blank"><span class="si">🎓</span>Boku Online</a>
-      <a class="slink" href="https://learn.boku.ac.at" target="_blank"><span class="si">📖</span>Boku Learn</a>
+    </div>
+  </div>
+
+  <!-- UNI -->
+  <div class="sec uni">
+    <div class="sec-head open" onclick="toggleSec(this)">
+      <span class="sec-title">🎓 UNI</span><span class="sec-arrow">▾</span>
+    </div>
+    <div class="sec-links">
+      <a class="slink" href="https://boku.ac.at/en/login" target="_blank"><span class="si">🏛️</span>BOKUonline</a>
+      <a class="slink" href="https://learn.boku.ac.at" target="_blank"><span class="si">📖</span>BOKUlearn</a>
     </div>
   </div>
 
@@ -144,7 +167,6 @@
       <a class="slink" href="https://chatgpt.com" target="_blank"><span class="si">🟢</span>ChatGPT</a>
       <a class="slink" href="https://gemini.google.com" target="_blank"><span class="si">🔵</span>Gemini</a>
       <a class="slink" href="https://grok.com" target="_blank"><span class="si">⚡</span>Grok</a>
-      <a class="slink" href="https://www.perplexity.ai" target="_blank"><span class="si">🔍</span>Perplexity</a>
     </div>
   </div>
 
