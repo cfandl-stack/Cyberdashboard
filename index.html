@@ -272,6 +272,41 @@
       color:var(--red);font-family:'Orbitron',sans-serif;font-size:.55rem;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .2s;}
     .tc-btn:hover{background:rgba(255,60,60,.2);box-shadow:var(--glow-r);}
 
+    /* ── BOT STATS CARDS ────────────────────────── */
+    .bot-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:4px;flex-shrink:0;}
+    .bot-stat{background:var(--panel);border:1px solid rgba(255,60,60,.18);padding:16px;
+      display:flex;flex-direction:column;gap:4px;transition:all .2s;}
+    .bot-stat:hover{border-color:rgba(255,60,60,.45);background:rgba(255,60,60,.04);}
+    .bot-stat-label{font-size:.5rem;color:var(--dim);letter-spacing:2px;text-transform:uppercase;}
+    .bot-stat-value{font-family:'Orbitron',sans-serif;font-size:1.3rem;font-weight:700;color:var(--text);letter-spacing:1px;}
+    .bot-stat-value.pnl-pos{color:var(--green);text-shadow:var(--glow-g);}
+    .bot-stat-value.pnl-neg{color:var(--red);text-shadow:var(--glow-r);}
+
+    /* ── BOT SECTION HEADERS ────────────────────── */
+    .bot-section{flex-shrink:0;padding:4px;}
+    .bot-section-head{font-family:'Orbitron',sans-serif;font-size:.6rem;font-weight:700;
+      color:var(--red);letter-spacing:3px;padding:8px 0 6px;border-bottom:1px solid rgba(255,60,60,.2);margin-bottom:8px;}
+
+    /* ── POSITIONS TABLE ────────────────────────── */
+    .bot-table-wrap{overflow-x:auto;flex-shrink:0;padding:0 4px;}
+    .bot-table{width:100%;border-collapse:collapse;font-size:.7rem;}
+    .bot-table th{font-family:'Orbitron',sans-serif;font-size:.5rem;font-weight:700;
+      color:var(--dim);letter-spacing:2px;text-transform:uppercase;text-align:left;
+      padding:8px 10px;border-bottom:1px solid rgba(255,60,60,.15);background:rgba(255,60,60,.03);}
+    .bot-table td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.03);color:var(--text);white-space:nowrap;}
+    .bot-table tr:hover td{background:rgba(255,60,60,.03);}
+    .bot-table .pnl-pos{color:var(--green);font-weight:700;}
+    .bot-table .pnl-neg{color:var(--red);font-weight:700;}
+    .whale-tag{font-size:.6rem;padding:2px 6px;border:1px solid rgba(255,60,60,.25);
+      background:rgba(255,60,60,.06);color:var(--red);letter-spacing:1px;}
+
+    /* ── API STATUS ─────────────────────────────── */
+    .bot-api-status{font-size:.5rem;color:var(--dim);letter-spacing:1px;padding:4px 8px;text-align:right;flex-shrink:0;}
+    .bot-api-status.online{color:var(--green);}
+    .bot-api-status.offline{color:var(--red);}
+    .bot-loading{text-align:center;padding:20px;color:var(--dim);font-size:.7rem;letter-spacing:2px;}
+    .bot-error{text-align:center;padding:20px;color:var(--red);font-size:.7rem;letter-spacing:1px;}
+
     /* ── TICKER BAR ────────────────────────────── */
     .ticker-bar{
       display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
@@ -470,7 +505,7 @@
         <button class="btn btn-r" onclick="showPage('main')">← ZURÜCK</button>
         <span class="tp-title">// DEGEN ZONE</span>
       </div>
-      <div class="tp-warn">⚠ DU BEFINDEST DICH IM TRADING-MODUS.</div>
+      <div class="tp-warn">POLYMARKET COPY-TRADING BOT // PAPER MODE</div>
     </div>
 
     <!-- TICKER -->
@@ -498,20 +533,57 @@
     </div>
     <div class="ticker-update" id="ticker-update"></div>
 
+    <!-- BOT STATS -->
+    <div class="bot-stats" id="bot-stats">
+      <div class="bot-stat">
+        <span class="bot-stat-label">OFFENE POSITIONEN</span>
+        <span class="bot-stat-value" id="stat-active">--</span>
+      </div>
+      <div class="bot-stat">
+        <span class="bot-stat-label">AVG PNL (LIVE)</span>
+        <span class="bot-stat-value" id="stat-pnl">--</span>
+      </div>
+      <div class="bot-stat">
+        <span class="bot-stat-label">TOTAL TRADES</span>
+        <span class="bot-stat-value" id="stat-trades">--</span>
+      </div>
+      <div class="bot-stat">
+        <span class="bot-stat-label">TOTAL STAKE</span>
+        <span class="bot-stat-value" id="stat-stake">--</span>
+      </div>
+    </div>
+
+    <!-- OPEN POSITIONS -->
+    <div class="bot-section">
+      <div class="bot-section-head">// OFFENE POSITIONEN (LIVE)</div>
+      <div class="bot-table-wrap">
+        <div id="positions-container"><div class="bot-loading">LADE POSITIONEN...</div></div>
+      </div>
+    </div>
+
+    <!-- TRADE HISTORY -->
+    <div class="bot-section">
+      <div class="bot-section-head">// LETZTE TRADES</div>
+      <div class="bot-table-wrap">
+        <div id="history-container"><div class="bot-loading">LADE HISTORIE...</div></div>
+      </div>
+    </div>
+
+    <!-- QUICK LINKS -->
     <div class="trading-cards">
+      <a class="tc" href="https://polymarket.com" target="_blank">
+        <div class="tc-icon">📊</div><div class="tc-name">POLYMARKET</div>
+        <div class="tc-desc">Prediction Markets.</div>
+        <div class="tc-btn">ÖFFNEN ↗</div>
+      </a>
       <a class="tc" href="https://www.tradingview.com" target="_blank">
-        <div class="tc-icon">📊</div><div class="tc-name">TRADINGVIEW</div>
-        <div class="tc-desc">Charts, Analyse &amp; Screener.</div>
+        <div class="tc-icon">📈</div><div class="tc-name">TRADINGVIEW</div>
+        <div class="tc-desc">Charts &amp; Analyse.</div>
         <div class="tc-btn">ÖFFNEN ↗</div>
       </a>
       <a class="tc" href="https://app.hyperliquid.xyz" target="_blank">
         <div class="tc-icon">💧</div><div class="tc-name">HYPERLIQUID</div>
         <div class="tc-desc">Dezentrale Perpetuals.</div>
-        <div class="tc-btn">ÖFFNEN ↗</div>
-      </a>
-      <a class="tc" href="https://www.mexc.com" target="_blank">
-        <div class="tc-icon">🔷</div><div class="tc-name">MEXC</div>
-        <div class="tc-desc">Spot &amp; Futures Trading.</div>
         <div class="tc-btn">ÖFFNEN ↗</div>
       </a>
       <a class="tc" href="https://coinmarketcap.com" target="_blank">
@@ -520,6 +592,8 @@
         <div class="tc-btn">ÖFFNEN ↗</div>
       </a>
     </div>
+
+    <div class="bot-api-status" id="bot-api-status">API: VERBINDE...</div>
   </div>
 
 </div><!-- /app -->
@@ -755,6 +829,96 @@ async function fetchTickers(){
 // Beim Laden und dann alle 60 Sekunden
 fetchTickers();
 setInterval(fetchTickers,60000);
+
+// ─── POLYMARKET BOT API ──────────────────────────────────
+const API_BASE = "http://46.224.158.47:5000";
+
+function renderPositionsTable(positions){
+  if(!positions||positions.length===0) return '<div class="bot-loading">KEINE OFFENEN POSITIONEN</div>';
+  let html='<table class="bot-table"><thead><tr><th>WHALE</th><th>MARKT</th><th>ENTRY</th><th>LIVE</th><th>PNL</th><th>SHARES</th><th>STAKE</th></tr></thead><tbody>';
+  positions.forEach(p=>{
+    const pnlClass=p.pnl_percent!=null?(p.pnl_percent>=0?'pnl-pos':'pnl-neg'):'';
+    const pnlText=p.pnl_percent!=null?((p.pnl_percent>=0?'+':'')+p.pnl_percent.toFixed(2)+'%'):'...';
+    const liveText=p.live_price!=null?('$'+p.live_price.toFixed(3)):'...';
+    const market=p.market.length>35?p.market.substring(0,35)+'...':p.market;
+    html+=`<tr>
+      <td><span class="whale-tag">${p.whale}</span></td>
+      <td>${market}</td>
+      <td>$${p.entry_price.toFixed(3)}</td>
+      <td>${liveText}</td>
+      <td class="${pnlClass}">${pnlText}</td>
+      <td>${p.shares}</td>
+      <td>$${p.stake}</td>
+    </tr>`;
+  });
+  html+='</tbody></table>';
+  return html;
+}
+
+function renderHistoryTable(history){
+  if(!history||history.length===0) return '<div class="bot-loading">KEINE TRADES</div>';
+  const recent=history.slice(-15).reverse();
+  let html='<table class="bot-table"><thead><tr><th>DATUM</th><th>WHALE</th><th>MARKT</th><th>PREIS</th><th>EINSATZ</th><th>SHARES</th></tr></thead><tbody>';
+  recent.forEach(t=>{
+    const datum=t.datum.substring(0,16);
+    const markt=t.markt.length>35?t.markt.substring(0,35)+'...':t.markt;
+    html+=`<tr>
+      <td>${datum}</td>
+      <td><span class="whale-tag">${t.whale}</span></td>
+      <td>${markt}</td>
+      <td>$${Number(t.preis).toFixed(3)}</td>
+      <td>$${t.einsatz}</td>
+      <td>${t.shares}</td>
+    </tr>`;
+  });
+  html+='</tbody></table>';
+  return html;
+}
+
+async function fetchBotData(){
+  const statusEl=document.getElementById('bot-api-status');
+  const opts={signal:AbortSignal.timeout(15000)};
+  try{
+    const [posRes,tradesRes,pnlRes]=await Promise.all([
+      fetch(API_BASE+'/api/positions',opts),
+      fetch(API_BASE+'/api/trades',opts),
+      fetch(API_BASE+'/api/pnl',opts)
+    ]);
+    if(!posRes.ok||!tradesRes.ok||!pnlRes.ok) throw new Error('HTTP Error');
+    const positions=await posRes.json();
+    const trades=await tradesRes.json();
+    const pnl=await pnlRes.json();
+
+    // Stats cards
+    document.getElementById('stat-active').textContent=positions.length||0;
+    document.getElementById('stat-trades').textContent=pnl.total_trades||trades.length||0;
+    const totalStake=positions.reduce((s,p)=>s+(p.stake||10),0);
+    document.getElementById('stat-stake').textContent='$'+totalStake.toFixed(2);
+    const pnlValues=positions.map(p=>p.pnl_percent).filter(v=>v!=null);
+    const avgPnl=pnlValues.length?pnlValues.reduce((a,b)=>a+b,0)/pnlValues.length:0;
+    const pnlEl=document.getElementById('stat-pnl');
+    pnlEl.textContent=(avgPnl>=0?'+':'')+avgPnl.toFixed(2)+'%';
+    pnlEl.className='bot-stat-value '+(avgPnl>=0?'pnl-pos':'pnl-neg');
+
+    // Tables
+    document.getElementById('positions-container').innerHTML=renderPositionsTable(positions);
+    document.getElementById('history-container').innerHTML=renderHistoryTable(trades);
+
+    // Status
+    const now=new Date(),pad=v=>String(v).padStart(2,'0');
+    statusEl.textContent=`API: ONLINE // LETZTES UPDATE: ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+    statusEl.className='bot-api-status online';
+  }catch(e){
+    statusEl.textContent='API OFFLINE — '+e.message;
+    statusEl.className='bot-api-status offline';
+    document.getElementById('positions-container').innerHTML='<div class="bot-error">API NICHT ERREICHBAR</div>';
+    document.getElementById('history-container').innerHTML='<div class="bot-error">API NICHT ERREICHBAR</div>';
+  }
+}
+
+// Fetch on load and every 30 seconds
+fetchBotData();
+setInterval(fetchBotData,30000);
 </script>
 </body>
 </html>
