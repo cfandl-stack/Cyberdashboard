@@ -315,6 +315,44 @@
       color:var(--red);letter-spacing:3px;
       padding:8px 0 6px;border-bottom:1px solid rgba(255,60,60,.2);margin-bottom:16px;
     }
+    /* ── POSITION CALCULATOR ────────────────────── */
+    .calc-wrap{max-width:580px;margin:0 auto;}
+    .calc-direction{display:flex;gap:0;border:1px solid var(--border);margin-bottom:16px;}
+    .dir-btn{
+      flex:1;padding:10px;font-family:'Orbitron',sans-serif;
+      font-size:.55rem;font-weight:700;letter-spacing:2px;
+      cursor:pointer;border:none;background:transparent;color:var(--dim);transition:all .2s;
+    }
+    .dir-btn.long.active{background:rgba(57,255,20,.1);color:var(--green);}
+    .dir-btn.short.active{background:rgba(255,60,60,.1);color:var(--red);}
+    .calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:4px;}
+    .calc-field label{
+      display:block;font-size:.5rem;color:var(--dim);
+      letter-spacing:2px;margin-bottom:5px;
+    }
+    .calc-input{
+      width:100%;background:rgba(0,245,255,.03);
+      border:1px solid rgba(0,245,255,.2);color:var(--text);
+      font-family:'Share Tech Mono',monospace;font-size:.95rem;
+      padding:10px 12px;outline:none;transition:border-color .2s;
+    }
+    .calc-input:focus{border-color:var(--cyan);box-shadow:0 0 12px rgba(0,245,255,.08);}
+    .calc-input::-webkit-inner-spin-button,.calc-input::-webkit-outer-spin-button{-webkit-appearance:none;}
+    .calc-error{color:var(--red);font-size:.6rem;letter-spacing:1px;min-height:1.2em;margin:6px 0;}
+    .calc-results{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:12px;}
+    .calc-result{
+      background:var(--panel);border:1px solid var(--border);
+      padding:16px;text-align:center;
+    }
+    .calc-result-label{
+      font-size:.48rem;color:var(--dim);
+      letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;
+    }
+    .calc-result-value{
+      font-family:'Orbitron',sans-serif;font-size:1.3rem;
+      font-weight:700;color:var(--cyan);letter-spacing:1px;
+    }
+    .calc-result.pos .calc-result-value{color:var(--green);text-shadow:var(--glow-g);}
   </style>
 </head>
 <body>
@@ -518,7 +556,48 @@
     </div>
 
     <!-- TAB PANELS (content added in Tasks 3–5) -->
-    <div class="tab-panel" id="tab-rechner"></div>
+    <div class="tab-panel" id="tab-rechner">
+      <div class="calc-wrap">
+        <div class="degen-section-head">// POSITIONS-RECHNER</div>
+        <div class="calc-direction">
+          <button class="dir-btn long active" id="dir-long" onclick="setDirection('long')">LONG</button>
+          <button class="dir-btn short" id="dir-short" onclick="setDirection('short')">SHORT</button>
+        </div>
+        <div class="calc-grid">
+          <div class="calc-field">
+            <label>KONTOKAPITAL ($)</label>
+            <input class="calc-input" type="number" id="calc-kapital" placeholder="10000" min="0" oninput="calcPositions()">
+          </div>
+          <div class="calc-field">
+            <label>RISIKO (%)</label>
+            <input class="calc-input" type="number" id="calc-risiko" placeholder="2" min="0" step="0.1" oninput="calcPositions()">
+          </div>
+          <div class="calc-field">
+            <label>ENTRY-PREIS ($)</label>
+            <input class="calc-input" type="number" id="calc-entry" placeholder="100" min="0" oninput="calcPositions()">
+          </div>
+          <div class="calc-field">
+            <label>STOP LOSS ($)</label>
+            <input class="calc-input" type="number" id="calc-sl" placeholder="95" min="0" oninput="calcPositions()">
+          </div>
+        </div>
+        <div id="calc-error" class="calc-error"></div>
+        <div class="calc-results">
+          <div class="calc-result">
+            <div class="calc-result-label">HEBEL</div>
+            <div class="calc-result-value" id="result-hebel">—</div>
+          </div>
+          <div class="calc-result">
+            <div class="calc-result-label">MARGIN</div>
+            <div class="calc-result-value" id="result-margin">—</div>
+          </div>
+          <div class="calc-result pos">
+            <div class="calc-result-label">POSITIONSGRÖSSE</div>
+            <div class="calc-result-value" id="result-pos">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="tab-panel" id="tab-insider" style="display:none"></div>
     <div class="tab-panel" id="tab-cot" style="display:none"></div>
   </div>
@@ -549,6 +628,53 @@ function showTab(name) {
   });
   if (name==='insider') loadInsiderData();
   if (name==='cot')     loadCotData();
+}
+
+// ─── POSITION CALCULATOR ──────────────────────────────────
+let calcDirection = 'long';
+
+function setDirection(dir) {
+  calcDirection = dir;
+  document.getElementById('dir-long').classList.toggle('active', dir==='long');
+  document.getElementById('dir-short').classList.toggle('active', dir==='short');
+  calcPositions();
+}
+
+function calcPositions() {
+  const kapital = parseFloat(document.getElementById('calc-kapital').value);
+  const risiko  = parseFloat(document.getElementById('calc-risiko').value);
+  const entry   = parseFloat(document.getElementById('calc-entry').value);
+  const sl      = parseFloat(document.getElementById('calc-sl').value);
+  const errEl   = document.getElementById('calc-error');
+
+  const clear = () => {
+    document.getElementById('result-hebel').textContent  = '—';
+    document.getElementById('result-margin').textContent = '—';
+    document.getElementById('result-pos').textContent    = '—';
+  };
+
+  if (isNaN(kapital) || isNaN(risiko) || isNaN(entry) || isNaN(sl)) {
+    errEl.textContent = ''; clear(); return;
+  }
+  if (entry <= 0 || sl <= 0 || kapital <= 0 || risiko <= 0 || risiko > 100) {
+    errEl.textContent = 'Ungültiger Wert — alle Felder müssen > 0 sein'; clear(); return;
+  }
+  if (calcDirection === 'long' && sl >= entry) {
+    errEl.textContent = 'Long: Stop Loss muss unter Entry liegen'; clear(); return;
+  }
+  if (calcDirection === 'short' && sl <= entry) {
+    errEl.textContent = 'Short: Stop Loss muss über Entry liegen'; clear(); return;
+  }
+
+  errEl.textContent = '';
+  const margin = kapital * risiko / 100;
+  const hebel  = entry / Math.abs(entry - sl);
+  const pos    = margin * hebel;
+  const fmt    = n => '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+
+  document.getElementById('result-hebel').textContent  = hebel.toFixed(1) + '×';
+  document.getElementById('result-margin').textContent = fmt(margin);
+  document.getElementById('result-pos').textContent    = fmt(pos);
 }
 
 // ─── TIMER ALARM ──────────────────────────────────────────
