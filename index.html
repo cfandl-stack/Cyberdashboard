@@ -855,7 +855,7 @@ function loadInsiderData(force = false) {
       insiderLoaded = true;
     })
     .catch(e => {
-      container.innerHTML = `<div class="bot-error">⚠ DATEN NICHT VERFÜGBAR — trades.csv nicht gefunden (${e.message})</div>`;
+      container.innerHTML = `<div class="bot-error">⚠ DATEN NICHT VERFÜGBAR — trades.csv nicht gefunden (${escHtml(e.message)})</div>`;
     });
 }
 
