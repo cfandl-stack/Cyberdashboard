@@ -353,6 +353,40 @@
       font-weight:700;color:var(--cyan);letter-spacing:1px;
     }
     .calc-result.pos .calc-result-value{color:var(--green);text-shadow:var(--glow-g);}
+
+    /* ── INSIDER TABLE ───────────────────────────── */
+    .insider-bar{
+      display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;
+    }
+    .insider-title{
+      font-family:'Orbitron',sans-serif;font-size:.6rem;
+      font-weight:700;color:var(--green);letter-spacing:3px;
+    }
+    .btn-g{background:rgba(57,255,20,.08);border-color:var(--green);color:var(--green);}
+    .btn-g:hover{background:rgba(57,255,20,.18);box-shadow:var(--glow-g);}
+    .insider-table-wrap{overflow-x:auto;}
+    .insider-table{width:100%;border-collapse:collapse;font-size:.68rem;}
+    .insider-table th{
+      font-family:'Orbitron',sans-serif;font-size:.48rem;font-weight:700;
+      color:var(--dim);letter-spacing:2px;text-transform:uppercase;
+      text-align:left;padding:8px 10px;
+      border-bottom:1px solid rgba(57,255,20,.15);background:rgba(57,255,20,.03);
+    }
+    .insider-table td{
+      padding:7px 10px;border-bottom:1px solid rgba(255,255,255,.03);
+      color:var(--text);white-space:nowrap;
+    }
+    .insider-table tr:hover td{background:rgba(57,255,20,.03);}
+    .insider-ticker{color:var(--green);font-weight:700;}
+    .insider-value{color:var(--green);font-weight:700;}
+    .insider-delta{color:var(--yellow);}
+    .insider-dim{color:var(--dim);font-size:.62rem;}
+    .insider-footer{
+      font-size:.5rem;color:var(--dim);letter-spacing:1px;
+      text-align:right;padding:6px 4px;
+    }
+    .bot-loading{text-align:center;padding:20px;color:var(--dim);font-size:.7rem;letter-spacing:2px;}
+    .bot-error{text-align:center;padding:20px;color:var(--red);font-size:.7rem;letter-spacing:1px;}
   </style>
 </head>
 <body>
@@ -598,7 +632,14 @@
         </div>
       </div>
     </div>
-    <div class="tab-panel" id="tab-insider" style="display:none"></div>
+    <div class="tab-panel" id="tab-insider" style="display:none">
+      <div class="insider-bar">
+        <span class="insider-title">// INSIDER SCREENER</span>
+        <button class="btn btn-g" onclick="loadInsiderData(true)">↺ RELOAD</button>
+      </div>
+      <div id="insider-container"><div class="bot-loading">TAB ÖFFNEN ZUM LADEN…</div></div>
+      <div class="insider-footer" id="insider-footer"></div>
+    </div>
     <div class="tab-panel" id="tab-cot" style="display:none"></div>
   </div>
 
@@ -675,6 +716,94 @@ function calcPositions() {
   document.getElementById('result-hebel').textContent  = hebel.toFixed(1) + '×';
   document.getElementById('result-margin').textContent = fmt(margin);
   document.getElementById('result-pos').textContent    = fmt(pos);
+}
+
+// ─── CSV PARSER ───────────────────────────────────────────
+function parseCSVLine(line) {
+  const result = []; let cur = ''; let inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"')              { inQ = !inQ; }
+    else if (ch === ',' && !inQ) { result.push(cur); cur = ''; }
+    else                         { cur += ch; }
+  }
+  result.push(cur);
+  return result;
+}
+function parseCSV(text) {
+  const lines = text.trim().split('\n').filter(l => l.trim());
+  if (lines.length < 2) return [];
+  const headers = parseCSVLine(lines[0]);
+  return lines.slice(1).map(line => {
+    const vals = parseCSVLine(line);
+    const obj = {};
+    headers.forEach((h, i) => obj[h.trim()] = (vals[i] || '').trim());
+    return obj;
+  });
+}
+
+// ─── INSIDER TABLE ────────────────────────────────────────
+let insiderLoaded = false;
+
+function fmtValue(v) {
+  const n = parseFloat(v);
+  if (isNaN(n) || n === 0) return '–';
+  if (n >= 1_000_000) return '$' + (n / 1_000_000).toFixed(1) + 'M';
+  if (n >= 1_000)     return '$' + (n / 1_000).toFixed(0) + 'K';
+  return '$' + n.toFixed(0);
+}
+
+function renderInsiderTable(rows) {
+  let html = `<div class="insider-table-wrap"><table class="insider-table">
+    <thead><tr>
+      <th>DATUM</th><th>TICKER</th><th>COMPANY</th><th>INSIDER</th>
+      <th>TITEL</th><th>WERT</th><th>Δ POS</th><th>GRUND</th>
+    </tr></thead><tbody>`;
+  rows.forEach(r => {
+    const delta   = parseFloat(r.delta_own);
+    const deltaStr= isNaN(delta) ? '–' : '+' + delta.toFixed(0) + '%';
+    const company = (r.company||'').length > 28 ? r.company.substring(0,28)+'…' : (r.company||'–');
+    html += `<tr>
+      <td>${(r.trade_date||'').substring(0,10)}</td>
+      <td><span class="insider-ticker">${r.ticker||'–'}</span></td>
+      <td>${company}</td>
+      <td>${r.insider||'–'}</td>
+      <td class="insider-dim">${r.title||'–'}</td>
+      <td class="insider-value">${fmtValue(r.value)}</td>
+      <td class="insider-delta">${deltaStr}</td>
+      <td class="insider-dim">${r.materiality_reason||'–'}</td>
+    </tr>`;
+  });
+  html += '</tbody></table></div>';
+  return html;
+}
+
+function loadInsiderData(force = false) {
+  if (insiderLoaded && !force) return;
+  const container = document.getElementById('insider-container');
+  const footer    = document.getElementById('insider-footer');
+  container.innerHTML = '<div class="bot-loading">LADE INSIDER-DATEN…</div>';
+  footer.textContent  = '';
+
+  fetch('Openinsider_scrap/output/trades.csv')
+    .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+    .then(text => {
+      const rows = parseCSV(text).filter(r => r.ticker);
+      if (!rows.length) {
+        container.innerHTML = '<div class="bot-loading">Keine Trades nach Filterung</div>';
+        return;
+      }
+      const sorted = rows
+        .sort((a,b) => parseFloat(b.value||0) - parseFloat(a.value||0))
+        .slice(0, 50);
+      container.innerHTML = renderInsiderTable(sorted);
+      const lastRow = rows[rows.length - 1];
+      footer.textContent = `Zuletzt aktualisiert: ${lastRow.exported_at||'–'} · ${rows.length} Trades nach Filterung`;
+      insiderLoaded = true;
+    })
+    .catch(e => {
+      container.innerHTML = `<div class="bot-error">⚠ DATEN NICHT VERFÜGBAR — trades.csv nicht gefunden (${e.message})</div>`;
+    });
 }
 
 // ─── TIMER ALARM ──────────────────────────────────────────
