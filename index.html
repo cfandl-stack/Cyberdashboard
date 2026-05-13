@@ -875,12 +875,12 @@ function renderCotReport(data) {
         <div class="cot-etf">${COT_ESC(sig.etf)} (2× ETF)</div>
         <div class="cot-hold">Halten bis: <strong>${COT_ESC(sig.hold_until)}</strong> (4 Wochen)</div>
         <table class="cot-detail">
-          <tr><td>Commercial Long (aktuell)</td><td>${(com.current_long||0).toLocaleString()}</td></tr>
-          <tr><td>52W Prior Max</td>            <td>${(com.prior_52w_max||0).toLocaleString()}</td></tr>
+          <tr><td>Commercial Long (aktuell)</td><td>${COT_ESC((com.current_long||0).toLocaleString())}</td></tr>
+          <tr><td>52W Prior Max</td>            <td>${COT_ESC((com.prior_52w_max||0).toLocaleString())}</td></tr>
           <tr><td>COT Report Datum</td>         <td>${COT_ESC(com.report_date)}</td></tr>
-          <tr><td>Aktueller Kurs</td>           <td>$${tr.latest_close??com.latest_close??'–'}</td></tr>
-          <tr><td>50-Day SMA</td>               <td>$${tr.sma50??'–'}</td></tr>
-          <tr><td>200-Day SMA</td>              <td>$${tr.sma200??'–'}</td></tr>
+          <tr><td>Aktueller Kurs</td>           <td>$${COT_ESC(tr.latest_close??com.latest_close??'–')}</td></tr>
+          <tr><td>50-Day SMA</td>               <td>$${COT_ESC(tr.sma50??'–')}</td></tr>
+          <tr><td>200-Day SMA</td>              <td>$${COT_ESC(tr.sma200??'–')}</td></tr>
         </table>
       </div>`;
     });
