@@ -1,0 +1,35 @@
+name: OpenInsider Screener
+
+on:
+  schedule:
+    - cron: '0 7 * * 1'   # Every Monday 07:00 UTC
+  workflow_dispatch:
+
+jobs:
+  run-screener:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: pip install -r Openinsider_scrap/requirements.txt
+
+      - name: Install Playwright browser
+        run: playwright install chromium --with-deps
+
+      - name: Run OpenInsider screener
+        run: python Openinsider_scrap/main.py
+
+      - name: Commit updated trades.csv
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Openinsider_scrap/output/trades.csv
+          git diff --staged --quiet || git commit -m "chore: update insider trades [skip ci]"
+          git push
