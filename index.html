@@ -291,6 +291,30 @@
       text-align:right;font-size:.5rem;color:var(--dim);letter-spacing:1px;
       padding:2px 8px;flex-shrink:0;
     }
+    /* ── DEGEN TABS ─────────────────────────────── */
+    .degen-tabs{
+      display:flex;gap:2px;padding:4px;flex-shrink:0;
+      border-bottom:1px solid var(--border);
+    }
+    .degen-tab{
+      font-family:'Orbitron',sans-serif;font-size:.55rem;font-weight:700;
+      letter-spacing:2px;padding:8px 20px;cursor:pointer;
+      border:1px solid var(--border);background:transparent;
+      color:var(--dim);transition:all .2s;
+    }
+    .degen-tab:hover{border-color:rgba(255,60,60,.4);color:var(--text);}
+    .degen-tab.active{
+      border-color:var(--red);color:var(--red);
+      background:rgba(255,60,60,.06);box-shadow:var(--glow-r);
+    }
+    .tab-panel{flex:1;overflow-y:auto;min-height:0;padding:16px;}
+    .tab-panel::-webkit-scrollbar{width:2px;}
+    .tab-panel::-webkit-scrollbar-thumb{background:var(--red);}
+    .degen-section-head{
+      font-family:'Orbitron',sans-serif;font-size:.6rem;font-weight:700;
+      color:var(--red);letter-spacing:3px;
+      padding:8px 0 6px;border-bottom:1px solid rgba(255,60,60,.2);margin-bottom:16px;
+    }
   </style>
 </head>
 <body>
@@ -485,6 +509,18 @@
       </div>
     </div>
     <div class="ticker-update" id="ticker-update"></div>
+
+    <!-- TABS -->
+    <div class="degen-tabs">
+      <button class="degen-tab active" id="tab-btn-rechner" onclick="showTab('rechner')">⬡ RECHNER</button>
+      <button class="degen-tab" id="tab-btn-insider" onclick="showTab('insider')">📊 INSIDER</button>
+      <button class="degen-tab" id="tab-btn-cot" onclick="showTab('cot')">📡 COT</button>
+    </div>
+
+    <!-- TAB PANELS (content added in Tasks 3–5) -->
+    <div class="tab-panel" id="tab-rechner"></div>
+    <div class="tab-panel" id="tab-insider" style="display:none"></div>
+    <div class="tab-panel" id="tab-cot" style="display:none"></div>
   </div>
 
 </div><!-- /app -->
@@ -503,6 +539,16 @@ setInterval(tick,1000);tick();
 function showPage(page){
   document.getElementById('page-main').style.display    = page==='main'    ? 'grid' : 'none';
   document.getElementById('page-trading').style.display = page==='trading' ? 'flex' : 'none';
+}
+
+// ─── DEGEN TABS ───────────────────────────────────────────
+function showTab(name) {
+  ['rechner','insider','cot'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t===name ? 'block' : 'none';
+    document.getElementById('tab-btn-'+t).classList.toggle('active', t===name);
+  });
+  if (name==='insider') loadInsiderData();
+  if (name==='cot')     loadCotData();
 }
 
 // ─── TIMER ALARM ──────────────────────────────────────────
