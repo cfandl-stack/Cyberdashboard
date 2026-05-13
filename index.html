@@ -387,6 +387,42 @@
     }
     .bot-loading{text-align:center;padding:20px;color:var(--dim);font-size:.7rem;letter-spacing:2px;}
     .bot-error{text-align:center;padding:20px;color:var(--red);font-size:.7rem;letter-spacing:1px;}
+
+    /* ── COT REPORT ──────────────────────────────── */
+    .cot-signal-card{
+      background:rgba(57,255,20,.05);border:1px solid rgba(57,255,20,.3);
+      box-shadow:0 0 12px rgba(57,255,20,.08);padding:20px;margin-bottom:12px;
+    }
+    .cot-signal-title{
+      font-family:'Orbitron',sans-serif;font-size:.9rem;font-weight:700;
+      color:var(--green);letter-spacing:3px;margin-bottom:6px;
+    }
+    .cot-etf{
+      display:inline-block;padding:3px 10px;
+      border:1px solid var(--green);color:var(--green);
+      font-family:'Orbitron',sans-serif;font-size:.6rem;font-weight:700;
+      letter-spacing:2px;margin-bottom:10px;
+    }
+    .cot-hold{font-size:.62rem;color:var(--dim);letter-spacing:1px;margin-bottom:12px;}
+    .cot-hold strong{color:var(--text);}
+    .cot-detail{width:100%;border-collapse:collapse;font-size:.65rem;}
+    .cot-detail td{padding:4px 8px;border-bottom:1px solid rgba(255,255,255,.04);}
+    .cot-detail td:first-child{color:var(--dim);letter-spacing:.5px;}
+    .cot-detail td:last-child{color:var(--text);text-align:right;}
+    .cot-no-signal{
+      text-align:center;padding:32px;
+      font-family:'Orbitron',sans-serif;font-size:.6rem;
+      color:var(--dim);letter-spacing:2px;
+    }
+    .cot-status-table{width:100%;border-collapse:collapse;font-size:.68rem;margin-top:16px;}
+    .cot-status-table th{
+      font-family:'Orbitron',sans-serif;font-size:.48rem;font-weight:700;
+      color:var(--dim);letter-spacing:2px;text-align:left;padding:8px 10px;
+      border-bottom:1px solid rgba(255,230,0,.15);background:rgba(255,230,0,.03);
+    }
+    .cot-status-table td{
+      padding:7px 10px;border-bottom:1px solid rgba(255,255,255,.03);color:var(--text);
+    }
   </style>
 </head>
 <body>
@@ -640,11 +676,15 @@
       <div id="insider-container"><div class="bot-loading">TAB ÖFFNEN ZUM LADEN…</div></div>
       <div class="insider-footer" id="insider-footer"></div>
     </div>
-    <div class="tab-panel" id="tab-cot" style="display:none"></div>
+    <div class="tab-panel" id="tab-cot" style="display:none">
+      <div id="cot-container"><div class="bot-loading">TAB ÖFFNEN ZUM LADEN…</div></div>
+    </div>
   </div>
 
 </div><!-- /app -->
 <script>
+const COT_GIST_URL = 'REPLACE_WITH_GIST_RAW_URL';
+
 // ─── UHR ──────────────────────────────────────────────────
 const DAYS=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
 const MONTHS=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
@@ -816,6 +856,70 @@ function loadInsiderData(force = false) {
     })
     .catch(e => {
       container.innerHTML = `<div class="bot-error">⚠ DATEN NICHT VERFÜGBAR — trades.csv nicht gefunden (${e.message})</div>`;
+    });
+}
+
+// ─── COT REPORT ───────────────────────────────────────────
+const COT_ESC = s => escHtml(s==null?'–':String(s));
+let cotLoaded = false;
+
+function renderCotReport(data) {
+  let html = '';
+
+  if (data.buy_signals && data.buy_signals.length > 0) {
+    data.buy_signals.forEach(sig => {
+      const com = sig.commercial || {};
+      const tr  = sig.trend      || {};
+      html += `<div class="cot-signal-card">
+        <div class="cot-signal-title">🟢 BUY — ${COT_ESC(sig.commodity)}</div>
+        <div class="cot-etf">${COT_ESC(sig.etf)} (2× ETF)</div>
+        <div class="cot-hold">Halten bis: <strong>${COT_ESC(sig.hold_until)}</strong> (4 Wochen)</div>
+        <table class="cot-detail">
+          <tr><td>Commercial Long (aktuell)</td><td>${(com.current_long||0).toLocaleString()}</td></tr>
+          <tr><td>52W Prior Max</td>            <td>${(com.prior_52w_max||0).toLocaleString()}</td></tr>
+          <tr><td>COT Report Datum</td>         <td>${COT_ESC(com.report_date)}</td></tr>
+          <tr><td>Aktueller Kurs</td>           <td>$${tr.latest_close??com.latest_close??'–'}</td></tr>
+          <tr><td>50-Day SMA</td>               <td>$${tr.sma50??'–'}</td></tr>
+          <tr><td>200-Day SMA</td>              <td>$${tr.sma200??'–'}</td></tr>
+        </table>
+      </div>`;
+    });
+  } else {
+    html += '<div class="cot-no-signal">KEINE BUY-SIGNALE DIESE WOCHE</div>';
+  }
+
+  if (data.full_status && data.full_status.length > 0) {
+    html += `<div class="degen-section-head" style="margin-top:16px">// FULL STATUS OVERVIEW</div>
+      <table class="cot-status-table"><thead><tr>
+        <th>COMMODITY</th><th>COMMERCIAL</th><th>TREND</th><th>COMBINED</th>
+      </tr></thead><tbody>`;
+    data.full_status.forEach(s => {
+      const yn  = v => v ? '✅ YES' : '❌ NO';
+      const buy = s.combined ? '<strong style="color:var(--green)">🟢 BUY</strong>' : '—';
+      html += `<tr><td>${COT_ESC(s.commodity)}</td><td>${yn(s.commercial_signal)}</td><td>${yn(s.trend_signal)}</td><td>${buy}</td></tr>`;
+    });
+    html += '</tbody></table>';
+  }
+
+  const gen = data.generated_at ? data.generated_at.substring(0,16).replace('T',' ') : '–';
+  html += `<div class="insider-footer">COT Report: ${COT_ESC(data.report_date)} · Generiert: ${COT_ESC(gen)} UTC</div>`;
+  return html;
+}
+
+function loadCotData(force = false) {
+  if (cotLoaded && !force) return;
+  const container = document.getElementById('cot-container');
+  container.innerHTML = '<div class="bot-loading">LADE COT-SIGNALE…</div>';
+
+  fetch(COT_GIST_URL)
+    .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(data => {
+      container.innerHTML = renderCotReport(data);
+      cotLoaded = true;
+    })
+    .catch(e => {
+      container.innerHTML = `<div class="bot-error">⚠ COT-DATEN NICHT VERFÜGBAR (${escHtml(e.message)})<br>
+        <button class="btn btn-r" style="margin-top:12px" onclick="loadCotData(true)">↺ RETRY</button></div>`;
     });
 }
 
