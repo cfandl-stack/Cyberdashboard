@@ -423,6 +423,72 @@
     .cot-status-table td{
       padding:7px 10px;border-bottom:1px solid rgba(255,255,255,.03);color:var(--text);
     }
+    .insider-tag{display:inline-block;font-size:.5rem;padding:1px 5px;border:1px solid var(--purple);color:var(--purple);letter-spacing:1px;margin-left:4px;}
+
+    /* ── FEAR & GREED (Daten aus cfandl-stack/scheduled-tasks) ── */
+    :root{
+      --fg-xfear:#ff3c3c;--fg-fear:#ff8c1a;--fg-neut:#ffe600;--fg-greed:#9dff3c;--fg-xgreed:#39ff14;
+    }
+    .card{background:var(--panel);border:1px solid var(--border);padding:16px;}
+    .section-head{font-family:'Orbitron',sans-serif;font-size:.6rem;font-weight:700;color:var(--cyan);letter-spacing:3px;
+      padding:8px 0 6px;border-bottom:1px solid var(--border);margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:8px;}
+    .muted{color:var(--dim);font-size:.62rem;letter-spacing:1px;}
+    .sub-head{font-family:'Orbitron',sans-serif;font-size:.7rem;color:var(--purple);letter-spacing:3px;margin:26px 0 10px;}
+    .rbtn{font-family:'Orbitron',sans-serif;font-size:.5rem;font-weight:700;letter-spacing:2px;padding:5px 11px;cursor:pointer;
+      border:1px solid var(--cyan);background:rgba(0,245,255,.06);color:var(--cyan);}
+    .rbtn:hover{box-shadow:var(--glow-c);}
+    .rbtn.active{background:rgba(0,245,255,.2);}
+    .range-btns{display:flex;gap:4px;}
+    .fg-top{display:grid;grid-template-columns:minmax(260px,1.1fr) 1fr;gap:12px;}
+    @media (max-width:760px){.fg-top{grid-template-columns:1fr;}}
+    .gauge-wrap{text-align:center;}
+    .gauge-wrap svg{width:100%;max-width:380px;height:auto;}
+    .fg-score{font-family:'Orbitron',sans-serif;font-size:2.6rem;font-weight:900;margin-top:-10px;}
+    .fg-rating{font-family:'Orbitron',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;}
+    .fg-compare{display:grid;grid-template-columns:1fr auto;}
+    .fg-compare div{padding:10px 4px;border-bottom:1px solid rgba(255,255,255,.05);font-size:.72rem;}
+    .fg-dot{width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
+      font-family:'Orbitron',sans-serif;font-size:.7rem;font-weight:700;color:#07070f;}
+    .fg-components{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:12px;}
+    .fg-comp h4{font-family:'Orbitron',sans-serif;font-size:.6rem;letter-spacing:2px;margin-bottom:8px;color:var(--text);display:flex;justify-content:space-between;gap:8px;}
+    .fg-bar{height:8px;background:linear-gradient(90deg,var(--fg-xfear),var(--fg-fear),var(--fg-neut),var(--fg-greed),var(--fg-xgreed));position:relative;margin:10px 0 8px;opacity:.85;}
+    .fg-bar i{position:absolute;top:-4px;width:3px;height:16px;background:#fff;box-shadow:0 0 6px #fff;transform:translateX(-1px);}
+    .fg-comp p{font-size:.62rem;color:var(--dim);line-height:1.5;}
+    .fg-chart svg{width:100%;height:auto;display:block;}
+    .ffg{display:grid;grid-template-columns:1fr minmax(240px,320px) 1fr;gap:18px;align-items:center;
+      padding:20px;border:1px solid rgba(191,95,255,.25);
+      background:radial-gradient(circle at 50% 50%,rgba(191,95,255,.14),transparent 55%),var(--panel);}
+    .ffg-group{border:1px solid rgba(255,255,255,.08);padding:14px 16px;background:rgba(0,0,0,.25);}
+    .ffg-group h3{font-family:'Orbitron',sans-serif;font-size:.58rem;letter-spacing:3px;color:var(--dim);margin-bottom:6px;}
+    .ffg-group.left h3{text-align:right;}
+    .ffg-item{display:flex;align-items:center;gap:14px;padding:8px 0;}
+    .ffg-group.left .ffg-item{justify-content:flex-end;text-align:right;}
+    .ffg-name{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;font-weight:700;font-size:.92rem;color:#e8e4f0;}
+    .ffg-val{font-size:.75rem;color:var(--dim);margin-top:2px;}
+    .ffg-err{font-size:.6rem;color:var(--dim);font-style:italic;}
+    .ffg-ring{flex-shrink:0;width:58px;height:58px;}
+    .ffg-center{text-align:center;}
+    .ffg-center svg{width:100%;max-width:300px;height:auto;}
+    .ffg-meta{font-size:.62rem;color:var(--dim);letter-spacing:1px;text-align:center;margin-top:10px;}
+    @media (max-width:900px){
+      .ffg{grid-template-columns:1fr;}
+      .ffg-center{order:-1;}
+      .ffg-group.left .ffg-item{flex-direction:row-reverse;justify-content:flex-end;text-align:left;}
+      .ffg-group.left h3{text-align:left;}
+    }
+
+    /* ── RESEARCH ─────────────────────────────── */
+    .md{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;font-size:.92rem;line-height:1.65;color:#cfe3ef;max-width:860px;}
+    .md h1{font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--cyan);letter-spacing:2px;margin:6px 0 14px;}
+    .md h2{font-family:'Orbitron',sans-serif;font-size:.78rem;color:var(--mag);letter-spacing:2px;margin:22px 0 8px;}
+    .md h3{font-size:.95rem;color:var(--text);margin:14px 0 6px;}
+    .md p{margin:8px 0;}
+    .md ul,.md ol{margin:6px 0 6px 22px;}
+    .md li{margin:4px 0;}
+    .md hr{border:none;border-top:1px solid var(--border);margin:16px 0;}
+    .md code{background:rgba(0,245,255,.08);padding:1px 4px;}
+    .md a{color:var(--cyan);}
+    .research-select{background:var(--panel);color:var(--text);border:1px solid var(--border);font-family:inherit;padding:4px 8px;}
   </style>
 </head>
 <body>
@@ -590,7 +656,7 @@
         <button class="btn btn-r" onclick="showPage('main')">← ZURÜCK</button>
         <span class="tp-title">// DEGEN ZONE</span>
       </div>
-      <div class="tp-warn">POSITION CALCULATOR // INSIDER SCREENER // COT SIGNALS</div>
+      <div class="tp-warn">POSITION CALCULATOR // FEAR &amp; GREED // INSIDER SCREENER // COT SIGNALS // RESEARCH</div>
     </div>
 
     <!-- TICKER -->
@@ -621,8 +687,10 @@
     <!-- TABS -->
     <div class="degen-tabs">
       <button class="degen-tab active" id="tab-btn-rechner" onclick="showTab('rechner')">⬡ RECHNER</button>
+      <button class="degen-tab" id="tab-btn-feargreed" onclick="showTab('feargreed')">⚖ FEAR &amp; GREED</button>
       <button class="degen-tab" id="tab-btn-insider" onclick="showTab('insider')">📊 INSIDER</button>
       <button class="degen-tab" id="tab-btn-cot" onclick="showTab('cot')">📡 COT</button>
+      <button class="degen-tab" id="tab-btn-research" onclick="showTab('research')">🔎 RESEARCH</button>
     </div>
 
     <!-- TAB PANELS (content added in Tasks 3–5) -->
@@ -679,11 +747,31 @@
     <div class="tab-panel" id="tab-cot" style="display:none">
       <div id="cot-container"><div class="bot-loading">TAB ÖFFNEN ZUM LADEN…</div></div>
     </div>
+    <div class="tab-panel" id="tab-feargreed" style="display:none">
+      <div id="ffg-container"><div class="bot-loading">LADE FUTURES FEAR &amp; GREED…</div></div>
+      <div class="sub-head">// AKTIENMARKT · CNN-METHODIK</div>
+      <div id="fg-container"><div class="bot-loading">LADE FEAR &amp; GREED…</div></div>
+    </div>
+    <div class="tab-panel" id="tab-research" style="display:none">
+      <div id="research-container"><div class="bot-loading">LADE RESEARCH REPORT…</div></div>
+    </div>
   </div>
 
 </div><!-- /app -->
 <script>
-const COT_GIST_URL = 'REPLACE_WITH_GIST_RAW_URL';
+// Daten kommen aus dem Repo cfandl-stack/scheduled-tasks (GitHub Actions → GitHub Pages)
+const DATA_BASE = 'https://cfandl-stack.github.io/scheduled-tasks/data/';
+const jsonCache = {};
+function loadJson(name, force=false){
+  if (!force && jsonCache[name]) return jsonCache[name];
+  jsonCache[name] = fetch(DATA_BASE + name + '.json', {cache:'no-store'})
+    .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .catch(e => { delete jsonCache[name]; throw e; });
+  return jsonCache[name];
+}
+function errorBox(what, e){
+  return `<div class="bot-error">⚠ ${escHtml(what)} NICHT VERFÜGBAR (${escHtml(e.message)})</div>`;
+}
 
 // ─── UHR ──────────────────────────────────────────────────
 const DAYS=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
@@ -703,12 +791,14 @@ function showPage(page){
 
 // ─── DEGEN TABS ───────────────────────────────────────────
 function showTab(name) {
-  ['rechner','insider','cot'].forEach(t => {
+  ['rechner','feargreed','insider','cot','research'].forEach(t => {
     document.getElementById('tab-'+t).style.display = t===name ? 'block' : 'none';
     document.getElementById('tab-btn-'+t).classList.toggle('active', t===name);
   });
-  if (name==='insider') loadInsiderData();
-  if (name==='cot')     loadCotData();
+  if (name==='feargreed') renderFearGreed();
+  if (name==='insider')   loadInsiderData();
+  if (name==='cot')       loadCotData();
+  if (name==='research')  renderResearch();
 }
 
 // ─── POSITION CALCULATOR ──────────────────────────────────
@@ -758,35 +848,6 @@ function calcPositions() {
   document.getElementById('result-pos').textContent    = fmt(pos);
 }
 
-// ─── CSV PARSER ───────────────────────────────────────────
-function parseCSVLine(line) {
-  const result = []; let cur = ''; let inQ = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (ch === '"') {
-      if (inQ && line[i+1] === '"') { cur += '"'; i++; }  // escaped quote
-      else { inQ = !inQ; }
-    } else if (ch === ',' && !inQ) {
-      result.push(cur); cur = '';
-    } else {
-      cur += ch;
-    }
-  }
-  result.push(cur);
-  return result;
-}
-function parseCSV(text) {
-  const lines = text.trim().split('\n').filter(l => l.trim());
-  if (lines.length < 2) return [];
-  const headers = parseCSVLine(lines[0]);
-  return lines.slice(1).map(line => {
-    const vals = parseCSVLine(line);
-    const obj = {};
-    headers.forEach((h, i) => obj[h.trim()] = (vals[i] || '').trim());
-    return obj;
-  });
-}
-
 // ─── INSIDER TABLE ────────────────────────────────────────
 let insiderLoaded = false;
 
@@ -816,15 +877,16 @@ function renderInsiderTable(rows) {
     const delta   = parseFloat(r.delta_own);
     const deltaStr= isNaN(delta) ? '–' : (delta >= 0 ? '+' : '') + delta.toFixed(0) + '%';
     const company = (r.company||'').length > 28 ? escHtml(r.company.substring(0,28))+'…' : escHtml(r.company||'–');
+    const cluster = r.cluster ? '<span class="insider-tag">CLUSTER</span>' : '';
     html += `<tr>
-      <td>${escHtml((r.trade_date||'').substring(0,10))}</td>
-      <td><span class="insider-ticker">${escHtml(r.ticker||'–')}</span></td>
+      <td>${escHtml(String(r.trade_date||'').substring(0,10))}</td>
+      <td><a class="insider-ticker" href="https://openinsider.com/${encodeURIComponent(r.ticker||'')}" target="_blank" rel="noopener">${escHtml(r.ticker||'–')}</a>${cluster}</td>
       <td>${company}</td>
       <td>${escHtml(r.insider||'–')}</td>
       <td class="insider-dim">${escHtml(r.title||'–')}</td>
       <td class="insider-value">${fmtValue(r.value)}</td>
       <td class="insider-delta">${deltaStr}</td>
-      <td class="insider-dim">${escHtml(r.materiality_reason||'–')}</td>
+      <td class="insider-dim">${escHtml(r.reason||'–')}</td>
     </tr>`;
   });
   html += '</tbody></table></div>';
@@ -838,24 +900,24 @@ function loadInsiderData(force = false) {
   container.innerHTML = '<div class="bot-loading">LADE INSIDER-DATEN…</div>';
   footer.textContent  = '';
 
-  fetch('Openinsider_scrap/output/trades.csv')
-    .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
-    .then(text => {
-      const rows = parseCSV(text).filter(r => r.ticker);
+  loadJson('insider', force)
+    .then(data => {
+      const rows = (data.trades || []).filter(r => r.ticker);
       if (!rows.length) {
         container.innerHTML = '<div class="bot-loading">Keine Trades nach Filterung</div>';
         return;
       }
       const sorted = rows
-        .sort((a,b) => parseFloat(b.value||0) - parseFloat(a.value||0))
+        .slice()
+        .sort((a,b) => (b.value||0) - (a.value||0))
         .slice(0, 50);
       container.innerHTML = renderInsiderTable(sorted);
-      const lastRow = rows[rows.length - 1];
-      footer.textContent = `Zuletzt aktualisiert: ${lastRow.exported_at||'–'} · ${rows.length} Trades nach Filterung`;
+      const gen = data.generated_at ? data.generated_at.substring(0,16).replace('T',' ') + ' UTC' : '–';
+      footer.textContent = `Zuletzt aktualisiert: ${gen} · ${rows.length} Käufe nach Filterung (letzte ${data.window_days||'–'} Tage) · Top 50 nach Wert`;
       insiderLoaded = true;
     })
     .catch(e => {
-      container.innerHTML = `<div class="bot-error">⚠ DATEN NICHT VERFÜGBAR — trades.csv nicht gefunden (${escHtml(e.message)})</div>`;
+      container.innerHTML = errorBox('INSIDER-DATEN', e);
     });
 }
 
@@ -911,8 +973,7 @@ function loadCotData(force = false) {
   const container = document.getElementById('cot-container');
   container.innerHTML = '<div class="bot-loading">LADE COT-SIGNALE…</div>';
 
-  fetch(COT_GIST_URL)
-    .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+  loadJson('cot', force)
     .then(data => {
       container.innerHTML = renderCotReport(data);
       cotLoaded = true;
@@ -921,6 +982,246 @@ function loadCotData(force = false) {
       container.innerHTML = `<div class="bot-error">⚠ COT-DATEN NICHT VERFÜGBAR (${escHtml(e.message)})<br>
         <button class="btn btn-r" style="margin-top:12px" onclick="loadCotData(true)">↺ RETRY</button></div>`;
     });
+}
+
+// ─── FEAR & GREED ─────────────────────────────────────────
+// Übernommen aus cfandl-stack/scheduled-tasks (dashboard/index.html)
+const E = s => escHtml(s==null?'–':s);
+const fmtTs = s => s ? String(s).substring(0,16).replace('T',' ')+' UTC' : '–';
+const FG_BANDS = [
+  {max:24,  de:'Extreme Angst', color:'var(--fg-xfear)'},
+  {max:44,  de:'Angst',         color:'var(--fg-fear)'},
+  {max:55,  de:'Neutral',       color:'var(--fg-neut)'},
+  {max:75,  de:'Gier',          color:'var(--fg-greed)'},
+  {max:100, de:'Extreme Gier',  color:'var(--fg-xgreed)'},
+];
+const fgBand  = s => FG_BANDS.find(b => s <= b.max) || FG_BANDS[4];
+const fgColor = s => s==null ? 'var(--dim)' : fgBand(s).color;
+const fgLabel = s => s==null ? '–' : fgBand(s).de;
+let fgRange = 365, ffgRange = 365;
+
+function gaugeSvg(score){
+  const cx=200, cy=190, r=150, w=28;
+  const pt = (v, rad) => {
+    const a = Math.PI * (1 - v/100);
+    return [cx + rad*Math.cos(a), cy - rad*Math.sin(a)];
+  };
+  let arcs = '', from = 0;
+  FG_BANDS.forEach(b => {
+    const to = b.max===100 ? 100 : b.max+0.5;
+    const [x1,y1] = pt(from+0.6, r), [x2,y2] = pt(to-0.6, r);
+    arcs += `<path d="M${x1},${y1} A${r},${r} 0 0 1 ${x2},${y2}" stroke="${b.color}" stroke-width="${w}" fill="none" opacity="${score!=null && fgBand(score)===b ? 1 : .35}"/>`;
+    from = to;
+  });
+  const ticks = [0,25,50,75,100].map(v => {
+    const [x,y] = pt(v, r+w/2+12);
+    return `<text x="${x}" y="${y}" fill="var(--dim)" font-size="11" text-anchor="middle" dominant-baseline="middle" font-family="Share Tech Mono">${v}</text>`;
+  }).join('');
+  let needle = '';
+  if (score!=null){
+    const [nx,ny] = pt(score, r-w/2-8);
+    needle = `<line x1="${cx}" y1="${cy}" x2="${nx}" y2="${ny}" stroke="#fff" stroke-width="3" stroke-linecap="round" style="filter:drop-shadow(0 0 4px #fff)"/>
+      <circle cx="${cx}" cy="${cy}" r="8" fill="#fff"/>`;
+  }
+  return `<svg viewBox="0 0 400 210" role="img" aria-label="Fear & Greed ${score??''}">${arcs}${ticks}${needle}</svg>`;
+}
+
+function historySvg(history, range){
+  const pts = history.slice(-range);
+  if (pts.length < 2) return '<div class="muted">Zu wenig Verlauf.</div>';
+  const W=900, H=260, L=34, R=10, T=10, B=26;
+  const x = i => L + i*(W-L-R)/(pts.length-1);
+  const y = v => T + (100-v)*(H-T-B)/100;
+  let bg = '', lo = 0;
+  FG_BANDS.forEach(b => {
+    bg += `<rect x="${L}" y="${y(b.max)}" width="${W-L-R}" height="${y(lo)-y(b.max)}" fill="${b.color}" opacity=".07"/>`;
+    lo = b.max;
+  });
+  const grid = [0,25,50,75,100].map(v =>
+    `<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="rgba(255,255,255,.07)"/>
+     <text x="${L-6}" y="${y(v)}" fill="var(--dim)" font-size="10" text-anchor="end" dominant-baseline="middle">${v}</text>`).join('');
+  const line = pts.map((p,i) => `${i?'L':'M'}${x(i).toFixed(1)},${y(p.score).toFixed(1)}`).join('');
+  const nLab = 6, labels = [];
+  for (let k=0;k<nLab;k++){
+    const i = Math.round(k*(pts.length-1)/(nLab-1));
+    labels.push(`<text x="${x(i)}" y="${H-8}" fill="var(--dim)" font-size="10" text-anchor="${k===0?'start':k===nLab-1?'end':'middle'}">${escHtml(pts[i].date)}</text>`);
+  }
+  const last = pts[pts.length-1];
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Fear & Greed Verlauf">
+    ${bg}${grid}
+    <path d="${line}" fill="none" stroke="var(--cyan)" stroke-width="2" style="filter:drop-shadow(0 0 3px rgba(0,245,255,.6))"/>
+    <circle cx="${x(pts.length-1)}" cy="${y(last.score)}" r="4" fill="${fgColor(last.score)}"/>
+    ${labels.join('')}
+  </svg>`;
+}
+
+const rangeBtns = (current, attr) => `<span class="range-btns">${[[30,'1M'],[90,'3M'],[180,'6M'],[365,'1J']].map(([n,l]) =>
+  `<button class="rbtn ${current===n?'active':''}" ${attr}="${n}">${l}</button>`).join('')}</span>`;
+
+// Lila (Angst) → Magenta → Orange (Gier)
+const FFG_STOPS = [[0,[139,92,246]],[40,[200,80,230]],[55,[255,110,60]],[100,[255,160,40]]];
+function ffgColor(s){
+  if (s==null) return 'var(--dim)';
+  for (let i=1;i<FFG_STOPS.length;i++){
+    const [b,cb] = FFG_STOPS[i], [a,ca] = FFG_STOPS[i-1];
+    if (s <= b){
+      const t = (s-a)/(b-a), c = ca.map((v,k) => Math.round(v+(cb[k]-v)*t));
+      return `rgb(${c.join(',')})`;
+    }
+  }
+  return 'rgb(255,160,40)';
+}
+function ringSvg(score, size, stroke, label, big=false){
+  const r = (size-stroke)/2 - 2, c = size/2, circ = 2*Math.PI*r;
+  const frac = score==null ? 0 : Math.max(0,Math.min(100,score))/100;
+  const col = ffgColor(score);
+  return `<svg viewBox="0 0 ${size} ${size}" class="${big?'':'ffg-ring'}">
+    <circle cx="${c}" cy="${c}" r="${r}" fill="rgba(10,8,20,.9)" stroke="rgba(255,255,255,.08)" stroke-width="${stroke}"/>
+    <circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="${col}" stroke-width="${stroke}" stroke-linecap="round"
+      stroke-dasharray="${(circ*frac).toFixed(1)} ${circ.toFixed(1)}" transform="rotate(-90 ${c} ${c})"
+      style="filter:drop-shadow(0 0 ${big?8:3}px ${col})"/>
+    ${label}
+  </svg>`;
+}
+
+function renderFutures(force=false){
+  const c = document.getElementById('ffg-container');
+  loadJson('futuresfg', force).then(d => {
+    const item = (k, side) => {
+      const ring = ringSvg(k.score, 64, 5,
+        `<text x="32" y="33" text-anchor="middle" dominant-baseline="middle" fill="${ffgColor(k.score)}"
+          font-family="system-ui,sans-serif" font-weight="800" font-size="17">${k.score==null?'–':E(k.score)}</text>`);
+      const txt = `<div><div class="ffg-name">${E(k.name_de)}</div><div class="ffg-val">${E(k.value_label)}</div>
+        ${k.score==null && k.error ? `<div class="ffg-err">${E(k.error)}</div>` : ''}</div>`;
+      const tip = escHtml(`${k.description_de||''}${k.source?' · Quelle: '+k.source:''}`);
+      return `<div class="ffg-item" title="${tip}">${side==='left' ? txt+ring : ring+txt}</div>`;
+    };
+    const groups = d.groups || [];
+    const grp = (g, side) => g ? `<div class="ffg-group ${side}"><h3>${E(String(g.name_de).toUpperCase())}</h3>
+      ${(g.components||[]).map(k => item(k, side)).join('')}</div>` : '<div></div>';
+    const center = ringSvg(d.index, 300, 14, `
+      <text x="150" y="80" text-anchor="middle" fill="var(--dim)" font-family="Orbitron,sans-serif" font-size="15" letter-spacing="3">INDEX</text>
+      <text x="150" y="170" text-anchor="middle" fill="${ffgColor(d.index)}" font-family="system-ui,sans-serif" font-weight="900" font-size="92">${E(d.index)}</text>
+      <text x="150" y="212" text-anchor="middle" fill="${ffgColor(d.index)}" font-family="system-ui,sans-serif" font-weight="700" font-size="24">${E(d.rating_de||d.rating)}</text>
+      <text x="150" y="240" text-anchor="middle" fill="var(--dim)" font-family="system-ui,sans-serif" font-size="14">7-Tage-Mittel</text>`, true);
+    const compare = [
+      ['Heute (Tageswert)', d.today], ['Vortag', d.previous_day],
+      ['Vor 1 Woche', d.one_week_ago], ['Vor 1 Monat', d.one_month_ago],
+    ].map(([l,v]) => `<div>${l}<br><span class="muted">${E(fgLabel(v))}</span></div>
+      <div><span class="fg-dot" style="background:${ffgColor(v)}">${E(v)}</span></div>`).join('');
+    const hist = (d.history||[]).map(h => ({date:h.date, score:h.index}));
+
+    c.innerHTML = `
+      <div class="section-head" style="color:var(--purple)">// BITCOIN FUTURES FEAR &amp; GREED <span class="muted">Stand ${E(d.as_of)}</span></div>
+      <div class="ffg">
+        ${grp(groups[0], 'left')}
+        <div class="ffg-center">${center}<div class="ffg-meta">Tageswert ${E(d.today)} · Vortag ${E(d.previous_day)}</div></div>
+        ${grp(groups[1], 'right')}
+      </div>
+      <div class="fg-top" style="margin-top:12px">
+        <div class="card fg-chart">
+          <div class="section-head">// VERLAUF (7-TAGE-MITTEL) ${rangeBtns(ffgRange, 'data-ffg-range')}</div>
+          ${historySvg(hist, ffgRange)}
+        </div>
+        <div class="card">
+          <div class="section-head">// VERGLEICH</div>
+          <div class="fg-compare">${compare}</div>
+        </div>
+      </div>
+      <div class="insider-footer">10 Bausteine, jeder gegen seine eigenen letzten 365 Tage gemessen, gleich gewichtet · Generiert ${E(fmtTs(d.generated_at))}</div>`;
+    c.querySelectorAll('[data-ffg-range]').forEach(b => b.addEventListener('click', () => { ffgRange = +b.dataset.ffgRange; renderFutures(); }));
+  }).catch(e => { c.innerHTML = errorBox('FUTURES FEAR & GREED', e); });
+}
+
+function renderFearGreed(force=false){
+  renderFutures(force);
+  const c = document.getElementById('fg-container');
+  loadJson('feargreed', force).then(d => {
+    const compare = [
+      ['Vortag', d.previous_close], ['Vor 1 Woche', d.one_week_ago],
+      ['Vor 1 Monat', d.one_month_ago], ['Vor 1 Jahr', d.one_year_ago],
+    ].map(([l,v]) => `<div>${l}<br><span class="muted">${E(fgLabel(v))}</span></div>
+      <div><span class="fg-dot" style="background:${fgColor(v)}">${E(v)}</span></div>`).join('');
+
+    const comps = (d.components||[]).map(k => {
+      const ok = k.score!=null;
+      return `<div class="card fg-comp">
+        <h4><span>${E(k.name_de||k.name)}</span><span style="color:${fgColor(k.score)}">${ok ? E(k.rating_de||k.rating) : 'FEHLER'}</span></h4>
+        ${ok ? `<div class="fg-bar"><i style="left:${Math.max(0,Math.min(100,k.score))}%"></i></div>
+          <div class="muted" style="margin-bottom:6px">Score ${E(k.score)} · ${E(k.value_label)}</div>`
+             : `<div class="bot-error" style="padding:6px;text-align:left">${E(k.error)}</div>`}
+        <p>${E(k.description_de)}</p>
+      </div>`;
+    }).join('');
+
+    c.innerHTML = `
+      <div class="fg-top">
+        <div class="card gauge-wrap">
+          <div class="section-head">// FEAR &amp; GREED INDEX <span class="muted">Stand ${E(d.as_of)}</span></div>
+          ${gaugeSvg(d.score)}
+          <div class="fg-score" style="color:${fgColor(d.score)}">${E(d.score)}</div>
+          <div class="fg-rating" style="color:${fgColor(d.score)}">${E(d.rating_de||d.rating)}</div>
+        </div>
+        <div class="card">
+          <div class="section-head">// VERGLEICH</div>
+          <div class="fg-compare">${compare}</div>
+        </div>
+      </div>
+      <div class="card fg-chart" style="margin-top:12px">
+        <div class="section-head">// VERLAUF ${rangeBtns(fgRange, 'data-range')}</div>
+        ${historySvg(d.history||[], fgRange)}
+      </div>
+      <div class="fg-components">${comps}</div>
+      <div class="insider-footer">Eigene Berechnung nach CNN-Methodik (7 Indikatoren, gleich gewichtet) · Generiert ${E(fmtTs(d.generated_at))}</div>`;
+    c.querySelectorAll('[data-range]').forEach(b => b.addEventListener('click', () => { fgRange = +b.dataset.range; renderFearGreed(); }));
+  }).catch(e => { c.innerHTML = errorBox('FEAR & GREED', e); });
+}
+
+// ─── RESEARCH ─────────────────────────────────────────────
+function mdInline(s){
+  return escHtml(s)
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+    .replace(/(^|[\s(])(https?:\/\/[^\s<)]+)/g, '$1<a href="$2" target="_blank" rel="noopener">$2</a>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/(^|\W)\*([^*\s][^*]*)\*(?=\W|$)/g, '$1<em>$2</em>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>');
+}
+function renderMarkdown(md){
+  const out = []; let list = null, para = [];
+  const flushP = () => { if (para.length){ out.push('<p>'+mdInline(para.join(' '))+'</p>'); para = []; } };
+  const flushL = () => { if (list){ out.push(`<${list.tag}>${list.items.map(i=>'<li>'+mdInline(i)+'</li>').join('')}</${list.tag}>`); list = null; } };
+  for (const raw of String(md||'').split('\n')){
+    const line = raw.trimEnd();
+    let m;
+    if (!line.trim()){ flushP(); flushL(); continue; }
+    if ((m = line.match(/^(#{1,3})\s+(.*)$/))){ flushP(); flushL(); out.push(`<h${m[1].length}>${mdInline(m[2])}</h${m[1].length}>`); continue; }
+    if (/^(-{3,}|\*{3,})$/.test(line.trim())){ flushP(); flushL(); out.push('<hr>'); continue; }
+    if ((m = line.match(/^\s*[-*+]\s+(.*)$/)) || (m = line.match(/^\s*\d+[.)]\s+(.*)$/))){
+      flushP();
+      const tag = /^\s*\d/.test(line) ? 'ol' : 'ul';
+      if (!list || list.tag!==tag){ flushL(); list = {tag, items:[]}; }
+      list.items.push(m[1]); continue;
+    }
+    if (list && /^\s{2,}/.test(raw)){ list.items[list.items.length-1] += ' '+line.trim(); continue; }
+    flushL(); para.push(line.trim());
+  }
+  flushP(); flushL();
+  return out.join('\n');
+}
+let researchIdx = 0;
+function renderResearch(force=false){
+  const c = document.getElementById('research-container');
+  Promise.all([loadJson('research', force), loadJson('research_history', force).catch(() => [])]).then(([cur, hist]) => {
+    const reports = (Array.isArray(hist) && hist.length) ? hist : [cur];
+    researchIdx = Math.min(researchIdx, reports.length-1);
+    const r = reports[researchIdx];
+    const opts = reports.map((x,i) => `<option value="${i}" ${i===researchIdx?'selected':''}>${E(x.date)}</option>`).join('');
+    c.innerHTML = `<div class="section-head">// RESEARCH REPORT
+        <select class="research-select" id="research-pick" aria-label="Report wählen">${opts}</select></div>
+      <div class="card"><div class="md">${renderMarkdown(r.markdown)}</div></div>
+      <div class="insider-footer">Generiert ${E(fmtTs(r.generated_at))} · ${E(r.model)}</div>`;
+    document.getElementById('research-pick').addEventListener('change', ev => { researchIdx = +ev.target.value; renderResearch(); });
+  }).catch(e => { c.innerHTML = errorBox('RESEARCH REPORT', e); });
 }
 
 // ─── TIMER ALARM ──────────────────────────────────────────
